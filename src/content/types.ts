@@ -78,7 +78,33 @@ export interface ClozeQ extends Hinted {
   q?: string;
 }
 
-export type Question = McqQ | MultiQ | TfQ | NumQ | TextQ | OrderQ | MatchQ | ClozeQ;
+/** Sort items into 2-4 groups */
+export interface SortQ extends Hinted {
+  type: 'sort';
+  q: string;
+  groups: string[];
+  /** [item, index of its group] */
+  items: [string, number][];
+}
+
+/** Tap the target words in a passage. Targets are written [[like this]] in `text`. */
+export interface SelectQ extends Hinted {
+  type: 'select';
+  q: string;
+  text: string;
+}
+
+/** Spot the mistake in a worked solution. steps[wrong] contains the error. */
+export interface SpotQ extends Hinted {
+  type: 'spot';
+  q: string;
+  steps: string[];
+  wrong: number;
+  /** the corrected version of the wrong step */
+  fix?: string;
+}
+
+export type Question = McqQ | MultiQ | TfQ | NumQ | TextQ | OrderQ | MatchQ | ClozeQ | SortQ | SelectQ | SpotQ;
 
 /** A question with identity attached at load time */
 export type QItem = Question & { id: string; topicId: string; subjectId: string; generated?: boolean };
@@ -238,6 +264,8 @@ export interface GeneratedQuestion {
   steps: string[];
   hints?: string[];
   d: number;
+  /** spot-the-error variant: a worked solution with one wrong line */
+  spot?: { lines: string[]; wrong: number; fix: string };
 }
 
 export interface Generator {

@@ -10,7 +10,7 @@ export function MistakesPage() {
   if (!list.length) {
     return (
       <Empty title="Your Fix-it list is empty">
-        <p className="muted">Every question you get wrong lands here. It leaves the list once you answer it correctly without help. Mistakes are the fastest route to improvement - so don't fear them!</p>
+        <p className="muted">Every question you get wrong lands here. It leaves the list once you answer it correctly without help. Mistakes are the fastest route to improvement – so don't fear them!</p>
         <a className="btn primary" href={href('/quiz', { scope: 'smart', n: 15 })}>Start a smart session</a>
       </Empty>
     );

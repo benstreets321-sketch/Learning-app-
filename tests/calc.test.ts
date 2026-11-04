@@ -49,3 +49,17 @@ describe('periodic table', () => {
     expect(electronShells(20)).toBe('2, 8, 8, 2');
   });
 });
+
+import { parseSelect, checkSelect } from '../src/lib/answer';
+describe('tap-the-words questions', () => {
+  const toks = parseSelect('The fog crept [[like a grey tide]], and the light blinked [[as nervously as a cat]].');
+  const idx = (w: string) => toks.findIndex((t) => t.text === w && t.pickable);
+  it('splits targets into separate words', () => {
+    expect(toks.filter((t) => t.group === 0).map((t) => t.text)).toEqual(['like', 'a', 'grey', 'tide']);
+  });
+  it('needs one word from every target and nothing else', () => {
+    expect(checkSelect(toks, new Set([idx('tide'), idx('nervously')])).ok).toBe(true);
+    expect(checkSelect(toks, new Set([idx('tide')])).ok).toBe(false);
+    expect(checkSelect(toks, new Set([idx('tide'), idx('nervously'), idx('fog')])).ok).toBe(false);
+  });
+});

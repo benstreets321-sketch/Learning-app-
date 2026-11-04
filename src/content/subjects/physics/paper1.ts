@@ -41,7 +41,7 @@ A 2 kg ball falls 5 m. GPE lost = 2 × 9.8 × 5 = 98 J → if no air resistance,
 :::
 `,
         keyPoints: ['Eight energy stores; four transfer pathways', 'Energy is conserved - only transferred or dissipated', 'Eₖ = ½mv²; Eₚ = mgh; Eₑ = ½ke²', 'Power = energy ÷ time (W = J/s)', 'Work done = force × distance'],
-        generators: ['p-ke', 'p-gpe', 'p-power', 'p-work', 'p-spring'],
+        generators: ['p-ke', 'p-gpe', 'p-power', 'p-work', 'p-spring', 'p-spot-equation'],
         misconceptions: [{ wrong: 'Energy is used up.', right: 'Energy is never used up - it is transferred, usually ending up dissipated as thermal energy in the surroundings.' }],
         flashcards: cards([['Kinetic energy equation?', 'Eₖ = ½mv²'], ['GPE equation?', 'Eₚ = mgh'], ['Elastic potential energy equation?', 'Eₑ = ½ke²'], ['What is power?', 'The rate of energy transfer (or work done): P = E/t.'], ['1 watt = ?', '1 joule per second'], ['State the principle of conservation of energy', 'Energy cannot be created or destroyed, only transferred usefully, stored or dissipated.']]),
         questions: [

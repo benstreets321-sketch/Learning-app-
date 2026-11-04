@@ -30,7 +30,7 @@ export function StrategiesPage() {
           ))}
         </div>
       </Section>
-      <Section title="A great weekly routine">
+      <Section title="A weekly routine that works">
         <ol>
           <li><strong>Daily (20-40 min):</strong> due flashcards → a smart session → one Fix-it round.</li>
           <li><strong>Each new topic:</strong> read the lesson → quiz immediately → flashcards → blurt the next day.</li>

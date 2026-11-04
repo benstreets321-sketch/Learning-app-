@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { SUBJECTS, allTopicRefs, topicQuestions, getTopic } from '../src/content/registry';
 import { GENERATORS } from '../src/content/generators';
-import { parseCloze, checkText } from '../src/lib/answer';
+import { parseCloze, checkText, parseSelect } from '../src/lib/answer';
+import { EXTRA } from '../src/content/extra';
 
 describe('content integrity', () => {
   it('has globally unique topic and unit ids', () => {
@@ -81,6 +82,22 @@ describe('content integrity', () => {
           case 'tf':
             expect(typeof q.answer, ctx).toBe('boolean');
             break;
+          case 'sort':
+            expect(q.groups.length, ctx).toBeGreaterThanOrEqual(2);
+            expect(new Set(q.items.map((x) => x[0])).size, `${ctx} duplicate items`).toBe(q.items.length);
+            q.items.forEach(([, g]) => expect(g, ctx).toBeLessThan(q.groups.length));
+            break;
+          case 'select': {
+            const toks = parseSelect(q.text);
+            expect(toks.some((t) => t.group >= 0), `${ctx} no targets`).toBe(true);
+            expect(toks.filter((t) => t.pickable && t.group < 0).length, `${ctx} no distractor words`).toBeGreaterThan(2);
+            break;
+          }
+          case 'spot':
+            expect(q.steps.length, ctx).toBeGreaterThanOrEqual(3);
+            expect(q.wrong, ctx).toBeLessThan(q.steps.length);
+            q.steps.forEach((st) => expect(st.trim(), ctx).toBeTruthy());
+            break;
         }
       }
     }
@@ -103,6 +120,18 @@ describe('content integrity', () => {
     for (const { topic } of allTopicRefs()) {
       for (const g of topic.generators ?? []) expect(GENERATORS[g], `${topic.id} -> generator ${g}`).toBeTruthy();
       for (const p of topic.prerequisites ?? []) expect(getTopic(p), `${topic.id} -> prerequisite ${p}`).toBeTruthy();
+    }
+  });
+
+  it('extra questions point at real topics', () => {
+    for (const id of Object.keys(EXTRA)) expect(getTopic(id), id).toBeTruthy();
+  });
+
+  it('derived multiple-choice questions have four distinct options', () => {
+    for (const { topic } of allTopicRefs()) {
+      for (const q of topicQuestions(topic.id)) {
+        if (q.type === 'mcq' && (q as { derived?: boolean }).derived) expect(new Set(q.options).size, q.q).toBeGreaterThanOrEqual(3);
+      }
     }
   });
 

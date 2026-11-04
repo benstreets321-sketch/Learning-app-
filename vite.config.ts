@@ -9,7 +9,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 const pwa = VitePWA({
   injectRegister: null, // registered in src/lib/pwa.ts
   registerType: 'autoUpdate',
-  includeAssets: ['icons/*.png', 'icons/*.svg'],
+  includeAssets: ['icons/*.png', 'icons/*.svg', 'sw-reminders.js'],
   manifest: {
     id: './',
     name: 'GCSE Revision Hub',
@@ -34,6 +34,7 @@ const pwa = VitePWA({
     maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
     navigateFallback: 'index.html',
     cleanupOutdatedCaches: true,
+    importScripts: ['sw-reminders.js'],
   },
 });
 

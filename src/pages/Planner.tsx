@@ -102,10 +102,10 @@ export function PlannerPage() {
         <span className="muted small">of about {profile.dailyGoal} minutes (change in Settings)</span>
         <button className="btn primary" onClick={() => savePlan(buildPlan(profile, progress, sessions))}>{plan ? 'Rebuild my plan' : 'Build my plan'}</button>
       </div>
-      <p className="muted small">Rebuild every few weeks - it uses your latest mastery data.</p>
+      <p className="muted small">Rebuild every few weeks – it uses your latest mastery data.</p>
 
       {!plan ? (
-        <Empty title="No plan yet">Build one above - it takes a second.</Empty>
+        <Empty title="No plan yet">Build one above – it takes a second.</Empty>
       ) : (
         plan.map((w) => {
           const isNow = w.start === nowWeek;

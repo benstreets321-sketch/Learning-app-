@@ -3,6 +3,7 @@ import type { GeneratedQuestion, QItem, Question, Subject, Topic, Unit } from '.
 import type { Profile } from '../lib/store';
 import { hash, mulberry32 } from '../lib/util';
 import { GENERATORS } from './generators';
+import { EXTRA } from './extra';
 
 import englishLanguage from './subjects/english-language';
 import englishLiterature from './subjects/english-literature';
@@ -68,6 +69,71 @@ function deriveQuestions(topic: Topic, speakers: string[]): Question[] {
   return out;
 }
 
+// ---------- Derived practice from flashcards and misconceptions ----------
+const plain = (s: string) => s.replace(/[*_`]/g, '').trim();
+const isShort = (s: string, n: number) => s.length <= n && !s.includes('\n');
+
+const isQuestion = (s: string) => /[?:]$/.test(s.trim()) || /^(what|which|who|when|where|why|how|name|give|state|define|list|explain|describe|outline|identify)\b/i.test(s.trim());
+const numeric = (s: string) => /^[\s£$€\d.,%×x^/+\-−=()a-zµ²³]{1,24}$/i.test(plain(s)) && /\d/.test(s);
+
+/** Choose 3 distractors that look like the answer (similar length and form), preferring the same topic. */
+function lookalikes(answer: string, topicId: string, pool: { text: string; topicId: string }[], seed: number): string[] {
+  const len = plain(answer).length;
+  const num = numeric(answer);
+  const scored = pool
+    .filter((p) => plain(p.text) !== plain(answer))
+    .map((p, i) => {
+      const l = plain(p.text).length;
+      let score = Math.abs(Math.log((l + 4) / (len + 4)));
+      if (numeric(p.text) !== num) score += 2;
+      if (p.topicId === topicId) score -= 0.35;
+      score += (((seed + i * 2654435761) >>> 0) % 1000) / 4000; // small deterministic jitter
+      return { t: p.text, score };
+    })
+    .sort((a, b) => a.score - b.score);
+  const out: string[] = [];
+  for (const c of scored) {
+    if (out.length === 3) break;
+    if (!out.some((o) => plain(o) === plain(c.t))) out.push(c.t);
+  }
+  return out;
+}
+
+function deriveFromCards(topic: Topic, unitCards: { front: string; back: string; topicId: string }[]): Question[] {
+  const out: Question[] = [];
+  let made = 0;
+  topic.flashcards.forEach((c, i) => {
+    if (made >= 12) return;
+    let seed = 0;
+    for (const ch of c.front + c.back) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
+    const others = unitCards.filter((o) => o.front !== c.front && o.back !== c.back);
+    if (others.length < 3) return;
+    // recognise the answer: front -> choose the right back
+    if (isShort(c.back, 120)) {
+      const wrong = lookalikes(c.back, topic.id, others.filter((o) => isShort(o.back, 140)).map((o) => ({ text: o.back, topicId: o.topicId })), seed);
+      if (wrong.length === 3) {
+        const front = c.front.trim();
+        const q = isQuestion(front) ? front : `Which of these matches **${plain(front)}**?`;
+        out.push({ type: 'mcq', q, options: [c.back, ...wrong], answer: 0, why: `**${plain(front)}** - ${c.back}`, d: 1, derived: true } as Question);
+        made++;
+      }
+    }
+    // recall the term: back -> choose the right front (only for short "term" style fronts)
+    if (i % 2 === 0 && isShort(c.front, 45) && !isQuestion(c.front) && isShort(c.back, 220)) {
+      const wrong = lookalikes(c.front, topic.id, others.filter((o) => isShort(o.front, 45) && !isQuestion(o.front)).map((o) => ({ text: o.front, topicId: o.topicId })), seed >>> 3);
+      if (wrong.length === 3) {
+        out.push({ type: 'mcq', q: `Which term or idea is this?\n\n> ${c.back}`, options: [c.front, ...wrong], answer: 0, why: `**${plain(c.front)}**: ${c.back}`, d: 2, derived: true } as Question);
+        made++;
+      }
+    }
+  });
+  for (const m of topic.misconceptions ?? []) {
+    const claim = m.wrong.trim().replace(/^"(.*)"$/, '$1');
+    out.push({ type: 'tf', q: `True or false?\n\n**${claim}**`, answer: false, why: `False. ${m.right}`, d: 2, derived: true } as Question);
+  }
+  return out;
+}
+
 function deriveCards(topic: Topic) {
   const cardsOut = (topic.quotes ?? []).map((qt) => ({
     front: `“${qt.text}”\n\n*Who / where - and what does it show?*`,
@@ -77,6 +143,18 @@ function deriveCards(topic: Topic) {
 }
 
 for (const subject of SUBJECTS) {
+  for (const unit of subject.units) {
+    for (const t of unit.topics) {
+      const extra = EXTRA[t.id];
+      if (extra && !t.questions.includes(extra[0])) t.questions = [...t.questions, ...extra];
+    }
+    const unitCards = unit.topics.flatMap((t) => t.flashcards.map((c) => ({ ...c, topicId: t.id })));
+    for (const t of unit.topics) {
+      if (!t.questions.some((q) => (q as { derived?: boolean }).derived)) {
+        t.questions = [...t.questions, ...deriveFromCards(t, unitCards)];
+      }
+    }
+  }
   const speakers = [...new Set(subject.units.flatMap((u) => u.topics.flatMap((t) => (t.quotes ?? []).map((q) => q.who).filter((w): w is string => !!w))))];
   for (const unit of subject.units) {
     for (const topic of unit.topics) {
@@ -84,8 +162,8 @@ for (const subject of SUBJECTS) {
       // per-text speakers make better distractors: prefer speakers from the same unit
       const unitSpeakers = [...new Set(unit.topics.flatMap((t) => (t.quotes ?? []).map((q) => q.who).filter((w): w is string => !!w)))];
       const derived = deriveQuestions(topic, unitSpeakers.length >= 4 ? unitSpeakers : speakers);
-      if (derived.length && !topic.questions.some((q) => (q as { derived?: boolean }).derived)) {
-        topic.questions = [...topic.questions, ...derived.map((d) => ({ ...d, derived: true }))];
+      if (derived.length && !topic.questions.some((q) => (q as { fromQuotes?: boolean }).fromQuotes)) {
+        topic.questions = [...topic.questions, ...derived.map((d) => ({ ...d, derived: true, fromQuotes: true }))];
         topic.flashcards = [...topic.flashcards, ...deriveCards(topic)];
       }
       const seen = new Set<string>();
@@ -161,6 +239,9 @@ export interface GenSnapshot {
 
 export function generatedToQuestion(gq: GeneratedQuestion): Question {
   const why = gq.steps.join('\n\n');
+  if (gq.spot) {
+    return { type: 'spot', q: gq.q, steps: gq.spot.lines, wrong: gq.spot.wrong, fix: gq.spot.fix, why, hints: gq.hints, d: gq.d };
+  }
   if (gq.options && gq.options.length) {
     return { type: 'mcq', q: gq.q, options: gq.options, answer: 0, why, hints: gq.hints, d: gq.d };
   }

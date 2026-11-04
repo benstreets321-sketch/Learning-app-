@@ -110,6 +110,11 @@ describe('question generators', () => {
           expect(new Set(q.options).size, ctx).toBe(q.options.length);
           expect(q.options.length, ctx).toBeGreaterThanOrEqual(2);
         }
+        if (q.spot) {
+          expect(q.spot.lines.length, ctx).toBeGreaterThanOrEqual(3);
+          expect(q.spot.lines[q.spot.wrong], ctx).not.toBe(q.spot.fix);
+          q.spot.lines.forEach((l) => expect(l, ctx).not.toMatch(/NaN|undefined|Infinity/));
+        }
         if (q.accept) expect(checkText(String(q.answer), q.accept).ok, ctx).toBe(true);
         if (typeof q.answer === 'number') expect(checkNumber(String(q.answer), q.answer, q.tol).ok, ctx).toBe(true);
       }

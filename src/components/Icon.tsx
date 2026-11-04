@@ -26,6 +26,10 @@ const PATHS: Record<string, string> = {
   half: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 3v18',
   message: 'M4 5h16v11H9l-5 4z',
   menu: 'M4 7h16M4 12h16M4 17h16',
+  speaker: 'M4 9v6h4l5 4V5L8 9zM16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12',
+  search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4',
+  bell: 'M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0',
+  bolt: 'M13 3 5 13.5h6L10 21l8-10.5h-6z',
 };
 
 export function Icon({ name, size = 20, className = '' }: { name: keyof typeof PATHS | string; size?: number; className?: string }) {

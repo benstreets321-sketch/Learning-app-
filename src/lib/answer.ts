@@ -106,3 +106,35 @@ export function parseCloze(text: string): { parts: string[]; blanks: string[][] 
   parts.push(text.slice(last));
   return { parts, blanks };
 }
+
+export interface SelectToken { text: string; pickable: boolean; /** index of the target phrase this word belongs to, or -1 */ group: number }
+
+/** Split a "tap the words" passage into word tokens. Words inside [[...]] belong to a target phrase. */
+export function parseSelect(text: string): SelectToken[] {
+  const out: SelectToken[] = [];
+  let group = -1, groups = 0;
+  const pushWords = (chunk: string, g: number) => {
+    for (const part of chunk.split(/(\s+)/)) {
+      if (!part) continue;
+      if (/^\s+$/.test(part)) { out.push({ text: part, pickable: false, group: -1 }); continue; }
+      const m = part.match(/^([^\p{L}\p{N}]*)(.*?)([^\p{L}\p{N}]*)$/u);
+      if (!m || !m[2]) { out.push({ text: part, pickable: false, group: -1 }); continue; }
+      if (m[1]) out.push({ text: m[1], pickable: false, group: -1 });
+      out.push({ text: m[2], pickable: true, group: g });
+      if (m[3]) out.push({ text: m[3], pickable: false, group: -1 });
+    }
+  };
+  for (const part of text.split(/(\[\[[^\]]+\]\])/)) {
+    if (!part) continue;
+    if (part.startsWith('[[')) { group = groups++; pushWords(part.slice(2, -2), group); } else pushWords(part, -1);
+  }
+  return out;
+}
+
+/** Check a selection: every target phrase needs at least one of its words picked, and no other words. */
+export function checkSelect(tokens: SelectToken[], picked: Set<number>) {
+  const groups = new Set(tokens.filter((t) => t.group >= 0).map((t) => t.group));
+  const found = new Set([...picked].map((i) => tokens[i]?.group).filter((g): g is number => g !== undefined && g >= 0));
+  const extra = [...picked].filter((i) => tokens[i] && tokens[i].group < 0).length;
+  return { ok: found.size === groups.size && extra === 0, found: found.size, total: groups.size, extra };
+}

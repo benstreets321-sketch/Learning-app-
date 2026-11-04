@@ -1,3 +1,4 @@
+import { canCalendar, canNotify, disableReminders, downloadCalendar, enableReminders, permission, reminderText, showReminder } from '../lib/reminders';
 import { SubjectMark } from '../components/SubjectMark';
 import { useRef, useState } from 'react';
 import { SUBJECTS } from '../content/registry';
@@ -30,7 +31,7 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
       {firstRun ? (
         <div className="hero">
           <div>
-            <h1>Let's set up your revision</h1>
+            <h1>Set up your revision</h1>
             <p className="muted">
               Tell me your exam year, subjects, tiers and the set texts/options your school chose. Everything adapts to this -
               you only see what can come up in <em>your</em> exams. You can change it any time in Settings.
@@ -63,7 +64,7 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
           <label>
             Date of my first exam
             <input type="date" value={profile.firstExam} onChange={(e) => updateProfile({ firstExam: e.target.value })} />
-            <span className="muted small">Estimated - update it when your school shares the timetable.</span>
+            <span className="muted small">Estimated – update it when your school shares the timetable.</span>
           </label>
           <label>
             Daily goal (minutes)
@@ -93,7 +94,7 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
       </Section>
 
       <Section title="Tiers">
-        <p className="muted small">Higher tier shows grade 4-9 content including the hardest topics. Foundation hides higher-only topics (grades 1-5). Not sure? Ask your teacher - choose Higher if you're aiming for a 6+.</p>
+        <p className="muted small">Higher tier shows grade 4-9 content including the hardest topics. Foundation hides higher-only topics (grades 1-5). Not sure? Ask your teacher – choose Higher if you're aiming for a 6+.</p>
         <div className="form-grid">
           {TIERED.filter((id) => profile.subjects.includes(id)).map((id) => (
             <label key={id}>
@@ -131,6 +132,25 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
         </Section>
       ))}
 
+      {!firstRun && <Reminders />}
+
+      <Section title="Reading">
+        <div className="form-grid">
+          <label>
+            Text size
+            <select value={profile.textSize ?? 'normal'} onChange={(e) => updateProfile({ textSize: e.target.value as 'normal' | 'large' | 'xlarge' })}>
+              <option value="normal">Standard</option>
+              <option value="large">Large</option>
+              <option value="xlarge">Extra large</option>
+            </select>
+          </label>
+        </div>
+        <label className="row gap check-row">
+          <input type="checkbox" checked={!!profile.readable} onChange={(e) => updateProfile({ readable: e.target.checked })} />
+          <span>Easier reading: more space between lines, letters and words, and no italics. Can help with dyslexia.</span>
+        </label>
+      </Section>
+
       <Section title="Show everything?">
         <label className="row gap">
           <input type="checkbox" checked={profile.showAllOptions} onChange={(e) => updateProfile({ showAllOptions: e.target.checked })} />
@@ -161,8 +181,8 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
               setMsg(importData(await f.text()) ? 'Backup restored.' : 'That file is not a valid backup.');
             }} />
             <button className="btn" onClick={async () => {
-              try { await navigator.clipboard.writeText(exportData()); setMsg('Backup copied - paste it somewhere safe (e.g. a note or email to yourself).'); }
-              catch { setMsg('Copying was blocked by your browser - use Export backup instead.'); }
+              try { await navigator.clipboard.writeText(exportData()); setMsg('Backup copied – paste it somewhere safe (e.g. a note or email to yourself).'); }
+              catch { setMsg('Copying was blocked by your browser – use Export backup instead.'); }
             }}>Copy backup</button>
             {!confirmReset ? (
               <button className="btn danger" onClick={() => setConfirmReset(true)}>Reset everything</button>
@@ -178,5 +198,36 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
         </Section>
       )}
     </div>
+  );
+}
+
+function Reminders() {
+  const profile = useProfile();
+  const r = profile.reminder ?? { on: false, time: '18:00' };
+  const [time, setTime] = useState(r.time);
+  const [note, setNote] = useState('');
+  const [perm, setPerm] = useState(permission());
+  return (
+    <Section title="Daily reminder">
+      <p className="muted small">A nudge at the same time each day makes revision a habit. It only fires if you haven't studied yet that day.</p>
+      <div className="row gap wrap">
+        <label className="field inline">
+          <span>Time</span>
+          <input type="time" value={time} onChange={(e) => { setTime(e.target.value); if (r.on) updateProfile({ reminder: { on: true, time: e.target.value } }); }} />
+        </label>
+        {canNotify() && (r.on && perm === 'granted' ? (
+          <>
+            <button className="btn" onClick={() => { disableReminders(); setNote('Reminders turned off.'); }}>Turn off notifications</button>
+            <button className="btn ghost" onClick={async () => { const ok = await showReminder("Time for today's revision", reminderText().body); setNote(ok ? 'Test notification sent.' : 'Could not show a notification.'); }}>Send a test</button>
+          </>
+        ) : (
+          <button className="btn primary" onClick={async () => { setNote(await enableReminders(time)); setPerm(permission()); }}>Turn on notifications</button>
+        ))}
+        {canCalendar() && <button className="btn" onClick={() => { downloadCalendar(time); setNote('Open the downloaded file to add a daily event with an alert to your calendar.'); }}>Add to calendar</button>}
+      </div>
+      {perm === 'denied' && canNotify() && !note && <p className="small muted">Notifications are blocked for this site. Change it in your browser's site settings.</p>}
+      <p className="small muted">On iPhone and iPad, notifications only work once the app is added to your Home Screen. "Add to calendar" works everywhere.</p>
+      {note && <p className="small">{note}</p>}
+    </Section>
   );
 }

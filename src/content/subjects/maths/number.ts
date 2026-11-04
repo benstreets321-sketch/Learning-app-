@@ -187,7 +187,7 @@ After a 20% increase, a price is £96. Original = 96 ÷ **1.2** = **£80**.
         { wrong: 'A 20% increase then 20% decrease returns to the original.', right: '100 × 1.2 × 0.8 = 96 - you end up lower, because the 20% decrease is of a bigger number.' },
         { wrong: 'To reverse a 20% increase, subtract 20% of the new price.', right: 'Divide the new price by 1.2.' },
       ],
-      generators: ['m-pct-of', 'm-pct-change', 'm-pct-diff', 'm-reverse-pct'],
+      generators: ['m-pct-of', 'm-pct-change', 'm-pct-diff', 'm-reverse-pct', 'm-spot-percent'],
       flashcards: cards([['Multiplier for a 7% increase?', '1.07'], ['Multiplier for a 30% decrease?', '0.7'], ['Formula for percentage change?', 'change ÷ original × 100'], ['How do you find an original amount after a % increase?', 'Divide by the multiplier.']]),
       questions: [
         num('Find 35% of 260 (non-calculator).', 91, '10% = 26, 30% = 78, 5% = 13 → 91.', { d: 2 }),

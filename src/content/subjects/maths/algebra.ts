@@ -58,7 +58,7 @@ Expanding triple brackets (Higher): expand two first, then multiply by the third
 `,
       keyPoints: ['Expand: every term × every term', '(x + a)² ≠ x² + a²', 'Factorise: multiply to c, add to b', 'a² − b² = (a + b)(a − b)', 'ax² + bx + c: split the middle term (Higher)'],
       misconceptions: [{ wrong: '(x + 5)² = x² + 25', right: '(x + 5)(x + 5) = x² + 10x + 25.' }],
-      generators: ['m-expand-double', 'm-factorise-quad'],
+      generators: ['m-expand-double', 'm-factorise-quad', 'm-spot-expand'],
       prerequisites: ['m-alg-basics'],
       flashcards: cards([['Expand (x + 4)²', 'x² + 8x + 16'], ['Factorise x² − 9', '(x + 3)(x − 3)'], ['Factorise x² + 5x + 6', '(x + 2)(x + 3)'], ['Difference of two squares', 'a² − b² = (a + b)(a − b)']]),
       questions: [
@@ -86,7 +86,7 @@ Do the **same thing to both sides** to get x alone (use inverse operations).
 ✔ Check by substituting back.
 `,
       keyPoints: ['Same operation to both sides', 'Expand brackets first', 'Move the smaller x term', 'Clear fractions by multiplying by the denominator(s)', 'Check by substituting'],
-      generators: ['m-linear-eq'],
+      generators: ['m-linear-eq', 'm-spot-linear'],
       prerequisites: ['m-alg-basics'],
       flashcards: cards([['Solve 4x + 3 = 23', 'x = 5'], ['First step for (x − 3)/5 = 2?', 'Multiply both sides by 5.']]),
       questions: [

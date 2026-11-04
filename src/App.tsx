@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useRoute, href } from './lib/router';
+import { useRoute, href, go } from './lib/router';
 import { useProfile, useProgress } from './lib/store';
 import { Home } from './pages/Home';
 import { Setup } from './pages/Setup';
@@ -15,11 +15,14 @@ import { StrategiesPage } from './pages/Strategies';
 import { ToolsPage } from './pages/Tools';
 import { HelpPage } from './pages/Help';
 import { RescuePage } from './pages/Rescue';
+import { SprintPage } from './pages/Sprint';
+import { SearchPage } from './pages/Search';
 import { Icon } from './components/Icon';
 import { ToolDrawer, useTools } from './components/Tools';
 import { InstallButton } from './components/Install';
 import { SubjectMark } from './components/SubjectMark';
 import { activeSubjects } from './content/registry';
+import { schedule as scheduleReminder, syncReminderState } from './lib/reminders';
 
 const NAV = [
   { path: '/', label: 'Today', icon: 'home' },
@@ -43,6 +46,30 @@ export function App() {
 
   useEffect(() => { window.scrollTo(0, 0); }, [route.raw]);
 
+  // "/" jumps to search
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement;
+      if (e.key === '/' && !/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) && !el.isContentEditable) { e.preventDefault(); go('/search'); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // reading comfort settings
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.size = profile.textSize ?? 'normal';
+    if (profile.readable) root.dataset.readable = '1'; else delete root.dataset.readable;
+  }, [profile.textSize, profile.readable]);
+
+  // daily reminder: in-app timer + state for the service worker
+  useEffect(() => { scheduleReminder(); }, [profile.reminder?.on, profile.reminder?.time]);
+  useEffect(() => {
+    const t = setTimeout(() => void syncReminderState(), 1500);
+    return () => clearTimeout(t);
+  }, [progress, profile.reminder]);
+
   const [first, second] = route.path;
   const mistakes = Object.keys(progress.mistakes).length;
 
@@ -57,6 +84,8 @@ export function App() {
       case 'quiz': page = <QuizPage key={route.raw} query={route.query} />; break;
       case 'cards': page = <FlashcardsPage key={route.raw} query={route.query} />; break;
       case 'exam': page = <ExamPage key={route.raw} query={route.query} />; break;
+      case 'search': page = <SearchPage key={route.raw} query={route.query} />; break;
+      case 'sprint': page = <SprintPage key={route.raw} query={route.query} />; break;
       case 'rescue': page = <RescuePage key={route.raw} query={route.query} />; break;
       case 'fix': page = <MistakesPage />; break;
       case 'progress': page = <ProgressPage />; break;
@@ -68,7 +97,7 @@ export function App() {
     }
   }
 
-  const inSession = first === 'quiz' || first === 'cards' || first === 'exam' || (first === 'rescue' && !!route.query.get('topic'));
+  const inSession = first === 'quiz' || first === 'cards' || first === 'exam' || first === 'sprint' || (first === 'rescue' && !!route.query.get('topic'));
   const isActive = (p: string) => (p === '/' ? !first : '/' + (first ?? '') === p);
   const subjects = profile.onboarded ? activeSubjects(profile) : [];
 
@@ -78,6 +107,9 @@ export function App() {
         <a className="brand" href={href('/')}>
           <span className="logo" aria-hidden="true">G</span>
           <span className="brand-text">GCSE Revision Hub</span>
+        </a>
+        <a href={href('/search')} className={`side-search ${first === 'search' ? 'active' : ''}`}>
+          <Icon name="search" size={16} /> <span>Search</span> <kbd>/</kbd>
         </a>
         <nav className="side-nav">
           {NAV.map((n) => (
@@ -109,7 +141,10 @@ export function App() {
           <span className="logo" aria-hidden="true">G</span>
           <span className="brand-text">GCSE Revision Hub</span>
         </a>
-        <a href={href('/setup')} className="icon-btn" aria-label="Settings"><Icon name="settings" /></a>
+        <span className="row">
+          <a href={href('/search')} className="icon-btn" aria-label="Search"><Icon name="search" /></a>
+          <a href={href('/setup')} className="icon-btn" aria-label="Settings"><Icon name="settings" /></a>
+        </span>
       </header>
 
       <main className="main">{page}</main>

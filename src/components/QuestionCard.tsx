@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { QItem, Topic } from '../content/types';
 import type { Confidence } from '../lib/engine';
-import { checkNumber, checkText, parseCloze } from '../lib/answer';
+import { checkNumber, checkSelect, checkText, parseCloze, parseSelect } from '../lib/answer';
 import { shuffle } from '../lib/util';
 import { Markdown } from './Markdown';
 import { StuckPanel } from './StuckPanel';
 import { ToolBar } from './Tools';
+import { SpeakButton } from './Speak';
 import { Icon } from './Icon';
 
 export interface QuestionResult {
@@ -42,6 +43,8 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
   const orderItems = useMemo(() => (item.type === 'order' ? shuffleNotSorted(item.items) : []), [item]);
   const matchRight = useMemo(() => (item.type === 'match' ? shuffle(item.pairs.map((p) => p[1])) : []), [item]);
   const cloze = useMemo(() => (item.type === 'cloze' ? parseCloze(item.text) : null), [item]);
+  const sortOrder = useMemo(() => (item.type === 'sort' ? shuffle(item.items.map((_, i) => i)) : []), [item]);
+  const tokens = useMemo(() => (item.type === 'select' ? parseSelect(item.text) : []), [item]);
 
   const [choice, setChoice] = useState<number | null>(null);
   const [multiSel, setMultiSel] = useState<Set<number>>(new Set());
@@ -50,6 +53,9 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
   const [seq, setSeq] = useState<string[]>(orderItems);
   const [matches, setMatches] = useState<Record<number, string>>({});
   const [blanks, setBlanks] = useState<string[]>(() => (cloze ? cloze.blanks.map(() => '') : []));
+  const [sorted, setSorted] = useState<Record<number, number>>({});
+  const [picked, setPicked] = useState<Set<number>>(new Set());
+  const [spotChoice, setSpotChoice] = useState<number | null>(null);
   const [conf, setConf] = useState<Confidence>('unsure');
   const [hints, setHints] = useState(0);
   const [stuckOpen, setStuckOpen] = useState(false);
@@ -68,6 +74,37 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
     window.addEventListener('tool-insert', onInsert);
     return () => window.removeEventListener('tool-insert', onInsert);
   }, [item, result]);
+
+  // keyboard shortcuts: 1-9 choose, Enter check / next, H hint
+  const keyRef = useRef<(e: KeyboardEvent) => void>(() => {});
+  keyRef.current = (e: KeyboardEvent) => {
+    const el = e.target as HTMLElement | null;
+    if (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'Enter') {
+      if (el && el.tagName === 'BUTTON') return;
+      e.preventDefault();
+      if (!answered && canCheck()) check();
+      else if (answered) onDone({ correct: result!.correct, conf, hints: overridden ? hints + 1 : hints });
+      return;
+    }
+    if (answered) return;
+    if (e.key === 'h' || e.key === 'H') { setStuckOpen(true); setHints((h) => h + 1); return; }
+    const n = Number(e.key);
+    if (!Number.isInteger(n) || n < 1) return;
+    if (item.type === 'mcq' && order[n - 1] !== undefined && !removed.has(order[n - 1])) setChoice(order[n - 1]);
+    if (item.type === 'multi' && order[n - 1] !== undefined) {
+      const i = order[n - 1];
+      setMultiSel((sl) => { const x = new Set(sl); if (x.has(i)) x.delete(i); else x.add(i); return x; });
+    }
+    if (item.type === 'tf' && n <= 2) setTfChoice(n === 1);
+    if (item.type === 'spot' && n <= item.steps.length) setSpotChoice(n - 1);
+  };
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => keyRef.current(e);
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, []);
 
   function eliminate() {
     if (item.type !== 'mcq') return;
@@ -89,6 +126,9 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       case 'order': return true;
       case 'match': return Object.keys(matches).length === item.pairs.length;
       case 'cloze': return blanks.every((b) => b.trim().length > 0);
+      case 'sort': return Object.keys(sorted).length === item.items.length;
+      case 'select': return picked.size > 0;
+      case 'spot': return spotChoice !== null;
     }
   }
 
@@ -118,16 +158,16 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         const r = checkNumber(text, item.answer, item.tol);
         correct = r.ok;
         close = r.close;
-        if (r.parsed === null) detail = "I couldn't read that as a number - try digits like 12.5, -3 or 3/4.";
-        else if (close) detail = 'Very close - check your rounding, units or place value (powers of 10).';
+        if (r.parsed === null) detail = "I couldn't read that as a number – try digits like 12.5, -3 or 3/4.";
+        else if (close) detail = 'Very close – check your rounding, units or place value (powers of 10).';
         break;
       }
       case 'text': {
         const r = checkText(text, item.accept);
         correct = r.ok;
         close = r.close;
-        if (r.ok && r.close) detail = 'Accepted - but check your spelling: in the exam spelling of key terms matters.';
-        else if (close) detail = 'Close! Check the spelling or the exact term.';
+        if (r.ok && r.close) detail = 'Accepted – but check your spelling: in the exam spelling of key terms matters.';
+        else if (close) detail = 'Close. Check the spelling or the exact term.';
         break;
       }
       case 'order':
@@ -144,6 +184,22 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         if (!correct) detail = `${res.filter(Boolean).length} of ${res.length} gaps correct.`;
         break;
       }
+      case 'sort': {
+        const ok = item.items.filter(([, g], i) => sorted[i] === g).length;
+        correct = ok === item.items.length;
+        if (!correct) detail = `${ok} of ${item.items.length} sorted correctly.`;
+        break;
+      }
+      case 'select': {
+        const r = checkSelect(tokens, picked);
+        correct = r.ok;
+        if (!correct) detail = `You found ${r.found} of ${r.total}${r.extra ? `, and picked ${r.extra} word${r.extra === 1 ? '' : 's'} that ${r.extra === 1 ? "isn't" : "aren't"} part of an answer` : ''}.`;
+        break;
+      }
+      case 'spot':
+        correct = spotChoice === item.wrong;
+        if (!correct) detail = spotChoice !== null ? `Line ${spotChoice + 1} is correct. The mistake is on line ${item.wrong + 1}.` : undefined;
+        break;
     }
     setResult({ correct, close, detail });
     onChecked?.({ correct, conf, hints });
@@ -151,7 +207,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
 
   function overrideCorrect() {
     setOverridden(true);
-    setResult((r) => (r ? { ...r, correct: true, detail: 'Marked correct by you - be honest, it only helps you!' } : r));
+    setResult((r) => (r ? { ...r, correct: true, detail: 'Marked correct by you. Only do this if it really means the same.' } : r));
     onChecked?.({ correct: true, conf, hints: hints + 1 });
   }
 
@@ -165,6 +221,9 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       case 'order': return item.items.map((s, i) => `${i + 1}. ${s}`).join('  ');
       case 'match': return item.pairs.map(([l, r]) => `${l} → ${r}`).join('; ');
       case 'cloze': return cloze!.blanks.map((b) => b[0]).join(', ');
+      case 'sort': return item.groups.map((g, gi) => `**${g}:** ${item.items.filter(([, x]) => x === gi).map(([t]) => t).join(', ')}`).join('  \n');
+      case 'select': return item.text.match(/\[\[([^\]]+)\]\]/g)?.map((t) => `"${t.slice(2, -2)}"`).join(', ') ?? '';
+      case 'spot': return `Line ${item.wrong + 1}${item.fix ? ` should be: ${item.fix}` : ''}`;
     }
   })();
 
@@ -181,11 +240,12 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
 
       <div className="q-tools">
         <ToolBar subjectId={item.subjectId} />
+        <SpeakButton text={[item.ctx ?? '', item.type === 'cloze' ? item.text.replace(/\{\{[^}]*\}\}/g, 'blank') : item.q, item.type === 'mcq' || item.type === 'multi' ? order.map((i, n) => `Option ${n + 1}: ${item.options[i]}`).join('. ') : ''].filter(Boolean).join('. ')} />
       </div>
 
       {item.ctx && (
         <details className="source" open>
-          <summary><Icon name="learn" size={16} /> Source - read this first</summary>
+          <summary><Icon name="learn" size={16} /> Source – read this first</summary>
           <div className="source-body"><Markdown text={item.ctx} /></div>
         </details>
       )}
@@ -224,7 +284,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
             const cls = answered ? (isAns ? 'opt right' : i === choice ? 'opt wrong' : 'opt dim') : gone ? 'opt removed' : choice === i ? 'opt sel' : 'opt';
             return (
               <button key={i} className={cls} disabled={answered || gone} aria-pressed={choice === i} onClick={() => setChoice(i)}>
-                <span className="opt-mark" aria-hidden="true">{answered && isAns ? <Icon name="check" size={16} /> : answered && i === choice ? <Icon name="close" size={16} /> : null}</span>
+                <span className="opt-key mono" aria-hidden="true">{answered && isAns ? <Icon name="check" size={14} /> : answered && i === choice ? <Icon name="close" size={14} /> : order.indexOf(i) + 1}</span>
                 <Markdown text={item.options[i]} inline />
               </button>
             );
@@ -318,6 +378,64 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         </div>
       )}
 
+      {item.type === 'sort' && (
+        <div className="sort">
+          {sortOrder.map((i) => {
+            const [label, g] = item.items[i];
+            const st = answered ? (sorted[i] === g ? 'ok' : 'bad') : '';
+            return (
+              <div key={i} className={`sort-row ${st}`}>
+                <span className="sort-item"><Markdown text={label} inline /></span>
+                <span className="seg sort-seg" role="radiogroup" aria-label={`Group for ${label}`}>
+                  {item.groups.map((name, gi) => (
+                    <button
+                      key={gi} role="radio" aria-checked={sorted[i] === gi} disabled={answered}
+                      className={`seg-btn ${sorted[i] === gi ? 'on' : ''} ${answered && gi === g ? 'should' : ''}`}
+                      onClick={() => setSorted((m) => ({ ...m, [i]: gi }))}
+                    >{name}</button>
+                  ))}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {item.type === 'select' && (
+        <div className="select-text" aria-label="Passage – tap words to select them">
+          {tokens.map((t, i) => {
+            if (!t.pickable) return <span key={i}>{t.text}</span>;
+            const on = picked.has(i);
+            const target = t.group >= 0;
+            const cls = answered ? (target ? (on ? 'tok hit' : 'tok missed') : on ? 'tok wrong' : 'tok') : on ? 'tok on' : 'tok';
+            const toggle = () => { if (!answered) setPicked((sl) => { const n = new Set(sl); if (n.has(i)) n.delete(i); else n.add(i); return n; }); };
+            return (
+              <span key={i} className={cls} role="button" tabIndex={answered ? -1 : 0} aria-pressed={on}
+                onClick={toggle} onKeyDown={(e) => { if (e.key === ' ') { e.preventDefault(); toggle(); } }}>
+                {t.text}
+              </span>
+            );
+          })}
+        </div>
+      )}
+
+      {item.type === 'spot' && (
+        <ol className="spot-list">
+          {item.steps.map((st, i) => {
+            const cls = answered ? (i === item.wrong ? 'spot right' : i === spotChoice ? 'spot wrong' : 'spot') : spotChoice === i ? 'spot sel' : 'spot';
+            return (
+              <li key={i}>
+                <button className={cls} disabled={answered} aria-pressed={spotChoice === i} onClick={() => setSpotChoice(i)}>
+                  <span className="spot-n mono">{i + 1}</span>
+                  <span><Markdown text={st} inline /></span>
+                </button>
+                {answered && i === item.wrong && item.fix && <div className="spot-fix small"><strong>Correct line:</strong> <Markdown text={item.fix} inline /></div>}
+              </li>
+            );
+          })}
+        </ol>
+      )}
+
       {/* ---------- actions ---------- */}
       {!answered && (
         <div className="q-actions">
@@ -346,9 +464,9 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         <div className={`feedback ${result!.correct ? 'good' : 'bad'}`} aria-live="polite">
           <div className="fb-head">
             {result!.correct ? (
-              <strong>{hints > 0 ? 'Correct - with a little help.' : conf === 'guess' ? 'Correct - lucky guess? It will come back soon to make sure.' : 'Correct!'}</strong>
+              <strong>{hints > 0 ? 'Correct, with help.' : conf === 'guess' ? 'Correct. You said you were guessing, so it will come back soon.' : 'Correct.'}</strong>
             ) : (
-              <strong>{conf === 'sure' ? 'Not quite - and you were sure. That makes this a high-value fix!' : 'Not quite.'}</strong>
+              <strong>{conf === 'sure' ? 'Not quite – and you were sure. Mistakes you were confident about are the most useful ones to fix.' : 'Not quite.'}</strong>
             )}
           </div>
           {result!.detail && <p className="fb-detail">{result!.detail}</p>}
@@ -358,12 +476,12 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
               <Markdown text={correctAnswerText ?? ''} inline />
             </p>
           )}
-          {'steps' in item && item.steps && item.steps.length > 0 && !item.generated && (
+          {(item.type === 'num' || item.type === 'text') && item.steps && item.steps.length > 0 && !item.generated && (
             <ol className="steps">{item.steps.map((s, i) => <li key={i}><Markdown text={s} inline /></li>)}</ol>
           )}
           <div className="fb-why"><Markdown text={item.why} /></div>
           {!result!.correct && (item.type === 'text' || item.type === 'cloze') && !overridden && (
-            <button className="btn link small" onClick={overrideCorrect}>My answer means the same - mark it correct</button>
+            <button className="btn link small" onClick={overrideCorrect}>My answer means the same – mark it correct</button>
           )}
           {!result!.correct && (
             <p className="muted small">Added to your <strong>Fix-it list</strong>. You'll see it again shortly, then in a few days, to lock it in.</p>

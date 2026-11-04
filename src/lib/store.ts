@@ -21,6 +21,11 @@ export interface Profile {
   onboarded: boolean;
   theme: 'auto' | 'light' | 'dark';
   showAllOptions: boolean;
+  /** daily study reminder */
+  reminder?: { on: boolean; time: string };
+  /** reading comfort */
+  textSize?: 'normal' | 'large' | 'xlarge';
+  readable?: boolean;
 }
 
 export interface MistakeEntry {
@@ -54,6 +59,10 @@ export interface Progress {
   essays: Record<string, { text: string; at: number; score?: number; max?: number }>;
   notes: Record<string, string>; // personal notes per topic
   plan?: { createdAt: number; weeks: PlanWeek[] };
+  /** confidence calibration: [answered, correct] per confidence level */
+  calib?: Partial<Record<Confidence, [number, number]>>;
+  /** best sprint scores by subject id ('all' for mixed) */
+  sprints?: Record<string, number>;
 }
 
 export interface PlanWeek {
@@ -192,6 +201,10 @@ export function recordAnswer(r: AnswerRecord) {
     const day = today(p);
     day.q += 1;
     if (r.correct) day.c += 1;
+    if (r.conf && r.hints === 0) {
+      const prev = p.calib?.[r.conf] ?? [0, 0];
+      p.calib = { ...p.calib, [r.conf]: [prev[0] + 1, prev[1] + (r.correct ? 1 : 0)] };
+    }
     if (!r.correct) {
       const prev = p.mistakes[r.id];
       p.mistakes[r.id] = {
@@ -314,4 +327,13 @@ export function streak(p: Progress): number {
     d.setDate(d.getDate() - 1);
   }
   return n;
+}
+
+export function recordSprint(key: string, score: number): boolean {
+  let best = false;
+  mutate((p) => {
+    const prev = p.sprints?.[key] ?? 0;
+    if (score > prev) { best = prev > 0; p.sprints = { ...p.sprints, [key]: score }; }
+  });
+  return best;
 }

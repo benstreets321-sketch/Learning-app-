@@ -190,7 +190,7 @@ export function PeriodicTable() {
             <dt>Group, period</dt><dd>{sel.group === 18 ? '0' : sel.group <= 2 ? sel.group : sel.group >= 13 ? sel.group - 10 : 'transition metal'}, {sel.period}</dd>
             {electronShells(sel.z) && <><dt>Electron arrangement</dt><dd>{electronShells(sel.z)}</dd></>}
           </dl>
-          <p className="muted small">Key: top number = relative atomic mass, bottom number = atomic (proton) number - the same layout as the exam data sheet.</p>
+          <p className="muted small">Key: top number = relative atomic mass, bottom number = atomic (proton) number – the same layout as the exam data sheet.</p>
         </div>
       )}
     </div>
@@ -204,7 +204,7 @@ function Working() {
   useEffect(() => { workingText = t; }, [t]);
   return (
     <div>
-      <p className="muted small">Rough working - like the blank space on an exam paper. Writing each step down makes mistakes easier to spot.</p>
+      <p className="muted small">Rough working – like the blank space on an exam paper. Writing each step down makes mistakes easier to spot.</p>
       <textarea id="working-pad" className="working" rows={14} value={t} onChange={(e) => setT(e.target.value)} placeholder={'1. Write the formula\n2. List what you know (with units)\n3. Substitute\n4. Rearrange and calculate'} />
       <button className="btn small ghost" onClick={() => setT('')}>Clear</button>
     </div>

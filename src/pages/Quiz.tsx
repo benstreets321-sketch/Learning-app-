@@ -40,11 +40,11 @@ function buildScope(query: URLSearchParams) {
     if (s) {
       const all = visibleTopics(s, profile);
       topicIds = all.map((t) => t.id);
-      title = `${s.name}${scope === 'mixed' ? ' - mixed review' : scope === 'weak' ? ' - weak spots' : ''}`;
+      title = `${s.name}${scope === 'mixed' ? ' – mixed review' : scope === 'weak' ? ' – weak spots' : ''}`;
       if (scope === 'weak') {
         const weak = all.filter((t) => ['weak', 'developing'].includes(level(progress.topics[t.id])));
         if (weak.length) topicIds = weak.map((t) => t.id);
-        else title += ' (none yet - practising everything)';
+        else title += ' (none yet – practising everything)';
       }
       if (scope === 'mixed') {
         const started = all.filter((t) => (progress.topics[t.id]?.n ?? 0) > 0);
@@ -177,14 +177,14 @@ export function QuizPage({ query }: { query: URLSearchParams }) {
 
   if (!current && !finished) {
     return (
-      <Empty title={setup.scope === 'mistakes' ? 'Nothing to fix - brilliant!' : 'No questions here yet'}>
+      <Empty title={setup.scope === 'mistakes' ? 'Nothing to fix' : 'No questions here yet'}>
         <p className="muted">{setup.scope === 'mistakes' ? 'Questions you get wrong will appear here so you can fix them.' : 'Try another topic or check your settings.'}</p>
         <a className="btn" href="#/">Home</a>
       </Empty>
     );
   }
 
-  if (finished) return <Summary title={setup.title} answers={answers} startMastery={startMastery.current} secs={(Date.now() - startedAt.current) / 1000} timed={timed} />;
+  if (finished) return <Summary title={setup.title} answers={answers} startMastery={startMastery.current} secs={(Date.now() - startedAt.current) / 1000} timed={timed} pre={query.get('pre') === '1'} />;
 
   const ref = current ? getTopic(current.topicId) : undefined;
   const mode = adaptTarget(answers.map((a) => a.correct)).mode;
@@ -200,11 +200,11 @@ export function QuizPage({ query }: { query: URLSearchParams }) {
         <span className="small mono">{answers.length + 1}/{total} · {correctSoFar} correct</span>
       </div>
       <ProgressBar value={answers.length / total} color={ref?.subject.color} />
-      {mode === 'stretch' && <div className="banner stretch">3 in a row - stepping up the challenge.</div>}
-      {mode === 'support' && !reteach && recentWrong < 4 && <div className="banner support">Let's ease off a little and rebuild - easier question next.</div>}
+      {mode === 'stretch' && <div className="banner stretch">Three in a row – the next one will be harder.</div>}
+      {mode === 'support' && !reteach && recentWrong < 4 && <div className="banner support">Two wrong – the next question will be a bit easier.</div>}
       {recentWrong >= 4 && !reteach && (
         <div className="banner care">
-          <strong>This one's tough right now - that's normal.</strong> Getting things wrong while practising is how memory gets stronger.
+          <strong>This one's tough right now – that's normal.</strong> Getting things wrong while practising is how memory gets stronger.
           {' '}You could <a href={href('/rescue', { topic: current?.topicId ?? '' })}>rebuild this topic step by step</a>, or take a 5-minute break and come back.
         </div>
       )}
@@ -259,13 +259,13 @@ function Reteach({ topicId, onContinue }: { topicId: string; onContinue: () => v
       )}
       <div className="row gap end">
         <a className="btn ghost" href={href(`/t/${topicId}`)}>Open full lesson</a>
-        <button className="btn primary" onClick={onContinue}>Got it - carry on</button>
+        <button className="btn primary" onClick={onContinue}>Got it – carry on</button>
       </div>
     </div>
   );
 }
 
-function Summary({ title, answers, startMastery, secs, timed }: { title: string; answers: Answered[]; startMastery: Record<string, number>; secs: number; timed: boolean }) {
+function Summary({ title, answers, startMastery, secs, timed, pre }: { title: string; answers: Answered[]; startMastery: Record<string, number>; secs: number; timed: boolean; pre: boolean }) {
   const progress = getProgress();
   const right = answers.filter((a) => a.correct).length;
   const pct = answers.length ? right / answers.length : 0;
@@ -277,7 +277,8 @@ function Summary({ title, answers, startMastery, secs, timed }: { title: string;
 
   return (
     <div className="page narrow">
-      <h1>{pct >= 0.8 ? 'Brilliant work!' : pct >= 0.5 ? 'Solid session' : 'Good effort - this is where learning happens'}</h1>
+      <p className="eyebrow">Session complete</p>
+      <h1><span className="mono">{right}/{answers.length}</span> correct</h1>
       <p className="muted">{title}</p>
       <div className="stat-row">
         <div className="stat"><span className="stat-n">{right}/{answers.length}</span><span className="muted small">correct</span></div>
@@ -288,7 +289,7 @@ function Summary({ title, answers, startMastery, secs, timed }: { title: string;
       {confidentWrong > 0 && (
         <div className="callout callout-warn">
           <div className="callout-title">{confidentWrong} confident mistake{confidentWrong > 1 ? 's' : ''}</div>
-          <p>You were sure but wrong - these are misconceptions, and fixing them gives the biggest gains. They're top of your Fix-it list.</p>
+          <p>You were sure but wrong – these are misconceptions, and fixing them gives the biggest gains. They're top of your Fix-it list.</p>
         </div>
       )}
       {luckyGuesses > 0 && <p className="muted small">{luckyGuesses} correct answer{luckyGuesses > 1 ? 's were guesses' : ' was a guess'} - they'll come back sooner to check you really know them.</p>}
@@ -324,6 +325,13 @@ function Summary({ title, answers, startMastery, secs, timed }: { title: string;
       )}
 
       <h3>What next?</h3>
+      {pre && first && (
+        <div className="callout callout-tip">
+          <div className="callout-title">Now read the lesson</div>
+          <p>Look out for the answers to the questions you just tried – that's what makes a pre-test work.</p>
+          <a className="btn primary small" href={href(`/t/${first.topic.id}`)}>Read {first.topic.title}</a>
+        </div>
+      )}
       <div className="row gap wrap">
         {pct < 0.5 && first && <a className="btn primary" href={href(`/t/${first.topic.id}`)}>Re-read the lesson</a>}
         {pct >= 0.8 && first?.topic.examQuestions?.length ? <a className="btn primary" href={href(`/t/${first.topic.id}`, { tab: 'exam' })}>Try an exam question</a> : null}

@@ -70,7 +70,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
           </div>
           <textarea className="essay" rows={eq.marks >= 12 ? 18 : eq.marks >= 6 ? 10 : 5} value={text} onChange={(e) => setText(e.target.value)} placeholder="Write your answer as you would in the exam. It saves automatically." />
           <div className="row gap end">
-            <button className="btn primary" disabled={!text.trim()} onClick={() => { setRunning(false); addStudyTime(secs); setPhase('mark'); }}>I'm done - mark it</button>
+            <button className="btn primary" disabled={!text.trim()} onClick={() => { setRunning(false); addStudyTime(secs); setPhase('mark'); }}>I'm done – mark it</button>
           </div>
         </>
       )}
@@ -84,7 +84,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
             </div>
             <div>
               <h3>Mark scheme</h3>
-              <p className="muted small">{levelScheme ? 'Read the level descriptors and tick every statement your answer genuinely meets. Be a strict examiner!' : 'Tick each point your answer clearly makes. Be strict - would an examiner give it?'}</p>
+              <p className="muted small">{levelScheme ? 'Read the level descriptors and tick every statement your answer genuinely meets. Mark it as strictly as an examiner would.' : 'Tick each point your answer clearly makes. Be strict – would an examiner give it?'}</p>
               {eq.markScheme.map((m, k) => (
                 <label key={k} className="tick">
                   <input type="checkbox" disabled={phase === 'saved'} checked={ticks.has(k)} onChange={() => { setScore(null); setTicks((s) => { const n = new Set(s); if (n.has(k)) n.delete(k); else n.add(k); return n; }); }} />
@@ -112,7 +112,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
           </div>
           {phase === 'saved' && (
             <div className="feedback good">
-              <p><strong>Next step:</strong> rewrite your weakest paragraph or point using the mark scheme and model - improving an answer teaches more than writing a new one.</p>
+              <p><strong>Next step:</strong> rewrite your weakest paragraph or point using the mark scheme and model – improving an answer teaches more than writing a new one.</p>
               <div className="row gap wrap">
                 <button className="btn" onClick={() => { setPhase('write'); setTicks(new Set()); setScore(null); setSecs(0); }}>Improve my answer</button>
                 {(ref.topic.examQuestions?.length ?? 0) > i + 1 && <a className="btn primary" href={href('/exam', { topic: topicId, i: i + 1 })}>Next exam question</a>}

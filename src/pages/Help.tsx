@@ -12,7 +12,7 @@ export function HelpPage() {
       <ol className="ladder">
         <li>
           <strong>On a question: press "I'm stuck"</strong>
-          <p>Hints one at a time, "remove two wrong answers", a step-by-step guided solution, another explanation, a worked example, common mistakes and the lesson - all without leaving the question. The calculator, periodic table, formula sheet and a working-out pad are in the toolbar above every question.</p>
+          <p>Hints one at a time, "remove two wrong answers", a step-by-step guided solution, another explanation, a worked example, common mistakes and the lesson – all without leaving the question. The calculator, periodic table, formula sheet and a working-out pad are in the toolbar above every question.</p>
         </li>
         <li>
           <strong>After a wrong answer: "Help me understand this" or "Try a similar, easier one"</strong>
@@ -34,13 +34,13 @@ export function HelpPage() {
           <li>Short and regular beats long and stressed: 30 minutes a day is enough to make real progress.</li>
           <li>Stop after a run of wrong answers. A 5-minute break (walk, water, fresh air) helps more than pushing on.</li>
           <li>Sleep is when memories get stored. Late-night cramming undoes daytime revision.</li>
-          <li>Talk to someone - a parent or carer, a friend, a teacher, your form tutor or the school's pastoral team.</li>
+          <li>Talk to someone – a parent or carer, a friend, a teacher, your form tutor or the school's pastoral team.</li>
         </ul>
         <h3>Free, confidential support (UK)</h3>
         <div className="support-grid">
-          <div className="support"><strong>Childline</strong><span>Call <span className="mono">0800 1111</span> or chat online at childline.org.uk - any time, for under-19s.</span></div>
+          <div className="support"><strong>Childline</strong><span>Call <span className="mono">0800 1111</span> or chat online at childline.org.uk – any time, for under-19s.</span></div>
           <div className="support"><strong>Shout</strong><span>Text <span className="mono">SHOUT</span> to <span className="mono">85258</span> - 24/7 text support.</span></div>
-          <div className="support"><strong>Young Minds</strong><span>youngminds.org.uk - advice on exam stress and wellbeing.</span></div>
+          <div className="support"><strong>Young Minds</strong><span>youngminds.org.uk – advice on exam stress and wellbeing.</span></div>
           <div className="support"><strong>In an emergency</strong><span>Call <span className="mono">999</span>, or <span className="mono">111</span> for urgent medical advice.</span></div>
         </div>
       </section>
@@ -55,7 +55,7 @@ export function HelpPage() {
           <summary>How does it adapt to me?</summary>
           <ul>
             <li>Each topic has an ability score that rises and falls with your answers (harder questions count for more).</li>
-            <li>Questions are chosen so you have about a 70% chance of success - the sweet spot for learning.</li>
+            <li>Questions are chosen so you have about a 70% chance of success – hard enough to stretch you, easy enough to keep going.</li>
             <li>Two wrong in a row on a topic: the app pauses to re-teach the key idea, then eases the difficulty.</li>
             <li>Three right in a row: it steps up the challenge.</li>
             <li>Each question and flashcard has its own review schedule (spaced repetition), and mastery slowly fades if you leave a topic alone.</li>
@@ -67,15 +67,15 @@ export function HelpPage() {
         </details>
         <details>
           <summary>How do exam questions work?</summary>
-          <p>Write your answer (with a timer if you like), then mark it yourself against the mark scheme and model answer. Then improve your weakest paragraph - that teaches more than writing a new answer.</p>
+          <p>Write your answer (with a timer if you like), then mark it yourself against the mark scheme and model answer. Then improve your weakest paragraph – that teaches more than writing a new answer.</p>
         </details>
         <details>
           <summary>Where is my data stored?</summary>
-          <p>Privately on this device - no account needed. Use <a href="#/setup">Settings</a> to back up your progress or move it to another device.</p>
+          <p>Privately on this device – no account needed. Use <a href="#/setup">Settings</a> to back up your progress or move it to another device.</p>
         </details>
         <details>
           <summary>Can it predict what will come up?</summary>
-          <p>No one can - exam boards never reveal it, and any topic on the specification can be examined. The app shows what has appeared in past papers so you can be ready for everything.</p>
+          <p>No one can – exam boards never reveal it, and any topic on the specification can be examined. The app shows what has appeared in past papers so you can be ready for everything.</p>
         </details>
       </div>
 

@@ -34,7 +34,7 @@ export function Home() {
   const plan = [
     {
       key: 'cards', mins: Math.round(5 * scale), title: 'Warm up with flashcards',
-      sub: dueCards ? `${dueCards} card${dueCards === 1 ? '' : 's'} due for review` : 'Nothing due - a quick mixed set',
+      sub: dueCards ? `${dueCards} card${dueCards === 1 ? '' : 's'} due for review` : 'Nothing due – a quick mixed set',
       done: today.cards >= cardTarget || (dueCards === 0 && today.cards > 0), progress: Math.min(1, today.cards / cardTarget),
       count: `${Math.min(today.cards, cardTarget)}/${cardTarget}`,
       link: href('/cards', { scope: dueCards ? 'due' : 'mixed' }), icon: 'cards',
@@ -69,7 +69,7 @@ export function Home() {
           <p className="eyebrow">{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
           <h1>{profile.name ? `Hi ${profile.name}` : 'Welcome back'}</h1>
           <p className="muted">
-            {days > 0 ? <><span className="mono">{days}</span> days until your first GCSE exam ({profile.examYear})</> : 'Exam season - you have got this.'}
+            {days > 0 ? <><span className="mono">{days}</span> days until your first GCSE exam ({profile.examYear})</> : 'Exam season has started.'}
           </p>
         </div>
         <div className="head-stats">
@@ -78,11 +78,19 @@ export function Home() {
         </div>
       </header>
 
+      {st > 0 && today.q + today.cards === 0 && new Date().getHours() >= 17 && (
+        <div className="notice">
+          <Icon name="flame" size={18} />
+          <span>You haven't studied today yet. Ten minutes keeps your {st}-day streak going.</span>
+          <a className="btn small primary" href={href('/quiz', { scope: 'smart', n: 8 })}>Ten minutes now</a>
+        </div>
+      )}
+
       <section className="today card">
         <div className="today-head">
           <div>
             <h2>Today's {goal} minutes</h2>
-            <p className="muted small">{doneCount === 3 ? 'All done - brilliant. Anything extra is a bonus.' : 'Three short blocks. Do them in order - each one makes the next more effective.'}</p>
+            <p className="muted small">{doneCount === 3 ? 'Done for today. Anything extra is a bonus.' : 'Three short blocks. Do them in order – each one makes the next more effective.'}</p>
           </div>
           <Ring value={mins / goal} label={`${Math.min(100, Math.round((mins / goal) * 100))}%`} size={64} />
         </div>
@@ -106,12 +114,20 @@ export function Home() {
         </ol>
       </section>
 
-      <div className="split">
+      <div className="split three">
         <a className="card link-card" href={href('/rescue')}>
           <Icon name="life" size={22} />
           <span>
             <strong>Struggling with a topic?</strong>
             <span className="muted small block">A 10-minute rescue session rebuilds it from the basics.</span>
+          </span>
+          <Icon name="arrow" size={18} className="push" />
+        </a>
+        <a className="card link-card" href={href('/sprint')}>
+          <Icon name="clock" size={22} />
+          <span>
+            <strong>90-second sprint</strong>
+            <span className="muted small block">Quick-fire recall across your subjects.{progress.sprints?.all ? ` Best: ${progress.sprints.all}.` : ''}</span>
           </span>
           <Icon name="arrow" size={18} className="push" />
         </a>

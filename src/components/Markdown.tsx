@@ -12,10 +12,19 @@ function preprocess(src: string): string {
   });
 }
 
+/** Typographic tidy-up of rendered text (not code): spaced hyphens become en dashes. */
+function typeset(html: string): string {
+  return html.replace(/(<code[\s\S]*?<\/code>|<pre[\s\S]*?<\/pre>)|(<[^>]+>)|([^<]+)/g, (m, code, tag, text) => {
+    if (code || tag) return m;
+    // leave maths like "7 - 3" or "x - 2" alone: only convert between words
+    return text.replace(/([A-Za-z.)'’”%;:]{2}) - (?=[A-Za-z"“(‘'£]{2})/g, '$1 – ');
+  });
+}
+
 export const Markdown = memo(function Markdown({ text, inline = false, className = '' }: { text: string; inline?: boolean; className?: string }) {
   const html = useMemo(() => {
-    if (inline) return marked.parseInline(text, { async: false }) as string;
-    return marked.parse(preprocess(text), { async: false }) as string;
+    if (inline) return typeset(marked.parseInline(text, { async: false }) as string);
+    return typeset(marked.parse(preprocess(text), { async: false }) as string);
   }, [text, inline]);
   if (inline) return <span className={`md-inline ${className}`} dangerouslySetInnerHTML={{ __html: html }} />;
   return <div className={`md ${className}`} dangerouslySetInnerHTML={{ __html: html }} />;

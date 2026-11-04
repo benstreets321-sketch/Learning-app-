@@ -138,13 +138,17 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
             <span className="cta-title">Adaptive quiz</span>
             <span className="cta-sub">Questions get harder as you get them right, and easier with support when you're stuck.</span>
           </a>
+          <a className="cta" href={href('/sprint', { subject: id })}>
+            <span className="cta-title">90-second sprint</span>
+            <span className="cta-sub">Quick-fire recall on topics you've met. Builds speed for the exam.</span>
+          </a>
           <a className="cta" href={href('/quiz', { scope: 'weak', id, n: 12 })}>
             <span className="cta-title">Target my weak spots</span>
             <span className="cta-sub">Only topics rated "Needs work" or "Developing".</span>
           </a>
           <a className="cta" href={href('/quiz', { scope: 'mixed', id, n: 20 })}>
             <span className="cta-title">Mixed review (interleaved)</span>
-            <span className="cta-sub">Jumps between topics - harder, but proven to make learning stick and mirrors the real exam.</span>
+            <span className="cta-sub">Jumps between topics – harder, but proven to make learning stick and mirrors the real exam.</span>
           </a>
           <a className="cta" href={href('/cards', { scope: 'subject', id })}>
             <span className="cta-title">Flashcards ({stats.dueCards} due)</span>
@@ -156,7 +160,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
           </a>
           <a className="cta" href={href('/quiz', { scope: 'subject', id, n: 10, timed: 1 })}>
             <span className="cta-title">Speed round</span>
-            <span className="cta-sub">10 questions against the clock - builds fast recall for the exam.</span>
+            <span className="cta-sub">10 questions against the clock – builds fast recall for the exam.</span>
           </a>
           {units.some((u) => u.topics.some((tp) => tp.generators?.length)) && (
             <a className="cta" href={href('/quiz', { scope: 'subject', id, n: 20, gen: 1 })}>
@@ -169,7 +173,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
 
       {t === 'exam' && (
         <div>
-          <p className="muted">Write a full answer, then mark it yourself against the mark scheme and a model answer. This is the closest thing to the real exam - do some every week.</p>
+          <p className="muted">Write a full answer, then mark it yourself against the mark scheme and a model answer. This is the closest thing to the real exam – do some every week.</p>
           {units.map((u) => {
             const qs = u.topics.flatMap((tp) => (tp.examQuestions ?? []).map((q, i) => ({ tp, q, i })));
             if (!qs.length) return null;
@@ -210,7 +214,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
 
       {t === 'revise' && (
         <div>
-          <p className="muted">Research-backed ways to revise <strong>{subject.name}</strong>. The app is built around these - but knowing why they work helps you use them.</p>
+          <p className="muted">Research-backed ways to revise <strong>{subject.name}</strong>. The app is built around these – but knowing why they work helps you use them.</p>
           {subject.strategies.map((s) => (
             <div key={s.title} className="strategy">
               <h3>{s.title}</h3>
@@ -231,7 +235,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
             </details>
           ))}
           {subject.commandWords?.length ? (
-            <Section title="Command words - what the question is really asking">
+            <Section title="Command words – what the question is really asking">
               <table className="table">
                 <tbody>{subject.commandWords.map((c) => <tr key={c.word}><th>{c.word}</th><td><Markdown text={c.meaning} inline /></td></tr>)}</tbody>
               </table>

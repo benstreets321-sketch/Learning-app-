@@ -1,7 +1,7 @@
 // Compact authoring helpers. Convention: for multiple choice the CORRECT option is written first;
 // the quiz UI shuffles options so position never gives the answer away.
 import type {
-  ClozeQ, ExamQuestion, Flashcard, MatchQ, McqQ, MultiQ, NumQ, OrderQ, TextQ, TfQ, Topic, Quote, Tier,
+  ClozeQ, SortQ, SelectQ, SpotQ, ExamQuestion, Flashcard, MatchQ, McqQ, MultiQ, NumQ, OrderQ, TextQ, TfQ, Topic, Quote, Tier,
 } from './types';
 
 interface Opts {
@@ -55,6 +55,20 @@ export const match = (q: string, pairs: [string, string][], why: string, o: Opts
 /** Fill the gaps: "The {{nucleus}} contains {{DNA|genetic material}}" */
 export const cloze = (text: string, why: string, o: Opts & { q?: string } = {}): ClozeQ => ({
   type: 'cloze', text, q: o.q, ...base(why, o),
+});
+
+/** Sort into groups: sort('q', { 'Group A': ['x', 'y'], 'Group B': ['z'] }, why) */
+export const sort = (q: string, groups: Record<string, string[]>, why: string, o: Opts = {}): SortQ => {
+  const names = Object.keys(groups);
+  return { type: 'sort', q, groups: names, items: names.flatMap((g, i) => groups[g].map((it) => [it, i] as [string, number])), ...base(why, o) };
+};
+
+/** Tap the words: targets in [[double brackets]] */
+export const pick = (q: string, text: string, why: string, o: Opts = {}): SelectQ => ({ type: 'select', q, text, ...base(why, o) });
+
+/** Spot the mistake: `wrong` is the 0-based index of the faulty step */
+export const spot = (q: string, steps: string[], wrong: number, fix: string, why: string, o: Opts = {}): SpotQ => ({
+  type: 'spot', q, steps, wrong, fix, ...base(why, o),
 });
 
 /** Flashcards from [front, back] pairs */
