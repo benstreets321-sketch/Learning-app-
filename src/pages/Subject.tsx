@@ -73,7 +73,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
                 <details key={p.name} className="paper">
                   <summary>
                     <strong>{p.name}</strong>
-                    <span className="muted small"> · {p.time} · {p.marks} marks · {p.weight}</span>
+                    <span className="muted small"> · {p.time} · {typeof p.marks === 'number' ? `${p.marks} marks` : p.marks} · {p.weight}</span>
                   </summary>
                   <p>{p.content}</p>
                   {p.sections && (

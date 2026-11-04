@@ -9,6 +9,7 @@ const TIERED = ['maths', 'biology', 'chemistry', 'physics', 'statistics'];
 export function Setup({ firstRun }: { firstRun: boolean }) {
   const profile = useProfile();
   const [msg, setMsg] = useState('');
+  const [confirmReset, setConfirmReset] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const toggleSubject = (id: string) => {
@@ -158,7 +159,19 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
               if (!f) return;
               setMsg(importData(await f.text()) ? 'Backup restored.' : 'That file is not a valid backup.');
             }} />
-            <button className="btn danger" onClick={() => { if (confirm('Delete ALL progress and settings on this device?')) { resetAll(); go('/setup'); } }}>Reset everything</button>
+            <button className="btn" onClick={async () => {
+              try { await navigator.clipboard.writeText(exportData()); setMsg('Backup copied - paste it somewhere safe (e.g. a note or email to yourself).'); }
+              catch { setMsg('Copying was blocked by your browser - use Export backup instead.'); }
+            }}>Copy backup</button>
+            {!confirmReset ? (
+              <button className="btn danger" onClick={() => setConfirmReset(true)}>Reset everything</button>
+            ) : (
+              <span className="row gap">
+                <span className="small">Delete ALL progress and settings on this device?</span>
+                <button className="btn danger" onClick={() => { resetAll(); setConfirmReset(false); go('/setup'); }}>Yes, delete</button>
+                <button className="btn ghost" onClick={() => setConfirmReset(false)}>Cancel</button>
+              </span>
+            )}
           </div>
           {msg && <p className="small">{msg}</p>}
         </Section>

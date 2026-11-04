@@ -6,7 +6,7 @@ import {
 import type { QItem } from '../content/types';
 import { adaptTarget, effectiveTheta, level, mastery, newTopicState, pCorrect, pickNext, type Confidence } from '../lib/engine';
 import { addStudyTime, getProfile, getProgress, recordAnswer } from '../lib/store';
-import { href } from '../lib/router';
+import { href, refresh } from '../lib/router';
 import { QuestionCard } from '../components/QuestionCard';
 import { Empty, ProgressBar } from '../components/ui';
 import { Markdown } from '../components/Markdown';
@@ -314,7 +314,7 @@ function Summary({ title, answers, startMastery, secs, timed }: { title: string;
       <div className="row gap wrap">
         {pct < 0.5 && first && <a className="btn primary" href={href(`/t/${first.topic.id}`)}>Re-read the lesson</a>}
         {pct >= 0.8 && first?.topic.examQuestions?.length ? <a className="btn primary" href={href(`/t/${first.topic.id}`, { tab: 'exam' })}>Try an exam question</a> : null}
-        <button className="btn" onClick={() => window.location.reload()}>Another round</button>
+        <button className="btn" onClick={() => refresh()}>Another round</button>
         {wrong.length > 0 && <a className="btn" href="#/fix">Fix-it list</a>}
         {first && <a className="btn ghost" href={href(`/s/${first.subject.id}`)}>Back to {first.subject.short}</a>}
       </div>

@@ -39,8 +39,8 @@ const subject: Subject = {
         { label: 'Topic area 4', detail: 'Distribution considerations - platforms, file formats and properties, compression' },
       ],
     },
-    { name: 'R094: Visual identity and digital graphics (NEA)', time: 'About 10-12 hours of supervised work', marks: 80, weight: '25%', content: 'Plan, create and review a visual identity and digital graphic for a client brief set by OCR.' },
-    { name: 'Optional NEA unit (R095-R099)', time: 'About 15-17 hours', marks: 80, weight: '35%', content: 'Plan, create and review a media product (e.g. interactive digital media) for a set brief.' },
+    { name: 'R094: Visual identity and digital graphics (NEA)', time: 'Supervised classroom hours (set by your centre)', marks: 'Set by OCR', weight: '25%', content: 'Plan, create and review a visual identity and digital graphic for a client brief set by OCR.' },
+    { name: 'Optional NEA unit (R095-R099)', time: 'Supervised classroom hours (set by your centre)', marks: 'Set by OCR', weight: '35%', content: 'Plan, create and review a media product (e.g. interactive digital media) for a set brief.' },
   ],
   commandWords: [
     { word: 'Identify / State', meaning: 'Give a short fact or example - 1 mark each.' },

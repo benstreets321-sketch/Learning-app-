@@ -1,4 +1,7 @@
-// Minimal hash router: works on GitHub Pages and from a single HTML file with no server config.
+// Minimal router.
+// - Normal builds use the URL hash (#/s/maths) so pages can be bookmarked; works on GitHub Pages with no server config.
+// - The single-file preview build (`vite build --mode single`) keeps the route in memory, because some embedded
+//   viewers only allow plain #name hashes. Links are still written as href="#/..." and are intercepted.
 import { useSyncExternalStore } from 'react';
 
 export interface Route {
@@ -7,19 +10,38 @@ export interface Route {
   raw: string;
 }
 
-function parse(): Route {
-  const raw = window.location.hash.replace(/^#/, '') || '/';
-  const [p, q = ''] = raw.split('?');
-  return { path: p.split('/').filter(Boolean).map(decodeURIComponent), query: new URLSearchParams(q), raw };
+const MEMORY = import.meta.env.MODE === 'single';
+
+function parse(raw: string): Route {
+  const clean = raw.replace(/^#/, '') || '/';
+  const [p, q = ''] = clean.split('?');
+  return { path: p.split('/').filter(Boolean).map(decodeURIComponent), query: new URLSearchParams(q), raw: clean };
 }
 
-let current = parse();
+let current = parse(MEMORY ? '/' : window.location.hash);
 const listeners = new Set<() => void>();
-window.addEventListener('hashchange', () => {
-  current = parse();
-  listeners.forEach((l) => l());
-  window.scrollTo(0, 0);
-});
+const emit = () => listeners.forEach((l) => l());
+
+function setRoute(raw: string) {
+  current = parse(raw);
+  emit();
+  try { window.scrollTo(0, 0); } catch { /* ignore */ }
+}
+
+if (MEMORY) {
+  // Intercept in-app links so the outer page URL is never touched
+  document.addEventListener('click', (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = (e.target as HTMLElement | null)?.closest?.('a');
+    const h = a?.getAttribute('href');
+    if (h && h.startsWith('#/')) {
+      e.preventDefault();
+      setRoute(h);
+    }
+  });
+} else {
+  window.addEventListener('hashchange', () => setRoute(window.location.hash));
+}
 
 export function useRoute(): Route {
   return useSyncExternalStore(
@@ -42,10 +64,22 @@ export function href(path: string, query?: Record<string, string | number | unde
 }
 
 export function go(path: string, query?: Record<string, string | number | undefined>) {
-  window.location.hash = href(path, query).slice(1);
+  const target = href(path, query);
+  if (MEMORY) setRoute(target);
+  else window.location.hash = target.slice(1);
+}
+
+/** Re-mount the current page (e.g. "another round") without reloading the document */
+export function refresh() {
+  const q = new URLSearchParams(current.query);
+  q.set('_', String(Date.now()));
+  const path = '/' + current.path.map(encodeURIComponent).join('/');
+  const target = `#${path}?${q.toString()}`;
+  if (MEMORY) setRoute(target);
+  else window.location.hash = target.slice(1);
 }
 
 export function back() {
-  if (window.history.length > 1) window.history.back();
+  if (!MEMORY && window.history.length > 1) window.history.back();
   else go('/');
 }
