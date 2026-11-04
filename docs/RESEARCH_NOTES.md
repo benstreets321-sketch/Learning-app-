@@ -61,3 +61,12 @@ Unseen: 2017 Autumn/Today (seasons); 2018 On Aging (growing old); 2019 Richest P
 ## Creative iMedia (OCR J834)
 - R093 exam (1h30, 70 marks, 40%): TA1 media industry; TA2 factors influencing product design; TA3 pre-production planning;
   TA4 distribution considerations. R094 Visual identity & digital graphics (NEA, 25%). Optional NEA (35%): R095–R099 (R097 interactive digital media).
+
+## GCSE Maths formulae sheet (2027; same as 2026; continues 2028+)
+Foundation & Higher: trapezium area, prism volume, circle C & A, Pythagoras, right-angled trig ratios,
+compound interest P(1 + r/100)^n, P(A or B) = P(A) + P(B) - P(A and B).
+Higher adds: quadratic formula, sine rule, cosine rule, 1/2 ab sin C, P(A and B) = P(A given B) P(B).
+NOT given (must learn): rectangle/triangle/parallelogram areas, cuboid/cylinder volume, arc & sector, angle facts,
+similarity k, k^2, k^3, exact trig values, circle theorems, y = mx + c & perpendicular gradients, x^2 + y^2 = r^2,
+index laws, difference of two squares, speed/density/pressure, % change, proportion, independent events, histograms.
+(Sources: Mathinar 2027 sheet article; Cognito Sept 2026 article; AQA news 1 Sep 2026.)
