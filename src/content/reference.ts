@@ -132,4 +132,100 @@ K > Na > Li > Ca > Mg > **(C)** > Zn > Fe > **(H)** > Cu > Ag > Au
 ## Salt rules
 acid + metal → salt + hydrogen · acid + base → salt + water · acid + carbonate → salt + water + CO₂
 `,
+  business: `
+Formulas are **not** given in the exam - learn them.
+
+| Measure | Formula |
+|---|---|
+| Revenue | selling price × quantity sold |
+| Total costs | fixed costs + variable costs |
+| Variable costs | variable cost per unit × output |
+| Profit / loss | total revenue − total costs |
+| Gross profit | revenue − cost of sales |
+| Net (operating) profit | gross profit − other operating expenses |
+| Contribution per unit | selling price − variable cost per unit |
+| Break-even output | fixed costs ÷ contribution per unit |
+| Margin of safety | actual sales − break-even sales |
+| Net cash flow | cash inflows − cash outflows |
+| Closing balance | opening balance + net cash flow |
+| Gross profit margin | gross profit ÷ revenue × 100 |
+| Net profit margin | net profit ÷ revenue × 100 |
+| Average rate of return | average annual profit ÷ cost of investment × 100 |
+| Interest (%) on a loan | (total repayment − borrowed) ÷ borrowed × 100 |
+| Market share | firm's sales ÷ total market sales × 100 |
+| Percentage change | change ÷ original × 100 |
+| Average (unit) cost | total cost ÷ output |
+| Current ratio (BTEC) | current assets ÷ current liabilities |
+| Liquid capital / acid test (BTEC) | (current assets − inventory) ÷ current liabilities |
+
+## Must-know models
+4Ps (product, price, promotion, place) · product life cycle · Boston matrix · SMART objectives · PEST and SWOT (BTEC) · job/batch/flow production · JIT vs JIC
+`,
+  statistics: `
+## Averages and spread
+| | |
+|---|---|
+| Mean | Σx ÷ n · from a table Σfx ÷ Σf · grouped: use midpoints |
+| Median position | (n + 1) ÷ 2 |
+| Quartile positions (listed data) | LQ (n + 1) ÷ 4 · UQ 3(n + 1) ÷ 4 |
+| IQR | UQ − LQ |
+| Standard deviation | σ = √(Σx²/n − x̄²) or √(Σfx²/Σf − x̄²) |
+| Outliers | < Q1 − 1.5 × IQR or > Q3 + 1.5 × IQR; or mean ± 3σ |
+| Pearson's skewness | 3(mean − median) ÷ σ |
+| Weighted mean | Σwx ÷ Σw |
+
+## Diagrams
+Pie angle = f ÷ total × 360° · Frequency density = f ÷ class width · Cumulative frequency at upper class boundaries
+
+## Correlation and time series
+| | |
+|---|---|
+| Spearman's rank | rₛ = 1 − 6Σd² ÷ n(n² − 1) |
+| Regression line | y = a + bx (b = gradient; line passes through (x̄, ȳ)) |
+| Seasonal variation | actual − moving average (trend) |
+
+## Indices, rates and sampling
+| | |
+|---|---|
+| Index number | current ÷ base × 100 |
+| Crude rate | number ÷ population × 1000 |
+| Stratified sample | group size ÷ population × sample size |
+| Petersen estimate | N = Mn ÷ m |
+
+## Probability and distributions
+P(not A) = 1 − P(A) · expected frequency = nP · P(A|B) = P(A and B) ÷ P(B) · binomial P(X = r) = ⁿCᵣ pʳ(1 − p)ⁿ⁻ʳ · normal: 68% / 95% / 99.7% within 1 / 2 / 3 SD · z = (x − mean) ÷ SD
+`,
+  imedia: `
+## File size calculations
+| | |
+|---|---|
+| Bitmap image size (bits) | width (px) × height (px) × colour depth (bits) |
+| Audio size (bits) | sample rate (Hz) × bit depth × channels × seconds |
+| Bits → bytes | ÷ 8 · bytes → KB ÷ 1024 · KB → MB ÷ 1024 |
+| Number of colours | 2^colour depth (e.g. 24-bit = 16 777 216) |
+| Pixels for print | inches × DPI |
+| Frames in a video | frames per second × seconds |
+
+## File formats
+| Format | Type | Compression | Typical use |
+|---|---|---|---|
+| JPEG | Bitmap | Lossy | Web photos |
+| PNG | Bitmap | Lossless, transparency | Web graphics, logos |
+| GIF | Bitmap | Lossless, 256 colours, animation | Simple animations |
+| TIFF | Bitmap | Lossless | High-quality print |
+| PSD | Bitmap (layers) | - | Editing only |
+| SVG / AI / EPS | Vector | - | Logos, scalable graphics |
+| PDF | Document | - | Print-ready documents |
+| WAV / AIFF | Audio | Uncompressed | Editing, high quality |
+| MP3 / AAC | Audio | Lossy | Streaming, portable |
+| FLAC | Audio | Lossless | Archiving |
+| MP4 (H.264) | Video | Lossy | Web, most devices |
+| MOV / AVI / WMV | Video | Varies | Editing / platform-specific |
+
+## Key values
+Screen 72 PPI · Print 300 DPI · RGB = screen · CMYK = print · Full HD 1920 × 1080 · 16:9 aspect ratio · CD audio 44.1 kHz, 16-bit, stereo
+
+## Regulators and ratings
+BBFC (films: U, PG, 12A/12, 15, 18, R18) · PEGI (games: 3, 7, 12, 16, 18) · Ofcom (broadcast) · ASA (advertising) · IPSO (press)
+`,
 };

@@ -1,0 +1,87 @@
+# GCSE Revision Hub
+
+An adaptive revision app for students sitting GCSEs in **summer 2027 or 2028**, covering:
+
+| Subject | Mapped to |
+|---|---|
+| English Language | AQA 8700 |
+| English Literature | AQA 8702 (all current set texts, all three poetry clusters, unseen poetry) |
+| Maths | Edexcel / AQA / OCR (shared DfE content), Foundation and Higher |
+| Biology, Chemistry, Physics (triple science) | AQA 8461 / 8462 / 8463 |
+| Creative iMedia ("interactive media") | OCR Cambridge National J834 (R093 exam, R094, R097 and other NEA units) |
+| Business / Enterprise | GCSE Business (AQA 8132 / Edexcel 1BS0) and BTEC Tech Award in Enterprise |
+| History | Edexcel 1HI0 or AQA 8145 (most popular options) |
+| Statistics | Edexcel 1ST0 / AQA 8382 |
+
+It runs entirely in the browser - no account, no server. Progress is saved on the device (with export/import backups).
+
+## What it does
+
+- **Personalised to your exams**: choose your exam year, tiers, exam boards and your school's set texts/options. You only see what can come up in your exams.
+- **Lessons** for ~300 topics with must-know checklists, common misconceptions and "explain it another way".
+- **Adaptive quizzes**: a per-topic ability estimate (IRT/Elo style) picks questions you have about a 70% chance of getting right. Two misses in a row triggers a quick re-teach and easier questions; three in a row steps up the challenge.
+- **"I'm stuck" help on every question**: hints revealed one at a time, an alternative explanation, a worked example, key points, common mistakes, the full lesson and subject-specific "getting unstuck" strategies.
+- **Confidence ratings**: guesses come back sooner; confident mistakes go to the top of the Fix-it list (hypercorrection effect).
+- **Spaced repetition** (SM-2) for every question and flashcard; a **Fix-it list** that keeps mistakes until you get them right unaided.
+- **Unlimited practice**: 120+ procedural generators (maths, physics, chemistry, biology, statistics, business finance, iMedia file sizes) with full worked solutions.
+- **Exam-style questions** with mark schemes, level descriptors and model answers - write your answer, then self-mark.
+- **Past questions**: verified AQA English Literature questions 2017-2025 for every text and poetry cluster (to check readiness - not to "predict").
+- **Tools**: quote trainer (progressive deletion), essay planner, blurting with self-check, reference sheets (including exactly what is and isn't on the 2027/2028 formulae and equation sheets), timelines, required practicals, glossary, command words, focus timer.
+- **Revision planner** that interleaves subjects, prioritises weak/unstarted topics and schedules reviews after 1 week and 1 month.
+- **Learning strategies** explained (retrieval practice, spacing, interleaving, worked examples, dual coding, metacognition, sleep and focus).
+
+## Facts checked for 2027/2028 (November 2026)
+
+See [`docs/RESEARCH_NOTES.md`](docs/RESEARCH_NOTES.md). Highlights:
+- Current specifications continue for 2027 and 2028. The Curriculum and Assessment Review changes apply to *future* GCSEs (first teaching 2029/2030).
+- Maths formulae sheets and physics equation sheets are provided in 2027 and confirmed by Ofqual (May 2026) for 2028 onwards; from 2028, science questions won't simply ask you to copy an equation from the sheet.
+- AQA English Literature: *The History Boys*, *The Curious Incident* and *Never Let Me Go* had their last exam in 2024; *Princess & The Hustler*, *Leave Taking*, *My Name is Leon* and the *Worlds and Lives* cluster were first examined in 2025.
+- AQA papers from summer 2027 use a consistent tick-box format for multiple-choice questions and left-aligned sources.
+
+> **On "predictions"**: exam boards never publish what will come up and any part of a specification can be examined. The app shows past questions so students can make sure they're ready for anything.
+
+## Run it
+
+```bash
+npm install
+npm run dev          # local dev server
+npm test             # engine, generator and content-integrity tests
+npm run build        # production build in dist/ (for GitHub Pages or any static host)
+npm run build:single # one self-contained HTML file in dist-single/index.html
+```
+
+### Deploy to GitHub Pages
+The workflow in `.github/workflows/deploy.yml` tests, builds and deploys on every push to `main`. In the repository settings, set **Pages → Source** to **GitHub Actions**.
+
+## Project structure
+
+```
+src/
+  lib/            engine.ts (spaced repetition + adaptive ability), store.ts (localStorage), answer.ts (marking), router.ts
+  content/
+    types.ts      content model
+    dsl.ts        compact authoring helpers (mc, num, txt, cloze, ord, match, examQ...)
+    generators/   procedural question generators with worked solutions
+    subjects/     one folder per subject (units → topics)
+    registry.ts   indexes everything; derives quote and timeline drills automatically
+    reference.ts  reference sheets
+  components/     QuestionCard, StuckPanel, Markdown, UI bits
+  pages/          Home, Setup, Subject, Topic, Quiz, Flashcards, Exam, Fix-it, Progress, Planner, Strategies, Tools
+tests/            engine + generators + content integrity
+```
+
+### Adding content
+Topics are plain TypeScript objects. Multiple-choice options are written **correct answer first** - the app shuffles them. The content test (`npm test`) checks every question is well-formed (valid answers, no duplicate options, generators exist, etc.).
+
+```ts
+topic({
+  id: 'bio-example', title: 'Example', summary: '...', notes: `## Markdown lesson...`,
+  keyPoints: ['...'],
+  flashcards: cards([['front', 'back']]),
+  questions: [mc('Question?', ['Correct', 'Wrong 1', 'Wrong 2'], 'Why the answer is right', { d: 2, h: ['hint'] })],
+  generators: ['p-ke'],
+});
+```
+
+## Copyright
+Practice sources in English Language are original texts written for the app. Quotations from set texts are short extracts for study and criticism; modern poems are not reproduced - students should use their printed anthology.
