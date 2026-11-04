@@ -4,6 +4,7 @@ import { recordExam, saveDraft, getProgress, addStudyTime } from '../lib/store';
 import { href } from '../lib/router';
 import { Markdown } from '../components/Markdown';
 import { Empty } from '../components/ui';
+import { ToolBar } from '../components/Tools';
 
 export function ExamPage({ query }: { query: URLSearchParams }) {
   const topicId = query.get('topic') ?? '';
@@ -41,11 +42,12 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
   return (
     <div className="page narrow session" style={{ ['--subj' as string]: ref.subject.color }}>
       <div className="session-head">
-        <a className="small" href={href(`/t/${topicId}`, { tab: 'exam' })}>✕ Close</a>
+        <a className="small" href={href(`/t/${topicId}`, { tab: 'exam' })}>Close</a>
         <span className="small">{ref.subject.short} · {ref.topic.title}</span>
         <span className="small">{eq.marks} marks</span>
       </div>
 
+      <div className="q-tools"><ToolBar subjectId={ref.subject.id} /></div>
       <div className="exam-q-box">
         {eq.meta && <div className="muted small">{eq.meta}</div>}
         <Markdown text={eq.q} />

@@ -32,6 +32,8 @@ const P2_SOURCE_B = `> **Source B** - a letter to a newspaper, written in the st
 >
 > I put it to you, Sir, whether a nation which boasts so loudly of its wealth and its Christianity can permit such things to continue. Every yard of cloth that leaves those mills is woven, in part, from the stolen childhood of the poor.`;
 
+const P2_ALL = `${P2_SOURCE_A}\n\n${P2_SOURCE_B}`;
+
 export const skillsUnitLang: Unit = {
   id: 'el-skills', title: 'Core skills: methods, structure and accuracy', description: 'The toolkit you use in every question.',
   topics: [
@@ -79,9 +81,9 @@ Never just name a method. **Quote → identify the method → zoom in on a word 
         ['Foreshadowing', 'Hints at what will happen later.'], ['Pathetic fallacy', 'Weather reflecting mood.'],
       ]),
       questions: [
-        mc('"The wind pushed at her back, then pulled at her coat." This is mainly...', ['Personification', 'Simile', 'Onomatopoeia', 'Rhetorical question'], 'The wind is given human actions (pushing, pulling).', { d: 1 }),
+        mc('"The wind pushed at her back, then pulled at her coat." This is mainly...', ['Personification', 'Simile', 'Onomatopoeia', 'Rhetorical question'], 'The wind is given human actions (pushing, pulling).', { d: 1, ctx: P1_SOURCE }),
         mc('Which is a STRUCTURAL feature (Paper 1 Q3)?', ['A shift in focus from the sea to the lighthouse', 'The adjective "bruised"', 'A simile', 'Alliteration'], 'Structure is about the order and shape of the whole text.', { d: 2 }),
-        match('Match the method to the example.', [['Simile', '"like a heartbeat"'], ['Metaphor', '"a thin grey ribbon"'], ['Minor sentence', '"Steady. Certain."'], ['Onomatopoeia', '"hiss"']], 'All from the Paper 1 practice extract.', { d: 2 }),
+        match('Match the method to the example.', [['Simile', '"like a heartbeat"'], ['Metaphor', '"a thin grey ribbon"'], ['Minor sentence', '"Steady. Certain."'], ['Onomatopoeia', '"hiss"']], 'All from the Paper 1 practice extract.', { d: 2, ctx: P1_SOURCE }),
         tf('Naming lots of techniques is the best way to get high marks.', false, 'Examiners reward analysis of effects, not feature-spotting.', { d: 1 }),
       ],
     }),
@@ -167,7 +169,7 @@ ${P1_SOURCE}
       keyPoints: ['Only the lines given', 'Four separate true facts', 'Short quotes or paraphrase', 'No analysis needed', '~5 minutes'],
       flashcards: cards([['How many marks is P1 Q1?', '4 marks - list four things.'], ['What happens if you use information from outside the given lines?', 'It doesn\'t score.']]),
       questions: [
-        multi('From paragraphs 1-2 of the practice source, which are TRUE things about the sea?', ['Earlier it was lazy and glittering', 'A wave struck the base of the rocks', 'It sent up cold spray'], ['It was frozen', 'It was miles away from Mara'], 'Stick to what is explicitly stated in the lines.', { d: 1 }),
+        multi('From paragraphs 1-2 of the practice source, which are TRUE things about the sea?', ['Earlier it was lazy and glittering', 'A wave struck the base of the rocks', 'It sent up cold spray'], ['It was frozen', 'It was miles away from Mara'], 'Stick to what is explicitly stated in the lines.', { d: 1, ctx: P1_SOURCE }),
         tf('For Q1 you should analyse the writer\'s language.', false, 'Q1 is retrieval only (AO1).', { d: 1 }),
       ],
     }),
@@ -189,8 +191,8 @@ ${P1_SOURCE}
       keyPoints: ['Only use the lines given', 'Quote → method → zoom → effect', 'Comment on sentence forms', '2-3 developed paragraphs, ~10 minutes'],
       flashcards: cards([['Three things Q2 suggests you could write about?', 'Words and phrases; language features and techniques; sentence forms.'], ['How long on P1 Q2?', 'About 10 minutes.']]),
       questions: [
-        mc('In "the gulls... rose screaming into the bruised sky", what does "bruised" suggest?', ['The sky is dark, purple and hurt - the weather feels violent', 'The sky is bright and calm', 'The gulls are injured', 'It is morning'], 'Personification/metaphor: a bruise is dark and caused by violence.', { d: 2 }),
-        mc('What is the effect of the short sentence "She tasted salt."?', ['It slows the pace and immerses us in Mara\'s senses', 'It speeds up the action', 'It shows she is hungry', 'It describes the lighthouse'], 'Short sentences create focus and immediacy.', { d: 2 }),
+        mc('In "the gulls... rose screaming into the bruised sky", what does "bruised" suggest?', ['The sky is dark, purple and hurt - the weather feels violent', 'The sky is bright and calm', 'The gulls are injured', 'It is morning'], 'Personification/metaphor: a bruise is dark and caused by violence.', { d: 2, ctx: P1_SOURCE }),
+        mc('What is the effect of the short sentence "She tasted salt."?', ['It slows the pace and immerses us in Mara\'s senses', 'It speeds up the action', 'It shows she is hungry', 'It describes the lighthouse'], 'Short sentences create focus and immediacy.', { d: 2, ctx: P1_SOURCE }),
       ],
       examQuestions: [examQ(`${P1_SOURCE}\n\n**Q2.** Look in detail at **paragraph 4**. How does the writer use language to describe Mara\'s climb? You could include the writer\'s choice of: words and phrases; language features and techniques; sentence forms.`, 8, [
         ...P1_LEVELS_8,
@@ -223,8 +225,8 @@ ${P1_SOURCE}
       keyPoints: ['Whole text: beginning, shifts, end', 'Explain WHY each structural choice interests the reader', 'Use structural terms: shift, zoom, contrast, climax, resolution', 'Don\'t analyse single words - that\'s Q2'],
       flashcards: cards([['What three things does P1 Q3 suggest?', 'Focus at the beginning; how and why focus changes; other structural features.'], ['Give four structural features', 'Shift in focus, flashback, zooming in, repetition, one-line paragraph, cyclical ending, climax.']]),
       questions: [
-        ord('Put the focus of the practice extract in order.', ['The sea changing from calm to rough', 'The waves and spray hitting the rocks', 'The lighthouse and her father climbing the stairs', 'Mara climbing the slippery rocks', 'The lighthouse beam sweeping over her'], 'Tracking the shifts in focus is the key to Q3.', { d: 2 }),
-        mc('Why might the writer shift focus to her father counting the stairs in paragraph 3?', ['To slow the pace and introduce safety/connection, contrasting her danger', 'To describe the weather', 'To end the story', 'To show the lighthouse is broken'], 'A shift creates contrast and sets up the ending.', { d: 3 }),
+        ord('Put the focus of the practice extract in order.', ['The sea changing from calm to rough', 'The waves and spray hitting the rocks', 'The lighthouse and her father climbing the stairs', 'Mara climbing the slippery rocks', 'The lighthouse beam sweeping over her'], 'Tracking the shifts in focus is the key to Q3.', { d: 2, ctx: P1_SOURCE }),
+        mc('Why might the writer shift focus to her father counting the stairs in paragraph 3?', ['To slow the pace and introduce safety/connection, contrasting her danger', 'To describe the weather', 'To end the story', 'To show the lighthouse is broken'], 'A shift creates contrast and sets up the ending.', { d: 3, ctx: P1_SOURCE }),
       ],
       examQuestions: [examQ(`${P1_SOURCE}\n\n**Q3.** You now need to think about the **whole** of the source. How has the writer structured the text to interest you as a reader?`, 8, [
         ...P1_LEVELS_8,
@@ -322,8 +324,6 @@ Clichés ("it was all a dream"), too much dialogue, too much action and not enou
   ],
 };
 
-const P2_ALL = `${P2_SOURCE_A}\n\n${P2_SOURCE_B}`;
-
 export const paper2Unit: Unit = {
   id: 'el-p2', title: 'Paper 2: Writers\' viewpoints and perspectives', description: 'Two non-fiction sources (19th century + modern) + writing to present a viewpoint.',
   topics: [
@@ -347,8 +347,8 @@ ${P2_ALL}
       keyPoints: ['Q1: four true statements, only from the lines given', 'Q2: synthesise both sources', 'Q2: point + quote + inference for each source', 'Use comparative connectives', 'No language analysis in Q2'],
       flashcards: cards([['What does "synthesise" mean?', 'Combine information from two sources into one point.'], ['What does P2 Q2 test?', 'AO1 - summarising and inferring differences/similarities across two sources.'], ['Should you analyse language in P2 Q2?', 'No - focus on content and inferences.']]),
       questions: [
-        multi('From the practice Source A, which statements are TRUE?', ['The writer had to be home when the streetlights came on', 'The writer\'s brother needed stitches', 'A neighbour disapproved of the daughter walking alone', 'The writer suspects her children are rather lonely'], ['The writer\'s children play outside all day', 'The writer says the past was perfect'], 'Read precisely - the writer explicitly says she doesn\'t want to pretend the past was perfect.', { d: 2 }),
-        mc('Which is the best Q2 sentence?', ['Whereas the writer of Source A roamed freely, the children in Source B are trapped by long hours, suggesting childhood depended on wealth.', 'Source B uses a simile "like the ticking of some dreadful clock".', 'Both sources are about children.', 'Source A was written recently.'], 'It synthesises and infers; the simile example is language analysis (Q3).', { d: 2 }),
+        multi('From the practice Source A, which statements are TRUE?', ['The writer had to be home when the streetlights came on', 'The writer\'s brother needed stitches', 'A neighbour disapproved of the daughter walking alone', 'The writer suspects her children are rather lonely'], ['The writer\'s children play outside all day', 'The writer says the past was perfect'], 'Read precisely - the writer explicitly says she doesn\'t want to pretend the past was perfect.', { d: 2, ctx: P2_SOURCE_A }),
+        mc('Which is the best Q2 sentence?', ['Whereas the writer of Source A roamed freely, the children in Source B are trapped by long hours, suggesting childhood depended on wealth.', 'Source B uses a simile "like the ticking of some dreadful clock".', 'Both sources are about children.', 'Source A was written recently.'], 'It synthesises and infers; the simile example is language analysis (Q3).', { d: 2, ctx: P2_ALL }),
       ],
       examQuestions: [examQ(`${P2_ALL}\n\n**Q2.** You need to refer to Source A and Source B. Use details from **both** sources. Write a summary of the differences between the children\'s experiences.`, 8, [
         'Level 4 (7-8): perceptive inferences from both texts; judicious references; perceptive differences',
@@ -377,8 +377,8 @@ ${P2_SOURCE_B}
       keyPoints: ['One source only', '3 developed paragraphs, ~12-15 minutes', 'Quote → method → zoom → effect → writer\'s purpose', 'Read 19th-century texts for meaning first'],
       flashcards: cards([['How many marks is P2 Q3?', '12'], ['What does "prodigious" mean?', 'Enormous / remarkably great.'], ['Why do 19th-century writers often use emotive language?', 'To persuade readers or provoke them to act (e.g. reform).']]),
       questions: [
-        mc('In Source B, what does "stolen childhood of the poor" suggest?', ['Children\'s childhoods have been unfairly taken from them for profit', 'Poor children steal from the mill', 'Childhood is a material', 'Children are happy at work'], 'Metaphor of theft - a moral accusation against the mill owners and nation.', { d: 2 }),
-        mc('What is the effect of the rhetorical question in the final paragraph?', ['It challenges readers to feel responsible and demand change', 'It asks for information', 'It shows the writer is confused', 'It describes the machinery'], 'It appeals to national pride and Christian values to shame readers.', { d: 2 }),
+        mc('In Source B, what does "stolen childhood of the poor" suggest?', ['Children\'s childhoods have been unfairly taken from them for profit', 'Poor children steal from the mill', 'Childhood is a material', 'Children are happy at work'], 'Metaphor of theft - a moral accusation against the mill owners and nation.', { d: 2, ctx: P2_SOURCE_B }),
+        mc('What is the effect of the rhetorical question in the final paragraph?', ['It challenges readers to feel responsible and demand change', 'It asks for information', 'It shows the writer is confused', 'It describes the machinery'], 'It appeals to national pride and Christian values to shame readers.', { d: 2, ctx: P2_SOURCE_B }),
       ],
       examQuestions: [examQ(`${P2_SOURCE_B}\n\n**Q3.** You now need to refer **only** to Source B. How does the writer use language to describe the children and the mill?`, 12, [
         'Level 4 (10-12): perceptive, detailed analysis of language; judicious quotes; sophisticated terminology',
@@ -405,8 +405,8 @@ Both writers believe children are losing something precious, but whereas the mod
       keyPoints: ['Whole of both sources', 'Compare perspectives AND methods', 'Start with an overview', 'Comment on tone, structure, purpose', 'Comparative connectives in every paragraph'],
       flashcards: cards([['What does P2 Q4 test?', 'AO3 - comparing writers\' ideas and perspectives and how they are conveyed.'], ['Name three things to compare in Q4', 'Perspectives/attitudes, methods (language/structure), tone.']]),
       questions: [
-        mc('Which word best describes the tone of Source A?', ['Nostalgic and reflective', 'Furious and outraged', 'Neutral and scientific', 'Comic and silly'], 'The writer looks back fondly and wonders gently.', { d: 2 }),
-        mc('Which word best describes the tone of Source B?', ['Outraged and accusatory', 'Light-hearted', 'Nostalgic', 'Uncertain'], 'He condemns the nation and mill owners.', { d: 1 }),
+        mc('Which word best describes the tone of Source A?', ['Nostalgic and reflective', 'Furious and outraged', 'Neutral and scientific', 'Comic and silly'], 'The writer looks back fondly and wonders gently.', { d: 2, ctx: P2_SOURCE_A }),
+        mc('Which word best describes the tone of Source B?', ['Outraged and accusatory', 'Light-hearted', 'Nostalgic', 'Uncertain'], 'He condemns the nation and mill owners.', { d: 1, ctx: P2_SOURCE_B }),
       ],
       examQuestions: [examQ(`${P2_ALL}\n\n**Q4.** Refer to the **whole** of Source A and the **whole** of Source B. Compare how the writers convey their different perspectives on childhood.`, 16, [
         'Level 4 (13-16): perceptive comparison of perspectives; analysis of methods across both texts; judicious references',

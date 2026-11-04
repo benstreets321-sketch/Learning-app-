@@ -186,7 +186,7 @@ Also examinable: **Utterson**, **Lanyon**, **science**, **violence**, **reputati
           'Explores what violence suggests about human nature and repression',
           'Context: Darwin, degeneration, Victorian fears of crime',
         ], { meta: 'Paper 1 Section B · practice question', time: 45 }),
-        examQ('**Starting with this extract (Chapter 1, the door), explore how Stevenson uses settings to create a sense of mystery.**', 30, [
+        examQ('**Starting with this extract (Chapter 1, the door), explore how Stevenson uses settings to create a sense of mystery.**\n\n> **Find the extract:** open your copy of the text at the point named above and read about 30 lines. (In the real exam the extract is printed for you.)', 30, [
           ...LEVELS,
           'Analyses the door: "blistered and distained", "sinister block of building"',
           'Fog and Soho (Ch 4); the lab and cabinet (Ch 8)',

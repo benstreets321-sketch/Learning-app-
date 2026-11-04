@@ -9,9 +9,11 @@ interface Opts {
   d?: number;
   tier?: Tier;
   fb?: Record<number, string>;
+  /** source/data the question needs */
+  ctx?: string;
 }
 
-const base = (why: string, o: Opts = {}) => ({ why, hints: o.h, d: o.d ?? 2, tier: o.tier });
+const base = (why: string, o: Opts = {}) => ({ why, hints: o.h, d: o.d ?? 2, tier: o.tier, ctx: o.ctx });
 
 /** Multiple choice. options[0] is the correct answer. */
 export const mc = (q: string, options: string[], why: string, o: Opts = {}): McqQ => ({

@@ -86,6 +86,19 @@ describe('content integrity', () => {
     }
   });
 
+  it('questions that refer to a source actually include it', () => {
+    const needsSource = /(practice (source|extract)|\bSource [AB]\b|\bparagraphs? \d)/i;
+    for (const { topic } of allTopicRefs()) {
+      for (const q of topicQuestions(topic.id)) {
+        const text = 'q' in q && q.q ? q.q : q.type === 'cloze' ? q.text : '';
+        if (needsSource.test(text)) expect(q.ctx, `${topic.id} :: ${text}`).toBeTruthy();
+      }
+      for (const e of topic.examQuestions ?? []) {
+        if (/^\*\*Starting with this/.test(e.q)) expect(/Extract|Prologue|Find the extract|> /.test(e.q), `${topic.id} exam`).toBe(true);
+      }
+    }
+  });
+
   it('referenced generators and prerequisites exist', () => {
     for (const { topic } of allTopicRefs()) {
       for (const g of topic.generators ?? []) expect(GENERATORS[g], `${topic.id} -> generator ${g}`).toBeTruthy();

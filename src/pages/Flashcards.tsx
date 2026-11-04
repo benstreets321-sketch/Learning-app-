@@ -113,7 +113,7 @@ export function FlashcardsPage({ query }: { query: URLSearchParams }) {
   return (
     <div className="page narrow session">
       <div className="session-head">
-        <a className="small" href="#/">✕ End</a>
+        <a className="small" href="#/">End</a>
         <span className="small">{deck.title}</span>
         <span className="small">{queue.length} left</span>
       </div>

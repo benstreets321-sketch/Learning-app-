@@ -1,32 +1,86 @@
+import { href } from '../lib/router';
+import { Icon } from '../components/Icon';
+import { InstallCard } from '../components/Install';
+
 export function HelpPage() {
   return (
     <div className="page narrow">
-      <h1>How to use GCSE Revision Hub</h1>
-      <h3>1. Set it up</h3>
-      <p>In <a href="#/setup">Settings</a>, choose your exam year, subjects, tiers and your school's set texts/options. You'll only see content for your exams.</p>
-      <h3>2. Learn a topic</h3>
-      <p>Open a subject → Topics → a topic. Read the lesson, then press <strong>"quiz me"</strong> straight away. Try the worked examples and flashcards.</p>
-      <h3>3. Practise every day</h3>
-      <p>The <strong>Smart revision session</strong> on the home page picks the best questions for you: reviews that are due, weak topics and some new material.</p>
-      <h3>4. Use "I'm stuck"</h3>
-      <p>Every question has an <strong>I'm stuck</strong> button: hints one at a time, another explanation, a worked example, key points, common mistakes and the full lesson - without leaving the question.</p>
-      <h3>5. Fix your mistakes</h3>
-      <p>Wrong answers go on your <a href="#/fix">Fix-it list</a> and come back until you get them right without help.</p>
-      <h3>6. Do exam questions</h3>
-      <p>Each subject has exam-style questions with mark schemes and model answers. Write your answer, then mark it honestly.</p>
-      <h3>How the adapting works</h3>
-      <ul>
-        <li>Each topic has an ability score that rises and falls with your answers (harder questions count for more).</li>
-        <li>Questions are chosen so you have about a 70% chance of success - the sweet spot for learning.</li>
-        <li>Two wrong in a row on a topic → the app pauses to re-teach the key idea, then eases the difficulty.</li>
-        <li>Three right in a row → it steps up the challenge.</li>
-        <li>Each question and flashcard has its own review schedule (spaced repetition).</li>
-        <li>Mastery slowly decays if you leave a topic alone, so it reminds you to come back.</li>
-      </ul>
-      <h3>Your data</h3>
-      <p>Everything is stored privately on this device - no account needed. Use Settings → Export backup to move to another device.</p>
-      <h3>A note on "predictions"</h3>
-      <p>Exam boards never reveal what will come up, and any topic on the specification can be examined. This app shows what has appeared in past papers so you can make sure you're prepared for <em>everything</em> - never revise by guessing.</p>
+      <p className="eyebrow">Help and support</p>
+      <h1>When you're stuck</h1>
+      <p className="lead">Being stuck is a normal part of learning, not a sign you can't do it. Here is what to try, from the quickest fix to the biggest.</p>
+
+      <ol className="ladder">
+        <li>
+          <strong>On a question: press "I'm stuck"</strong>
+          <p>Hints one at a time, "remove two wrong answers", a step-by-step guided solution, another explanation, a worked example, common mistakes and the lesson - all without leaving the question. The calculator, periodic table, formula sheet and a working-out pad are in the toolbar above every question.</p>
+        </li>
+        <li>
+          <strong>After a wrong answer: "Help me understand this" or "Try a similar, easier one"</strong>
+          <p>See why the answer is right, then prove it to yourself on an easier version before going back up.</p>
+        </li>
+        <li>
+          <strong>A whole topic feels lost: run a rescue session</strong>
+          <p>About 10 minutes: back to the basics, a worked example revealed one step at a time, three easy questions, then a check-in. <a href={href('/rescue')}>Start a rescue session</a>.</p>
+        </li>
+        <li>
+          <strong>Still stuck: ask a person</strong>
+          <p>At the end of a rescue session you can copy a short note for your teacher saying exactly what you're finding hard. Teachers would much rather help now than find out after the exam.</p>
+        </li>
+      </ol>
+
+      <section className="section card pad">
+        <h2>If revision is getting on top of you</h2>
+        <ul className="plain">
+          <li>Short and regular beats long and stressed: 30 minutes a day is enough to make real progress.</li>
+          <li>Stop after a run of wrong answers. A 5-minute break (walk, water, fresh air) helps more than pushing on.</li>
+          <li>Sleep is when memories get stored. Late-night cramming undoes daytime revision.</li>
+          <li>Talk to someone - a parent or carer, a friend, a teacher, your form tutor or the school's pastoral team.</li>
+        </ul>
+        <h3>Free, confidential support (UK)</h3>
+        <div className="support-grid">
+          <div className="support"><strong>Childline</strong><span>Call <span className="mono">0800 1111</span> or chat online at childline.org.uk - any time, for under-19s.</span></div>
+          <div className="support"><strong>Shout</strong><span>Text <span className="mono">SHOUT</span> to <span className="mono">85258</span> - 24/7 text support.</span></div>
+          <div className="support"><strong>Young Minds</strong><span>youngminds.org.uk - advice on exam stress and wellbeing.</span></div>
+          <div className="support"><strong>In an emergency</strong><span>Call <span className="mono">999</span>, or <span className="mono">111</span> for urgent medical advice.</span></div>
+        </div>
+      </section>
+
+      <h2>How the app works</h2>
+      <div className="faq">
+        <details>
+          <summary>What should I do each day?</summary>
+          <p>Follow <strong>Today's plan</strong> on the home page: flashcards (5 min), smart practice (15 min), then fix your mistakes (10 min). It adjusts to the daily goal you set in Settings.</p>
+        </details>
+        <details>
+          <summary>How does it adapt to me?</summary>
+          <ul>
+            <li>Each topic has an ability score that rises and falls with your answers (harder questions count for more).</li>
+            <li>Questions are chosen so you have about a 70% chance of success - the sweet spot for learning.</li>
+            <li>Two wrong in a row on a topic: the app pauses to re-teach the key idea, then eases the difficulty.</li>
+            <li>Three right in a row: it steps up the challenge.</li>
+            <li>Each question and flashcard has its own review schedule (spaced repetition), and mastery slowly fades if you leave a topic alone.</li>
+          </ul>
+        </details>
+        <details>
+          <summary>What is the Fix-it list?</summary>
+          <p>Every question you get wrong goes on your <a href="#/fix">Fix-it list</a> and keeps coming back until you get it right without help.</p>
+        </details>
+        <details>
+          <summary>How do exam questions work?</summary>
+          <p>Write your answer (with a timer if you like), then mark it yourself against the mark scheme and model answer. Then improve your weakest paragraph - that teaches more than writing a new answer.</p>
+        </details>
+        <details>
+          <summary>Where is my data stored?</summary>
+          <p>Privately on this device - no account needed. Use <a href="#/setup">Settings</a> to back up your progress or move it to another device.</p>
+        </details>
+        <details>
+          <summary>Can it predict what will come up?</summary>
+          <p>No one can - exam boards never reveal it, and any topic on the specification can be examined. The app shows what has appeared in past papers so you can be ready for everything.</p>
+        </details>
+      </div>
+
+      <h2><Icon name="download" size={20} /> Install the app</h2>
+      <InstallCard always />
     </div>
   );
 }

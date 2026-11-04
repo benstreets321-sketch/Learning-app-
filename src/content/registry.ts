@@ -204,3 +204,39 @@ export const totalCounts = () => {
   }
   return { topics, questions, cards, exam, generators, generatorTypes: Object.keys(GENERATORS).length };
 };
+
+/** A similar but easier question on the same topic (used after a wrong answer and in rescue sessions) */
+export function easierQuestion(item: { id: string; topicId: string; d: number }, profile: Profile, exclude: Set<string> = new Set()): QItem | undefined {
+  const ref = topicMap.get(item.topicId);
+  if (!ref) return undefined;
+  const target = Math.max(1, item.d - 1);
+  const pool = topicQuestions(item.topicId).filter((q) => q.id !== item.id && !exclude.has(q.id) && tierOk(q, ref.subject.id, profile));
+  const easier = pool.filter((q) => q.d <= target);
+  if (ref.topic.generators?.length && (item.id.startsWith('gen:') || !easier.length)) {
+    const g = randomGenerated(item.topicId, target, profile);
+    if (g) return g;
+  }
+  const list = easier.length ? easier : pool.filter((q) => q.d <= item.d);
+  if (!list.length) return undefined;
+  list.sort((a, b) => a.d - b.d);
+  const lowest = list.filter((q) => q.d === list[0].d);
+  return lowest[Math.floor(Math.random() * lowest.length)];
+}
+
+/** Easiest questions for a topic, for "back to basics" practice */
+export function easyQuestions(topicId: string, profile: Profile, n = 3): QItem[] {
+  const ref = topicMap.get(topicId);
+  if (!ref) return [];
+  const out: QItem[] = [];
+  const pool = topicQuestions(topicId).filter((q) => tierOk(q, ref.subject.id, profile)).sort((a, b) => a.d - b.d || Math.random() - 0.5);
+  const gens = ref.topic.generators?.length ?? 0;
+  for (let i = 0; out.length < n && i < n * 3; i++) {
+    if (gens && (i % 2 === 1 || !pool.length)) {
+      const g = randomGenerated(topicId, 1, profile);
+      if (g) { out.push(g); continue; }
+    }
+    const q = pool.shift();
+    if (q) out.push(q);
+  }
+  return out;
+}

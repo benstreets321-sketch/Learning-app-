@@ -7,8 +7,8 @@ const subject: Subject = {
   id: 'biology',
   name: 'Biology',
   short: 'Biology',
-  icon: '🧬',
-  color: '#16a34a',
+  icon: 'Bi',
+  color: '#2E7D4F',
   qualification: 'AQA GCSE Biology (8461) - triple science',
   boardNote: 'Mapped to **AQA 8461** (separate Biology). Topics marked **Biology only** are not in Combined Science. Edexcel and OCR cover very similar content, but required practicals differ.',
   examNews: [

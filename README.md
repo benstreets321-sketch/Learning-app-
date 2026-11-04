@@ -20,7 +20,10 @@ It runs entirely in the browser - no account, no server. Progress is saved on th
 - **Personalised to your exams**: choose your exam year, tiers, exam boards and your school's set texts/options. You only see what can come up in your exams.
 - **Lessons** for ~300 topics with must-know checklists, common misconceptions and "explain it another way".
 - **Adaptive quizzes**: a per-topic ability estimate (IRT/Elo style) picks questions you have about a 70% chance of getting right. Two misses in a row triggers a quick re-teach and easier questions; three in a row steps up the challenge.
-- **"I'm stuck" help on every question**: hints revealed one at a time, an alternative explanation, a worked example, key points, common mistakes, the full lesson and subject-specific "getting unstuck" strategies.
+- **Today's 30 minutes**: the home page turns the daily goal into three blocks - flashcards (5 min), smart practice (15 min), fixing mistakes (10 min) - with ticks as each is done. Scales to whatever goal you set.
+- **In-question tools**: scientific calculator (degrees, powers, roots, standard form, Ans), the exam data-sheet periodic table (tap an element for protons/neutrons/electrons/shells), the subject's formula/equation sheet and a working-out pad - opened from a toolbar above every question and exam question. Questions that depend on a source text show it above the question.
+- **Help when stuck, from the smallest nudge up**: hints one at a time, *remove two wrong answers*, a step-by-step guided solution, another explanation, a worked example, key points, common mistakes and the lesson. After a wrong answer: *Help me understand this* and *Try a similar, easier one*. A run of wrong answers brings a supportive break prompt.
+- **Rescue sessions** (about 10 minutes) for a topic that feels lost: back to basics, a worked example revealed step by step, three easy questions, then a check-in with a ready-to-send note for your teacher. The Help page lists free support (Childline, Shout, Young Minds).
 - **Confidence ratings**: guesses come back sooner; confident mistakes go to the top of the Fix-it list (hypercorrection effect).
 - **Spaced repetition** (SM-2) for every question and flashcard; a **Fix-it list** that keeps mistakes until you get them right unaided.
 - **Unlimited practice**: 120+ procedural generators (maths, physics, chemistry, biology, statistics, business finance, iMedia file sizes) with full worked solutions.
@@ -52,6 +55,13 @@ npm run build:single # one self-contained HTML file in dist-single/index.html
 
 ### Deploy to GitHub Pages
 The workflow in `.github/workflows/deploy.yml` tests, builds and deploys on every push to `main`. In the repository settings, set **Pages → Source** to **GitHub Actions**.
+
+### Install it as an app
+`npm run build` produces an installable, offline-capable web app (web manifest, icons and a service worker). Once it is deployed (any HTTPS host, e.g. GitHub Pages):
+- **Chrome / Edge on a computer or Android**: an **Install** button appears on the home page (or use the install icon in the address bar / *Install app* in the menu).
+- **iPhone / iPad**: open it in Safari, tap **Share → Add to Home Screen**.
+
+It then opens full-screen from the home screen and works without internet. Progress stays on the device.
 
 ## Project structure
 

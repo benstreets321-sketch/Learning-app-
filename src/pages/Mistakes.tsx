@@ -30,7 +30,7 @@ export function MistakesPage() {
       {[...bySubject.entries()].map(([sid, ms]) => {
         const subject = getSubject(sid);
         return (
-          <Section key={sid} title={`${subject?.icon ?? ''} ${subject?.name ?? sid} (${ms.length})`} right={<a className="small" href={href('/quiz', { scope: 'mistakes', id: sid, n: 20 })}>Fix these →</a>}>
+          <Section key={sid} title={`${subject?.name ?? sid} (${ms.length})`} right={<a className="small" href={href('/quiz', { scope: 'mistakes', id: sid, n: 20 })}>Fix these →</a>}>
             <div className="mistake-list">
               {ms.map((m) => {
                 const q = m.snapshot ? null : getQuestion(m.id);

@@ -108,8 +108,8 @@ const subject: Subject = {
   id: 'history',
   name: 'History',
   short: 'History',
-  icon: '🏛️',
-  color: '#9a3412',
+  icon: 'Hi',
+  color: '#8C4A2F',
   qualification: 'GCSE History (Edexcel 1HI0 or AQA 8145)',
   boardNote: 'History options vary a lot between schools. This app covers the **most popular options**: **Edexcel** (Medicine & the Western Front, Cold War, Early Elizabethan England, Weimar & Nazi Germany) and **AQA** (Germany 1890-1945, Conflict & tension 1918-39, Health and the people, Elizabethan England). Pick your board in Settings. If your school studies different units, the exam technique guides still apply.',
   examNews: [

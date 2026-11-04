@@ -1,3 +1,4 @@
+import { SubjectMark } from '../components/SubjectMark';
 import { useRef, useState } from 'react';
 import { SUBJECTS } from '../content/registry';
 import { go } from '../lib/router';
@@ -84,7 +85,7 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
           {SUBJECTS.map((s) => (
             <label key={s.id} className={`pick ${profile.subjects.includes(s.id) ? 'on' : ''}`} style={{ ['--subj' as string]: s.color }}>
               <input type="checkbox" checked={profile.subjects.includes(s.id)} onChange={() => toggleSubject(s.id)} />
-              <span>{s.icon} {s.name}</span>
+              <span className="row gap"><SubjectMark subject={s} size="sm" /> {s.name}</span>
               <span className="muted small">{s.qualification}</span>
             </label>
           ))}

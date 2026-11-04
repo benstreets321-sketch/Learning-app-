@@ -5,8 +5,8 @@ const subject: Subject = {
   id: 'imedia',
   name: 'Creative iMedia (Interactive Media)',
   short: 'iMedia',
-  icon: '🎬',
-  color: '#db2777',
+  icon: 'iM',
+  color: '#A23B72',
   qualification: 'OCR Cambridge National in Creative iMedia (J834) - Level 1/2',
   boardNote: 'There is no GCSE called "Interactive Media" - most schools teach **OCR Cambridge National Creative iMedia (J834)**, a GCSE-equivalent Level 1/2 qualification. It includes an optional unit on **interactive digital media (R097)**. If your course is different, ask your teacher which units you take.',
   examNews: [

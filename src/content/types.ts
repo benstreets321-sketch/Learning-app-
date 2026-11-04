@@ -12,6 +12,8 @@ export interface Hinted {
   why: string;
   /** Higher-tier only (maths/science/statistics) */
   tier?: Tier;
+  /** Source text, data or table the question depends on (shown above the question) */
+  ctx?: string;
 }
 
 export interface McqQ extends Hinted {

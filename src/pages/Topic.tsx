@@ -40,6 +40,10 @@ export function TopicPage({ id, tab }: { id: string; tab: string }) {
           <div className="grow"><ProgressBar value={mastery(ts)} color={subject.color} /></div>
           {topic.tags?.map((tg) => <span key={tg} className="pill pill-info">{tg}</span>)}
         </div>
+        <div className="row gap wrap hero-actions">
+          <a className="btn primary small" href={href('/quiz', { scope: 'topic', id, n: 8 })}>Practise this topic</a>
+          <a className="btn small" href={href('/rescue', { topic: id })}>Struggling? Rescue session</a>
+        </div>
       </div>
 
       <Tabs<Tab> value={tabs.some((x) => x.id === t) ? t : 'learn'} onChange={(v) => go(`/t/${id}`, { tab: v })} tabs={tabs} />

@@ -16,8 +16,8 @@ const subject: Subject = {
   id: 'english-literature',
   name: 'English Literature',
   short: 'Eng Lit',
-  icon: '📚',
-  color: '#b4235a',
+  icon: 'Li',
+  color: '#6B4C8A',
   qualification: 'AQA GCSE English Literature (8702)',
   boardNote:
     'Mapped to **AQA 8702**, the most widely taken English Literature GCSE. Choose your school\'s set texts in **Settings** and only those appear. The essay skills, poetry and unseen sections work for any board (Edexcel, OCR and Eduqas also assess AO1-AO3 the same way).',

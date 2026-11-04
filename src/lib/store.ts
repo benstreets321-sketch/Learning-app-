@@ -38,6 +38,8 @@ export interface DayLog {
   q: number; // questions answered
   c: number; // correct
   cards: number;
+  /** mistakes fixed (answered right after being wrong) */
+  fixed?: number;
   secs: number;
 }
 
@@ -200,7 +202,7 @@ export function recordAnswer(r: AnswerRecord) {
       };
     } else if (p.mistakes[r.id]) {
       // fixed a mistake: remove once it has been answered right unaided
-      if (r.hints === 0 && r.conf !== 'guess') delete p.mistakes[r.id];
+      if (r.hints === 0 && r.conf !== 'guess') { delete p.mistakes[r.id]; day.fixed = (day.fixed ?? 0) + 1; }
     }
     p.xp += r.correct ? 10 + r.d * 2 - r.hints * 3 : 2;
   });

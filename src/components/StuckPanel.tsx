@@ -1,66 +1,124 @@
 import { useState } from 'react';
 import type { QItem, Topic } from '../content/types';
 import { getSubject } from '../content/registry';
+import { href } from '../lib/router';
 import { Markdown } from './Markdown';
+import { Icon } from './Icon';
 
-type Panel = 'none' | 'simpler' | 'example' | 'key' | 'mistakes' | 'lesson' | 'tips';
+type Panel = 'none' | 'guided' | 'simpler' | 'example' | 'key' | 'mistakes' | 'lesson' | 'tips';
+
+interface Props {
+  item: QItem;
+  topic?: Topic;
+  hintsUsed: number;
+  onHint: () => void;
+  /** MCQ only: remove two wrong options (counts as a hint) */
+  onEliminate?: () => void;
+  eliminated?: boolean;
+  /** 'before' = while answering; 'after' = help understanding a wrong answer (no credit cost) */
+  mode?: 'before' | 'after';
+}
 
 /**
- * Layered help for when a student is stuck. Hints are revealed one at a time (each one lowers the
- * credit slightly so mastery stays honest). Beyond hints: another explanation, a worked example,
- * key points, common mistakes, the full lesson and general "getting unstuck" strategies.
+ * Layered help for when a student is stuck, ordered from the lightest nudge to full re-teaching:
+ * hints one at a time -> remove two wrong answers -> guided solution -> another explanation ->
+ * worked example -> key points / common mistakes -> the lesson -> a rescue session.
+ * Help used before answering lowers the credit slightly so mastery stays honest.
  */
-export function StuckPanel({ item, topic, hintsUsed, onHint }: { item: QItem; topic?: Topic; hintsUsed: number; onHint: () => void }) {
+export function StuckPanel({ item, topic, hintsUsed, onHint, onEliminate, eliminated, mode = 'before' }: Props) {
   const [panel, setPanel] = useState<Panel>('none');
   const [exIndex, setExIndex] = useState(0);
+  const [guidedShown, setGuidedShown] = useState(1);
   const subject = getSubject(item.subjectId);
+  const before = mode === 'before';
 
   const hintList: string[] = [...(item.hints ?? [])];
-  if ('steps' in item && item.steps?.length) {
-    // For worked-solution questions the final hint shows the first step(s)
-    hintList.push(`First step: ${item.steps[0]}`);
-    if (item.steps.length > 2) hintList.push(`Next: ${item.steps[1]}`);
+  if (item.type === 'text') {
+    const a = item.accept[0];
+    hintList.push(`The answer starts with **${a[0].toUpperCase()}** and is ${a.includes(' ') ? `${a.split(/\s+/).length} words` : `${a.length} letters`} long.`);
   }
+  if (item.type === 'cloze') hintList.push('Read the sentence aloud with a gap-filler like "blank" - which key term from the lesson fits the meaning?');
   if (hintList.length === 0) hintList.push(genericHint(item));
 
+  const steps = 'steps' in item && item.steps?.length ? item.steps : [];
+  const guided = steps.length > 1 ? steps.slice(0, -1) : [];
   const shown = hintList.slice(0, hintsUsed);
   const examples = topic?.workedExamples ?? [];
   const ex = examples[exIndex % Math.max(1, examples.length)];
+  const canEliminate = before && item.type === 'mcq' && item.options.length >= 4 && !!onEliminate;
 
-  const btn = (id: Panel, label: string, show = true) =>
+  const open = (id: Panel, costs = false) => {
+    if (panel === id) return setPanel('none');
+    if (costs && before && id === 'guided' && hintsUsed < hintList.length + 1) onHint();
+    setPanel(id);
+  };
+  const btn = (id: Panel, label: string, icon: string, show = true, costs = false) =>
     show ? (
-      <button className={`chip ${panel === id ? 'on' : ''}`} onClick={() => setPanel(panel === id ? 'none' : id)}>{label}</button>
+      <button className={`chip ${panel === id ? 'on' : ''}`} onClick={() => open(id, costs)}>
+        <Icon name={icon} size={16} /> {label}
+      </button>
     ) : null;
 
   return (
-    <div className="stuck">
+    <div className={`stuck ${before ? '' : 'after'}`}>
       <div className="stuck-head">
-        <strong>Stuck? Work through these in order.</strong>
-        <span className="muted small">Using help is smart - it just counts as partial credit.</span>
+        <strong>{before ? 'Stuck? Start with the smallest nudge.' : 'Help me understand this'}</strong>
+        <span className="muted small">
+          {before ? 'Using help is a good strategy - it only reduces the credit a little, and the question comes back later.' : 'Work out why the answer is right - that is what stops the same mistake next time.'}
+        </span>
       </div>
 
-      <ol className="hint-list">
-        {shown.map((h, i) => (
-          <li key={i}><Markdown text={h} inline /></li>
-        ))}
-      </ol>
-      {hintsUsed < hintList.length ? (
-        <button className="btn small" onClick={onHint}>
-          {hintsUsed === 0 ? 'Give me a hint' : `Another hint (${hintList.length - hintsUsed} left)`}
-        </button>
-      ) : (
-        <p className="muted small">No more hints - try the options below, or have a go and learn from the answer.</p>
+      {before && (
+        <>
+          {shown.length > 0 && (
+            <ol className="hint-list">
+              {shown.map((h, i) => <li key={i}><Markdown text={h} inline /></li>)}
+            </ol>
+          )}
+          <div className="row gap wrap">
+            {hintsUsed < hintList.length ? (
+              <button className="btn small" onClick={onHint}>
+                <Icon name="bulb" size={16} /> {hintsUsed === 0 ? 'Give me a hint' : `Another hint (${hintList.length - hintsUsed} left)`}
+              </button>
+            ) : (
+              <span className="muted small">No more hints.</span>
+            )}
+            {canEliminate && (
+              <button className="btn small" disabled={eliminated} onClick={onEliminate}>
+                <Icon name="half" size={16} /> {eliminated ? 'Two wrong answers removed' : 'Remove two wrong answers'}
+              </button>
+            )}
+          </div>
+        </>
       )}
 
       <div className="chips wrap">
-        {btn('simpler', 'Explain it another way', !!topic?.simpler)}
-        {btn('example', 'Show a worked example', examples.length > 0)}
-        {btn('key', 'Key points', !!topic?.keyPoints.length)}
-        {btn('mistakes', 'Common mistakes', !!topic?.misconceptions?.length)}
-        {btn('lesson', 'Read the lesson', !!topic?.notes)}
-        {btn('tips', 'How to get unstuck', !!subject?.stuck.length)}
+        {btn('guided', before ? 'Guide me step by step' : 'Full worked solution', 'steps', steps.length > 0 && (before ? guided.length > 0 : !item.generated), true)}
+        {btn('simpler', 'Explain it another way', 'message', !!topic?.simpler)}
+        {btn('example', 'Show a worked example', 'pencil', examples.length > 0)}
+        {btn('key', 'Key points', 'target', !!topic?.keyPoints.length)}
+        {btn('mistakes', 'Common mistakes', 'fix', !!topic?.misconceptions?.length)}
+        {btn('lesson', 'Read the lesson', 'learn', !!topic?.notes)}
+        {btn('tips', 'How to get unstuck', 'life', !!subject?.stuck.length)}
       </div>
 
+      {panel === 'guided' && (
+        <div className="stuck-body">
+          {before ? (
+            <>
+              <p className="muted small">Follow the steps. The last step is yours - finish it and type your answer.</p>
+              <ol className="steps">{guided.slice(0, guidedShown).map((s, i) => <li key={i}><Markdown text={s} inline /></li>)}</ol>
+              {guidedShown < guided.length ? (
+                <button className="btn small" onClick={() => setGuidedShown((n) => n + 1)}>Show the next step</button>
+              ) : (
+                <p className="small"><strong>Now you finish it.</strong></p>
+              )}
+            </>
+          ) : (
+            <ol className="steps">{steps.map((s, i) => <li key={i}><Markdown text={s} inline /></li>)}</ol>
+          )}
+        </div>
+      )}
       {panel === 'simpler' && topic?.simpler && <div className="stuck-body"><Markdown text={topic.simpler} /></div>}
       {panel === 'example' && ex && (
         <div className="stuck-body">
@@ -95,6 +153,12 @@ export function StuckPanel({ item, topic, hintsUsed, onHint }: { item: QItem; to
           ))}
         </div>
       )}
+
+      {topic && (
+        <p className="stuck-foot small">
+          Still lost on <strong>{topic.title}</strong>? <a href={href('/rescue', { topic: topic.id })}>Start a rescue session</a> - we rebuild it from the basics, one small step at a time.
+        </p>
+      )}
     </div>
   );
 }
@@ -104,7 +168,7 @@ function genericHint(item: QItem): string {
     case 'mcq': return 'Cover the options and answer in your head first. Then rule out any option you know is wrong - which is left?';
     case 'multi': return 'Treat each option as its own true/false question.';
     case 'tf': return 'Look for the one word that could make the statement wrong (always, never, only, all...).';
-    case 'num': return 'Write down what you know, the formula that links it, then substitute. Check units first.';
+    case 'num': return 'Write down what you know, the formula that links it, then substitute. Check units first. The calculator and formula sheet are in the toolbar above the question.';
     case 'text': return 'Think of the exact key term from your notes - the word an examiner would look for.';
     case 'order': return 'Find the very first step or event first, then ask "what must happen next?"';
     case 'match': return 'Start with the pair you are most sure of - fewer options make the rest easier.';

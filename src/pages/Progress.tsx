@@ -1,3 +1,4 @@
+import { SubjectMark } from '../components/SubjectMark';
 import { activeSubjects } from '../content/registry';
 import { href } from '../lib/router';
 import { level, mastery } from '../lib/engine';
@@ -55,7 +56,7 @@ export function ProgressPage() {
         {stats.map((s) => (
           <div key={s.subject.id} className="subj-progress">
             <a href={href(`/s/${s.subject.id}`)} className="subj-progress-head">
-              <span>{s.subject.icon} {s.subject.name}</span>
+              <span className="row gap"><SubjectMark subject={s.subject} size="sm" /> {s.subject.name}</span>
               <span className="small">{Math.round(s.mastery * 100)}%</span>
             </a>
             <ProgressBar value={s.mastery} color={s.subject.color} />

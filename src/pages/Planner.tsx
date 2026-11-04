@@ -1,3 +1,4 @@
+import { SubjectMark } from '../components/SubjectMark';
 import { useState } from 'react';
 import { activeSubjects, getSubject, getTopic, visibleTopics } from '../content/registry';
 import { level, mastery } from '../lib/engine';
@@ -125,9 +126,9 @@ export function PlannerPage() {
                       style={{ borderLeftColor: subj?.color }}
                       href={t ? (f.reason === 'Learn' ? href(`/t/${f.topicId}`) : href('/quiz', { scope: 'topic', id: f.topicId, n: 8 })) : href(`/s/${f.subjectId}`, { tab: 'exam' })}
                     >
-                      <span className="small" style={{ color: subj?.color }}>{subj?.icon} {subj?.short}</span>
+                      <span className="small row gap">{subj && <SubjectMark subject={subj} size="sm" />} {subj?.short}</span>
                       <span>{t ? t.topic.title : f.reason}</span>
-                      <span className="muted small">{t ? f.reason : ''}{done ? ' ✓' : ''}</span>
+                      <span className="muted small">{t ? f.reason : ''}{done ? ' · done' : ''}</span>
                     </a>
                   );
                 })}

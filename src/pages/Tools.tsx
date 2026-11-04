@@ -7,8 +7,11 @@ import { levenshtein, normalise } from '../lib/answer';
 import { Markdown } from '../components/Markdown';
 import { Empty, Section } from '../components/ui';
 import type { Quote } from '../content/types';
+import { Calculator, PeriodicTable } from '../components/Tools';
 
 export const TOOL_INFO: Record<string, { title: string; desc: string }> = {
+  calculator: { title: 'Calculator', desc: 'Scientific calculator: powers, roots, trig (degrees), standard form, π and Ans - like an exam calculator.' },
+  periodic: { title: 'Periodic table', desc: 'The exam data-sheet periodic table. Tap an element for protons, neutrons, electrons and shells.' },
   reference: { title: 'Reference sheet', desc: 'Formulae, equations and must-learn facts - including what IS and ISN\'T given in the exam.' },
   quotes: { title: 'Quote trainer', desc: 'Memorise quotations with progressive deletion: words disappear until you know it by heart.' },
   essay: { title: 'Essay planner', desc: 'Plan a top-band answer: thesis, paragraphs, evidence, analysis and context.' },
@@ -30,6 +33,8 @@ export function ToolsPage({ tool, query }: { tool?: string; query: URLSearchPara
       {back}
       <h1>{info?.title ?? 'Tools'}</h1>
       {tool === 'timer' && <FocusTimer />}
+      {tool === 'calculator' && <div className="card pad"><Calculator /></div>}
+      {tool === 'periodic' && <div className="card pad"><PeriodicTable /></div>}
       {tool === 'reference' && <ReferenceSheet subjectId={subjectId} />}
       {tool === 'quotes' && <QuoteTrainer subjectId={subjectId} topicId={query.get('topic') ?? ''} />}
       {tool === 'essay' && <EssayPlanner subjectId={subjectId} />}

@@ -312,8 +312,8 @@ const subject: Subject = {
   id: 'statistics',
   name: 'Statistics',
   short: 'Stats',
-  icon: '📊',
-  color: '#0d9488',
+  icon: 'St',
+  color: '#0F7A72',
   qualification: 'GCSE Statistics (Edexcel 1ST0 / AQA 8382)',
   boardNote: 'Content is mapped to both **Edexcel 1ST0** and **AQA 8382** (Foundation and Higher). A few topics (e.g. quality assurance, standardised rates, geometric mean) are Edexcel-specific - check your specification.',
   examNews: [

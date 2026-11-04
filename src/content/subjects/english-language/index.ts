@@ -5,8 +5,8 @@ const subject: Subject = {
   id: 'english-language',
   name: 'English Language',
   short: 'Eng Lang',
-  icon: '✍️',
-  color: '#0e7490',
+  icon: 'El',
+  color: '#2F5D8A',
   qualification: 'AQA GCSE English Language (8700)',
   boardNote: 'Mapped to **AQA 8700**. The reading and writing skills transfer to Edexcel, OCR and Eduqas, but the question numbers and marks differ. There are **no set texts** - every source is unseen, so this subject is about skills you practise.',
   examNews: [

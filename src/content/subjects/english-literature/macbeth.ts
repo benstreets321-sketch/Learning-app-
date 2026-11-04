@@ -355,7 +355,7 @@ Use the exam practice below to write one essay a week.
           'Discusses apparitions/equivocation in Act 4 and Macduff\'s birth',
           'Context: Daemonologie, witch trials, Jacobean fear of the devil',
         ], { meta: 'Paper 1 Section A · practice question', time: 50 }),
-        examQ('**Starting with this extract (Act 4 Scene 3), explore how Shakespeare presents ideas about good and bad kingship.**', 34, [
+        examQ('**Starting with this extract (Act 4 Scene 3), explore how Shakespeare presents ideas about good and bad kingship.**\n\n> **Find the extract:** open your copy of the text at the point named above and read about 30 lines. (In the real exam the extract is printed for you.)', 34, [
           ...LEVELS,
           'Analyses Malcolm\'s "king-becoming graces" list',
           'Contrasts Duncan, Edward the Confessor and Malcolm with Macbeth the tyrant',

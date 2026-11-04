@@ -1,3 +1,4 @@
+import { SubjectMark } from '../components/SubjectMark';
 import { GENERAL_STRATEGIES } from '../content/strategies';
 import { activeSubjects } from '../content/registry';
 import { useProfile } from '../lib/store';
@@ -25,7 +26,7 @@ export function StrategiesPage() {
       <Section title="Subject-specific advice">
         <div className="chips wrap">
           {activeSubjects(profile).map((s) => (
-            <a key={s.id} className="chip" href={href(`/s/${s.id}`, { tab: 'revise' })}>{s.icon} {s.name}</a>
+            <a key={s.id} className="chip" href={href(`/s/${s.id}`, { tab: 'revise' })}><SubjectMark subject={s} size="sm" /> {s.name}</a>
           ))}
         </div>
       </Section>

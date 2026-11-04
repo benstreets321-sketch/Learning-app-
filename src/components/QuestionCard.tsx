@@ -1,15 +1,19 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { QItem, Topic } from '../content/types';
 import type { Confidence } from '../lib/engine';
 import { checkNumber, checkText, parseCloze } from '../lib/answer';
 import { shuffle } from '../lib/util';
 import { Markdown } from './Markdown';
 import { StuckPanel } from './StuckPanel';
+import { ToolBar } from './Tools';
+import { Icon } from './Icon';
 
 export interface QuestionResult {
   correct: boolean;
   conf?: Confidence;
   hints: number;
+  /** The student asked for a similar, easier question next */
+  easier?: boolean;
 }
 
 interface Props {
@@ -19,6 +23,8 @@ interface Props {
   /** Called the moment the answer is checked (before Next) so progress is saved even if the user leaves */
   onChecked?: (r: QuestionResult) => void;
   nextLabel?: string;
+  /** Show "Try a similar, easier question" after a wrong answer */
+  canEasier?: boolean;
 }
 
 const CONF: { id: Confidence; label: string; title: string }[] = [
@@ -27,7 +33,7 @@ const CONF: { id: Confidence; label: string; title: string }[] = [
   { id: 'guess', label: 'Guessing', title: 'Not really sure' },
 ];
 
-export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next question' }: Props) {
+export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next question', canEasier = false }: Props) {
   // Shuffle presentation order once per question
   const order = useMemo(() => {
     if (item.type === 'mcq' || item.type === 'multi') return shuffle(item.options.map((_, i) => i));
@@ -49,6 +55,27 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
   const [stuckOpen, setStuckOpen] = useState(false);
   const [result, setResult] = useState<null | { correct: boolean; close?: boolean; detail?: string }>(null);
   const [overridden, setOverridden] = useState(false);
+  const [removed, setRemoved] = useState<Set<number>>(new Set());
+  const [helpAfter, setHelpAfter] = useState(false);
+
+  // the calculator's "Put result in my answer" button
+  useEffect(() => {
+    const onInsert = (e: Event) => {
+      if (result !== null) return;
+      const v = (e as CustomEvent<string>).detail;
+      if (item.type === 'num' || item.type === 'text') setText(v);
+    };
+    window.addEventListener('tool-insert', onInsert);
+    return () => window.removeEventListener('tool-insert', onInsert);
+  }, [item, result]);
+
+  function eliminate() {
+    if (item.type !== 'mcq') return;
+    const wrong = shuffle(item.options.map((_, i) => i).filter((i) => i !== item.answer && i !== choice));
+    setRemoved(new Set(wrong.slice(0, 2)));
+    if (choice !== null && wrong.slice(0, 2).includes(choice)) setChoice(null);
+    setHints((h) => h + 1);
+  }
 
   const answered = result !== null;
 
@@ -152,6 +179,17 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         {topic && <span className="qtopic">{topic.title}</span>}
       </div>
 
+      <div className="q-tools">
+        <ToolBar subjectId={item.subjectId} />
+      </div>
+
+      {item.ctx && (
+        <details className="source" open>
+          <summary><Icon name="learn" size={16} /> Source - read this first</summary>
+          <div className="source-body"><Markdown text={item.ctx} /></div>
+        </details>
+      )}
+
       {item.type === 'cloze' ? (
         <div className="qtext">
           {item.q && <Markdown text={item.q} />}
@@ -182,9 +220,11 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         <div className="options">
           {order.map((i) => {
             const isAns = i === item.answer;
-            const cls = answered ? (isAns ? 'opt right' : i === choice ? 'opt wrong' : 'opt dim') : choice === i ? 'opt sel' : 'opt';
+            const gone = !answered && removed.has(i);
+            const cls = answered ? (isAns ? 'opt right' : i === choice ? 'opt wrong' : 'opt dim') : gone ? 'opt removed' : choice === i ? 'opt sel' : 'opt';
             return (
-              <button key={i} className={cls} disabled={answered} onClick={() => setChoice(i)}>
+              <button key={i} className={cls} disabled={answered || gone} aria-pressed={choice === i} onClick={() => setChoice(i)}>
+                <span className="opt-mark" aria-hidden="true">{answered && isAns ? <Icon name="check" size={16} /> : answered && i === choice ? <Icon name="close" size={16} /> : null}</span>
                 <Markdown text={item.options[i]} inline />
               </button>
             );
@@ -204,7 +244,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
                 key={i} className={cls} disabled={answered} aria-pressed={on}
                 onClick={() => setMultiSel((s) => { const n = new Set(s); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
               >
-                <span className="check">{on ? '☑' : '☐'}</span> <Markdown text={item.options[i]} inline />
+                <span className={`box ${on ? 'on' : ''}`} aria-hidden="true">{on && <Icon name="check" size={14} />}</span> <Markdown text={item.options[i]} inline />
               </button>
             );
           })}
@@ -290,8 +330,8 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
             ))}
           </div>
           <div className="row gap">
-            <button className="btn ghost" onClick={() => setStuckOpen((o) => !o)}>
-              {stuckOpen ? 'Hide help' : "I'm stuck"}
+            <button className={`btn ${stuckOpen ? '' : 'ghost'}`} onClick={() => setStuckOpen((o) => !o)} aria-expanded={stuckOpen}>
+              <Icon name="life" size={18} /> {stuckOpen ? 'Hide help' : "I'm stuck"}
             </button>
             <button className="btn primary" disabled={!canCheck()} onClick={check}>Check answer</button>
           </div>
@@ -299,7 +339,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       )}
 
       {stuckOpen && !answered && (
-        <StuckPanel item={item} topic={topic} hintsUsed={hints} onHint={() => setHints((h) => h + 1)} />
+        <StuckPanel item={item} topic={topic} hintsUsed={hints} onHint={() => setHints((h) => h + 1)} onEliminate={eliminate} eliminated={removed.size > 0} />
       )}
 
       {answered && (
@@ -328,7 +368,18 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
           {!result!.correct && (
             <p className="muted small">Added to your <strong>Fix-it list</strong>. You'll see it again shortly, then in a few days, to lock it in.</p>
           )}
-          <div className="row end">
+          {!result!.correct && helpAfter && <StuckPanel item={item} topic={topic} hintsUsed={0} onHint={() => {}} mode="after" />}
+          <div className="row end gap wrap">
+            {!result!.correct && (
+              <button className="btn ghost" onClick={() => setHelpAfter((h) => !h)} aria-expanded={helpAfter}>
+                <Icon name="bulb" size={18} /> {helpAfter ? 'Hide explanation help' : 'Help me understand this'}
+              </button>
+            )}
+            {!result!.correct && canEasier && (
+              <button className="btn" onClick={() => onDone({ correct: false, conf, hints, easier: true })}>
+                <Icon name="steps" size={18} /> Try a similar, easier one
+              </button>
+            )}
             <button className="btn primary" autoFocus onClick={() => onDone({ correct: result!.correct, conf, hints: overridden ? hints + 1 : hints })}>
               {nextLabel}
             </button>

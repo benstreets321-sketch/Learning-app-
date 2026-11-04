@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import {
-  activeSubjects, getQuestion, getSubject, getTopic, makeGenerated, questionPool, randomGenerated, visibleTopics, visibleUnits,
+  activeSubjects, easierQuestion, getQuestion, getSubject, getTopic, makeGenerated, questionPool, randomGenerated, visibleTopics, visibleUnits,
   type GenSnapshot,
 } from '../content/registry';
 import type { QItem } from '../content/types';
@@ -152,8 +152,8 @@ export function QuizPage({ query }: { query: URLSearchParams }) {
     addStudyTime(Math.min(180, (Date.now() - shownAt.current) / 1000));
   }
 
-  function handleDone(item: QItem, r: { correct: boolean; conf?: Confidence; hints: number }) {
-    const history = [...answers, { item, ...r }];
+  function handleDone(item: QItem, r: { correct: boolean; conf?: Confidence; hints: number; easier?: boolean }) {
+    const history = [...answers, { item, correct: r.correct, conf: r.conf, hints: r.hints }];
     setAnswers(history);
     if (!r.correct && !retry.current.some((x) => x.item.id === item.id) && answers.filter((a) => a.item.id === item.id).length === 0) {
       retry.current.push({ item, at: history.length + 3 });
@@ -163,8 +163,13 @@ export function QuizPage({ query }: { query: URLSearchParams }) {
     if (last2.length === 2 && last2.every((a) => !a.correct) && last2[0].item.topicId === last2[1].item.topicId && reteach === null) {
       setReteach(item.topicId);
     }
-    if (history.length >= n) { setFinished(true); return; }
-    const nx = next(history, history.length);
+    if (history.length >= n && !r.easier) { setFinished(true); return; }
+    let nx: QItem | undefined;
+    if (r.easier) {
+      nx = easierQuestion(item, profile, asked.current);
+      if (nx) asked.current.add(nx.id);
+    }
+    nx = nx ?? next(history, history.length);
     if (!nx) { setFinished(true); return; }
     shownAt.current = Date.now();
     setCurrent(nx);
@@ -184,18 +189,25 @@ export function QuizPage({ query }: { query: URLSearchParams }) {
   const ref = current ? getTopic(current.topicId) : undefined;
   const mode = adaptTarget(answers.map((a) => a.correct)).mode;
   const correctSoFar = answers.filter((a) => a.correct).length;
+  const recentWrong = answers.slice(-6).filter((a) => !a.correct).length;
+  const total = Math.max(n, answers.length + 1);
 
   return (
     <div className="page narrow session">
       <div className="session-head">
-        <a className="small" href={ref ? href(`/s/${ref.subject.id}`, { tab: 'practice' }) : '#/'}>✕ End</a>
+        <a className="small" href={ref ? href(`/s/${ref.subject.id}`, { tab: 'practice' }) : '#/'}>End session</a>
         <span className="small">{setup.title}</span>
-        <span className="small">{answers.length + 1}/{n} · {correctSoFar} ✓</span>
+        <span className="small mono">{answers.length + 1}/{total} · {correctSoFar} correct</span>
       </div>
-      <ProgressBar value={answers.length / n} color={ref?.subject.color} />
+      <ProgressBar value={answers.length / total} color={ref?.subject.color} />
       {mode === 'stretch' && <div className="banner stretch">3 in a row - stepping up the challenge.</div>}
-      {mode === 'support' && !reteach && <div className="banner support">Let's ease off a little and rebuild - easier question next.</div>}
-
+      {mode === 'support' && !reteach && recentWrong < 4 && <div className="banner support">Let's ease off a little and rebuild - easier question next.</div>}
+      {recentWrong >= 4 && !reteach && (
+        <div className="banner care">
+          <strong>This one's tough right now - that's normal.</strong> Getting things wrong while practising is how memory gets stronger.
+          {' '}You could <a href={href('/rescue', { topic: current?.topicId ?? '' })}>rebuild this topic step by step</a>, or take a 5-minute break and come back.
+        </div>
+      )}
       {reteach ? (
         <Reteach topicId={reteach} onContinue={() => setReteach('')} />
       ) : (
@@ -207,6 +219,7 @@ export function QuizPage({ query }: { query: URLSearchParams }) {
             onChecked={(r) => handleChecked(current, r)}
             onDone={(r) => handleDone(current, r)}
             nextLabel={answers.length + 1 >= n ? 'See results' : 'Next question'}
+            canEasier={!setup.fixed}
           />
         )
       )}

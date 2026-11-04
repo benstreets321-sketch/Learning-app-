@@ -7,8 +7,8 @@ const subject: Subject = {
   id: 'chemistry',
   name: 'Chemistry',
   short: 'Chemistry',
-  icon: '⚗️',
-  color: '#ea580c',
+  icon: 'Ch',
+  color: '#B5562B',
   qualification: 'AQA GCSE Chemistry (8462) - triple science',
   boardNote: 'Mapped to **AQA 8462** (separate Chemistry). Topics marked **Chemistry only** are not in Combined Science. You are given a **periodic table** in the exam - but not the reactivity series, tests or formulas.',
   examNews: [

@@ -220,7 +220,7 @@ Themes asked recently include greed (2023), lessons Scrooge learns (2024) and ki
           'Explores family as a cure for isolation and greed',
           'Context: Victorian ideals of the family Christmas; Dickens\'s purpose',
         ], { meta: 'Paper 1 Section B · practice question', time: 45, model: 'Dickens presents family as the antidote to Scrooge\'s isolation: Fred\'s persistent, joyful invitations show that family love is freely offered, and Scrooge\'s eventual acceptance of it in Stave 5 signals his redemption.\n\nIn the extract, Fred bursts in with an exclamatory "A merry Christmas, uncle! God save you!", the familial noun "uncle" asserting a bond that Scrooge refuses to acknowledge. Dickens contrasts the "cheerful voice" with Scrooge\'s cold isolation ("solitary as an oyster"), so that family is associated with warmth and light...' }),
-        examQ('**Starting with this extract (Stave 3, the Cratchits\' dinner), explore how Dickens presents generosity in *A Christmas Carol*.**', 30, [
+        examQ('**Starting with this extract (Stave 3, the Cratchits\' dinner), explore how Dickens presents generosity in *A Christmas Carol*.**\n\n> **Find the extract:** open your copy of the text at the point named above and read about 30 lines. (In the real exam the extract is printed for you.)', 30, [
           ...LEVELS,
           'Analyses how the Cratchits share little but give much (pudding, toast to Scrooge)',
           'Contrasts with Scrooge\'s meanness (Stave 1) and Fezziwig (Stave 2)',

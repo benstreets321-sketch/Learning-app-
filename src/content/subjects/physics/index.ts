@@ -7,8 +7,8 @@ const subject: Subject = {
   id: 'physics',
   name: 'Physics',
   short: 'Physics',
-  icon: '⚛️',
-  color: '#7c3aed',
+  icon: 'Ph',
+  color: '#3B5BA9',
   qualification: 'AQA GCSE Physics (8463) - triple science',
   boardNote: 'Mapped to **AQA 8463** (separate Physics). Topics marked **Physics only** are not in Combined Science.',
   examNews: [

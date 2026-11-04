@@ -9,8 +9,8 @@ const subject: Subject = {
   id: 'maths',
   name: 'Maths',
   short: 'Maths',
-  icon: '📐',
-  color: '#2563eb',
+  icon: 'Ma',
+  color: '#1F6FB2',
   qualification: 'GCSE Mathematics (Edexcel 1MA1 / AQA 8300 / OCR J560)',
   boardNote: 'GCSE Maths content is **the same for every exam board** (set by the Department for Education) - only the style of questions differs slightly. Choose **Foundation** (grades 1-5) or **Higher** (grades 4-9) in Settings; higher-only topics are marked.',
   examNews: [

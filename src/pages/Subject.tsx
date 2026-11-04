@@ -1,3 +1,4 @@
+import { SubjectMark } from '../components/SubjectMark';
 import { getSubject, visibleUnits } from '../content/registry';
 import { go, href } from '../lib/router';
 import { useProfile, useProgress } from '../lib/store';
@@ -24,7 +25,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
     <div className="page" style={{ ['--subj' as string]: subject.color }}>
       <div className="subject-hero">
         <a className="small" href="#/">← Home</a>
-        <h1><span aria-hidden="true">{subject.icon}</span> {subject.name}</h1>
+        <div className="hero-title"><SubjectMark subject={subject} size="lg" /><h1>{subject.name}</h1></div>
         <p className="muted">{subject.qualification}</p>
         <div className="row gap wrap">
           <div className="grow"><ProgressBar value={stats.mastery} color={subject.color} /></div>
@@ -52,10 +53,13 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
             <Section title="Do this next">
               <div className="rec-list">
                 {recs.map((r) => (
-                  <a key={r.topic.id} className="rec" style={{ borderLeftColor: subject.color }}
+                  <a key={r.topic.id} className="rec"
                     href={r.action === 'learn' ? href(`/t/${r.topic.id}`) : href('/quiz', { scope: 'topic', id: r.topic.id, n: 8 })}>
-                    <span className="rec-title">{r.topic.title}</span>
-                    <span className="muted small">{r.reason}</span>
+                    <span className="rec-body">
+                      <span className="rec-title">{r.topic.title}</span>
+                      <span className="muted small">{r.reason}</span>
+                    </span>
+                    <span className="rec-action small">{r.action === 'learn' ? 'Learn' : 'Practise'}</span>
                   </a>
                 ))}
               </div>
@@ -191,7 +195,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
 
       {t === 'tools' && (
         <div className="practice-grid">
-          {(subject.tools ?? []).concat(['glossary', 'timer']).map((tool) => {
+          {[...(['maths', 'statistics', 'physics', 'chemistry', 'biology', 'business'].includes(subject.id) ? ['calculator'] : []), ...(['chemistry', 'physics', 'biology'].includes(subject.id) ? ['periodic'] : []), ...(subject.tools ?? []), 'glossary', 'timer'].map((tool) => {
             const info = TOOL_INFO[tool];
             if (!info) return null;
             return (

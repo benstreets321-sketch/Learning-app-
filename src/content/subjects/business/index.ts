@@ -6,8 +6,8 @@ const subject: Subject = {
   id: 'business',
   name: 'Business / Enterprise',
   short: 'Business',
-  icon: '💼',
-  color: '#ca8a04',
+  icon: 'Bu',
+  color: '#8A6A1F',
   qualification: 'GCSE Business (AQA 8132 / Edexcel 1BS0) · BTEC Tech Award in Enterprise',
   boardNote: 'Choose **GCSE Business**, **BTEC Enterprise** or **both** in Settings. GCSE content is board-neutral (AQA and Edexcel cover the same ideas: enterprise, operations, people, marketing and finance). The finance calculations are shared.',
   examNews: [

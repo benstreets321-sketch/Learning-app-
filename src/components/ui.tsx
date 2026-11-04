@@ -18,10 +18,10 @@ export function Ring({ value, size = 64, color = 'var(--accent)', label }: { val
     <div className="ring" style={{ width: size, height: size }}>
       <svg width={size} height={size} aria-hidden="true">
         <circle cx={size / 2} cy={size / 2} r={r} stroke="var(--line)" strokeWidth="6" fill="none" />
-        <circle
+        {pct > 0.005 && <circle
           cx={size / 2} cy={size / 2} r={r} stroke={color} strokeWidth="6" fill="none"
           strokeDasharray={`${c * pct} ${c}`} strokeLinecap="round" transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        />
+        />}
       </svg>
       <span className="ring-label">{label ?? `${Math.round(pct * 100)}%`}</span>
     </div>
