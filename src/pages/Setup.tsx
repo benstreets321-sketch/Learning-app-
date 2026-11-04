@@ -145,14 +145,14 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
         <Section title="Your data">
           <p className="muted small">Progress is saved on this device only. Export a backup to move it to another device.</p>
           <div className="row gap wrap">
-            <button className="btn" onClick={() => {
+            {import.meta.env.MODE !== 'single' && <button className="btn" onClick={() => {
               const blob = new Blob([exportData()], { type: 'application/json' });
               const a = document.createElement('a');
               a.href = URL.createObjectURL(blob);
               a.download = `gcse-revision-backup-${new Date().toISOString().slice(0, 10)}.json`;
               a.click();
               URL.revokeObjectURL(a.href);
-            }}>Export backup</button>
+            }}>Export backup</button>}
             <button className="btn" onClick={() => fileRef.current?.click()}>Import backup</button>
             <input ref={fileRef} type="file" accept="application/json" hidden onChange={async (e) => {
               const f = e.target.files?.[0];
