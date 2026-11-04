@@ -8,6 +8,7 @@ import { SubjectMark } from '../components/SubjectMark';
 import { Icon } from '../components/Icon';
 import { InstallCard } from '../components/Install';
 import { STRATEGY_TIPS } from '../content/strategies';
+import { specCoverage, uncovered } from '../lib/coverage';
 
 export function Home() {
   const profile = useProfile();
@@ -165,6 +166,33 @@ export function Home() {
           ))}
         </div>
       </Section>
+
+      {(() => {
+        const gaps = uncovered(subjects, profile, progress, 3);
+        const totals = subjects.map((s) => specCoverage(s, profile, progress)).reduce((a, c) => ({ t: a.t + c.total, s: a.s + c.started }), { t: 0, s: 0 });
+        return (
+          <Section title="Exam coverage" right={<a className="small" href="#/progress">All subjects</a>}>
+            <div className="card pad">
+              <p className="cov-line"><span className="mono">{totals.s}/{totals.t}</span> specification points practised across your subjects</p>
+              <div className="cov-bar"><span className="sec" style={{ width: `${(totals.s / Math.max(1, totals.t)) * 100}%` }} /></div>
+              {gaps.length > 0 && (
+                <>
+                  <p className="small muted" style={{ marginTop: '0.8rem' }}>Not started yet – pick one today:</p>
+                  <div className="list">
+                    {gaps.map((g) => (
+                      <a key={g.subject.id + g.point.code} className="list-row" href={href(`/t/${g.topicId}`)}>
+                        <SubjectMark subject={g.subject} size="sm" />
+                        <span className="grow">{g.point.title}</span>
+                        <span className="mono small muted">{g.point.code}</span>
+                      </a>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </Section>
+        );
+      })()}
 
       <Section title="Your subjects" right={<a className="small" href="#/setup">Subjects and options</a>}>
         <div className="subject-grid">

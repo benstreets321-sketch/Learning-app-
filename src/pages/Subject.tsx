@@ -7,8 +7,9 @@ import { recommendations, subjectStats } from '../lib/insights';
 import { Empty, LevelBadge, ProgressBar, Section, Tabs } from '../components/ui';
 import { Markdown } from '../components/Markdown';
 import { TOOL_INFO } from './Tools';
+import { specCoverage } from '../lib/coverage';
 
-type Tab = 'overview' | 'topics' | 'practice' | 'exam' | 'tools' | 'revise' | 'stuck';
+type Tab = 'overview' | 'topics' | 'spec' | 'practice' | 'exam' | 'tools' | 'revise' | 'stuck';
 
 export function SubjectPage({ id, tab }: { id: string; tab: string }) {
   const subject = getSubject(id);
@@ -39,6 +40,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
         tabs={[
           { id: 'overview', label: 'Overview' },
           { id: 'topics', label: 'Topics' },
+          { id: 'spec', label: 'Spec checklist' },
           { id: 'practice', label: 'Practice' },
           { id: 'exam', label: 'Exam questions' },
           { id: 'tools', label: 'Toolkit' },
@@ -197,6 +199,8 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
         </div>
       )}
 
+      {t === 'spec' && <SpecChecklist subjectId={id} />}
+
       {t === 'tools' && (
         <div className="practice-grid">
           {[...(['maths', 'statistics', 'physics', 'chemistry', 'biology', 'business'].includes(subject.id) ? ['calculator'] : []), ...(['chemistry', 'physics', 'biology'].includes(subject.id) ? ['periodic'] : []), ...(subject.tools ?? []), 'glossary', 'timer'].map((tool) => {
@@ -243,6 +247,45 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
           ) : null}
         </div>
       )}
+    </div>
+  );
+}
+
+const STATUS_LABEL = { new: 'Not started', started: 'In progress', weak: 'Needs work', secure: 'Secure' } as const;
+
+function SpecChecklist({ subjectId }: { subjectId: string }) {
+  const profile = useProfile();
+  const progress = useProgress();
+  const subject = getSubject(subjectId)!;
+  const cov = specCoverage(subject, profile, progress);
+  return (
+    <div>
+      <div className="cov-head card pad">
+        <div>
+          <p className="eyebrow">{cov.name}</p>
+          <p className="cov-line"><span className="mono">{cov.started}/{cov.total}</span> specification points practised · <span className="mono">{cov.secure}</span> secure</p>
+          <p className="muted small">Every point on the specification for your options is listed here and linked to the lessons that teach it. Work down the list until everything is green – then nothing in the exam is a surprise.</p>
+        </div>
+        <div className="cov-bars" aria-hidden="true">
+          <div className="cov-bar"><span style={{ width: `${(cov.secure / Math.max(1, cov.total)) * 100}%` }} className="sec" /><span style={{ width: `${((cov.started - cov.secure) / Math.max(1, cov.total)) * 100}%` }} className="prog" /></div>
+          <div className="cov-legend small muted"><span><i className="dot sec" /> Secure</span><span><i className="dot prog" /> Practised</span><span><i className="dot" /> Not started</span></div>
+        </div>
+      </div>
+      {cov.sections.map((sec) => (
+        <Section key={sec.title} title={sec.title} right={<span className="small muted mono">{sec.points.filter((p) => p.status !== 'new').length}/{sec.points.length}</span>}>
+          <div className="list spec-list">
+            {sec.points.map((p) => (
+              <a key={p.code + p.title} className={`list-row spec-row st-${p.status}`} href={p.status === 'new' ? href(`/t/${p.topics[0]}`) : href('/quiz', { scope: 'topic', id: p.topics.find((x) => (progress.topics[x]?.n ?? 0) === 0) ?? p.topics[0], n: 8 })}>
+                <span className="spec-code mono small">{p.code}</span>
+                <span className="grow">
+                  <span className="block">{p.title}{p.tier === 'H' && <span className="pill pill-info spec-tier">Higher</span>}</span>
+                </span>
+                <span className={`spec-status small st-${p.status}`}>{STATUS_LABEL[p.status]}</span>
+              </a>
+            ))}
+          </div>
+        </Section>
+      ))}
     </div>
   );
 }

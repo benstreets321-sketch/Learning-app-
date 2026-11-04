@@ -7,6 +7,7 @@ import { Markdown } from './Markdown';
 import { StuckPanel } from './StuckPanel';
 import { ToolBar } from './Tools';
 import { SpeakButton } from './Speak';
+import { setTutorContext } from '../lib/tutor';
 import { Icon } from './Icon';
 
 export interface QuestionResult {
@@ -74,6 +75,26 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
     window.addEventListener('tool-insert', onInsert);
     return () => window.removeEventListener('tool-insert', onInsert);
   }, [item, result]);
+
+  // tell the tutor what's on screen (and, once answered, what the student said)
+  const given = (() => {
+    switch (item.type) {
+      case 'mcq': return choice !== null ? item.options[choice] : '';
+      case 'multi': return [...multiSel].map((i) => item.options[i]).join('; ');
+      case 'tf': return tfChoice === null ? '' : tfChoice ? 'True' : 'False';
+      case 'num': case 'text': return text;
+      case 'order': return seq.join(' → ');
+      case 'match': return item.pairs.map((p, i) => `${p[0]} = ${matches[i] ?? '?'}`).join('; ');
+      case 'cloze': return blanks.join(', ');
+      case 'sort': return item.items.map(([t], i) => `${t}: ${sorted[i] !== undefined ? item.groups[sorted[i]] : '?'}`).join('; ');
+      case 'select': return [...picked].map((i) => tokens[i]?.text).join(', ');
+      case 'spot': return spotChoice !== null ? `line ${spotChoice + 1}` : '';
+    }
+  })();
+  useEffect(() => {
+    setTutorContext({ kind: 'question', key: item.id, item, topic, answered: result !== null, correct: result?.correct, given: result ? given : undefined });
+  }, [item, topic, result]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => setTutorContext(null), []);
 
   // keyboard shortcuts: 1-9 choose, Enter check / next, H hint
   const keyRef = useRef<(e: KeyboardEvent) => void>(() => {});

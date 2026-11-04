@@ -9,6 +9,8 @@ import '@fontsource/ibm-plex-mono/latin-400.css';
 import '@fontsource/ibm-plex-mono/latin-500.css';
 import './styles.css';
 import { registerSW } from './lib/pwa';
+import { startCloudSync } from './lib/cloud';
+import { detectAI } from './lib/ai';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -17,3 +19,5 @@ createRoot(document.getElementById('root')!).render(
 );
 
 registerSW();
+void startCloudSync();
+void detectAI();

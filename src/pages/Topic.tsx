@@ -298,9 +298,8 @@ function MyNotes({ topicId }: { topicId: string }) {
   const progress = useProgress();
   const [text, setText] = useState(progress.notes[topicId] ?? '');
   useEffect(() => {
-    const h = setTimeout(() => saveNote(topicId, text), 400);
-    return () => clearTimeout(h);
-  }, [text, topicId]);
+    if (text !== (progress.notes[topicId] ?? '')) saveNote(topicId, text);
+  }, [text, topicId]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div>
       <p className="muted small">Your own notes, mnemonics and things your teacher said. Saved automatically on this device.</p>

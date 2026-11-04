@@ -21,6 +21,7 @@ import { Icon } from './components/Icon';
 import { ToolDrawer, useTools } from './components/Tools';
 import { InstallButton } from './components/Install';
 import { SubjectMark } from './components/SubjectMark';
+import { SaveStatus, SaveWarning } from './components/SaveStatus';
 import { activeSubjects } from './content/registry';
 import { schedule as scheduleReminder, syncReminderState } from './lib/reminders';
 
@@ -131,6 +132,7 @@ export function App() {
           </nav>
         )}
         <div className="side-foot">
+          <SaveStatus />
           <InstallButton />
           <a href={href('/setup')} className={`side-link ${isActive('/setup') ? 'active' : ''}`}><Icon name="settings" size={18} /> <span>Settings</span></a>
         </div>
@@ -147,7 +149,7 @@ export function App() {
         </span>
       </header>
 
-      <main className="main">{page}</main>
+      <main className="main"><SaveWarning />{page}</main>
 
       <nav className="bottomnav" aria-label="Main mobile">
         {NAV.map((n) => (

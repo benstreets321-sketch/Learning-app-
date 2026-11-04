@@ -3,6 +3,8 @@ import { SUBJECTS, allTopicRefs, topicQuestions, getTopic } from '../src/content
 import { GENERATORS } from '../src/content/generators';
 import { parseCloze, checkText, parseSelect } from '../src/lib/answer';
 import { EXTRA } from '../src/content/extra';
+import { EXAM_STEM } from '../src/content/exam-extra-stem';
+import { EXAM_OTHER } from '../src/content/exam-extra-other';
 
 describe('content integrity', () => {
   it('has globally unique topic and unit ids', () => {
@@ -124,7 +126,7 @@ describe('content integrity', () => {
   });
 
   it('extra questions point at real topics', () => {
-    for (const id of Object.keys(EXTRA)) expect(getTopic(id), id).toBeTruthy();
+    for (const id of [...Object.keys(EXTRA), ...Object.keys(EXAM_STEM), ...Object.keys(EXAM_OTHER)]) expect(getTopic(id), id).toBeTruthy();
   });
 
   it('derived multiple-choice questions have four distinct options', () => {
@@ -140,6 +142,10 @@ describe('content integrity', () => {
       for (const e of topic.examQuestions ?? []) {
         expect(e.marks, topic.id).toBeGreaterThan(0);
         expect(e.markScheme.length, `${topic.id} mark scheme`).toBeGreaterThan(0);
+        // new points-based schemes need at least one marking point per mark
+        const isNew = [...(EXAM_STEM[topic.id] ?? []), ...(EXAM_OTHER[topic.id] ?? [])].includes(e);
+        const levelled = e.markScheme.some((m) => /\bLevel \d/i.test(m));
+        if (isNew && !levelled) expect(e.markScheme.length, `${topic.id} :: ${e.q.slice(0, 60)} has fewer points than marks`).toBeGreaterThanOrEqual(e.marks);
       }
     }
   });

@@ -4,9 +4,10 @@ import { ELEMENTS, electronShells, type Element } from '../content/periodic';
 import { REFERENCE } from '../content/reference';
 import { Markdown } from './Markdown';
 import { Icon } from './Icon';
+import { Tutor } from './Tutor';
 
 // ---------- tiny store so any page can open the drawer ----------
-export type ToolId = 'calc' | 'table' | 'formula' | 'working';
+export type ToolId = 'tutor' | 'calc' | 'table' | 'formula' | 'working';
 let state: { open: ToolId | null; subject: string } = { open: null, subject: '' };
 const subs = new Set<() => void>();
 const set = (s: typeof state) => { state = s; subs.forEach((f) => f()); };
@@ -16,7 +17,7 @@ export const useTools = () => useSyncExternalStore((f) => { subs.add(f); return 
 
 /** Which tools make sense for a subject */
 export function toolsFor(subjectId: string): ToolId[] {
-  const t: ToolId[] = [];
+  const t: ToolId[] = ['tutor'];
   if (['maths', 'statistics', 'chemistry', 'physics', 'biology', 'business'].includes(subjectId)) t.push('calc');
   if (['chemistry', 'physics', 'biology'].includes(subjectId)) t.push('table');
   if (REFERENCE[subjectId]) t.push('formula');
@@ -24,16 +25,16 @@ export function toolsFor(subjectId: string): ToolId[] {
   return t;
 }
 
-const LABEL: Record<ToolId, string> = { calc: 'Calculator', table: 'Periodic table', formula: 'Formula sheet', working: 'Working out' };
-const SHORT: Record<ToolId, string> = { calc: 'Calculator', table: 'Elements', formula: 'Formulae', working: 'Working' };
-const ICON: Record<ToolId, string> = { calc: 'calc', table: 'table', formula: 'formula', working: 'pencil' };
+const LABEL: Record<ToolId, string> = { tutor: 'Ask the tutor', calc: 'Calculator', table: 'Periodic table', formula: 'Formula sheet', working: 'Working out' };
+const SHORT: Record<ToolId, string> = { tutor: 'Ask tutor', calc: 'Calculator', table: 'Elements', formula: 'Formulae', working: 'Working' };
+const ICON: Record<ToolId, string> = { tutor: 'message', calc: 'calc', table: 'table', formula: 'formula', working: 'pencil' };
 
 /** Row of tool buttons to put above a question */
 export function ToolBar({ subjectId, compact = false }: { subjectId: string; compact?: boolean }) {
   return (
     <div className="toolbar" role="toolbar" aria-label="Tools">
       {toolsFor(subjectId).map((t) => (
-        <button key={t} className="tool-btn" onClick={() => openTool(t, subjectId)} title={LABEL[t]}>
+        <button key={t} className={`tool-btn ${t === 'tutor' ? 'tutor-btn' : ''}`} onClick={() => openTool(t, subjectId)} title={LABEL[t]}>
           <Icon name={ICON[t]} size={18} />
           {!compact && <span>{SHORT[t]}</span>}
         </button>
@@ -54,7 +55,7 @@ export function ToolDrawer() {
   const tools = toolsFor(s.subject);
   const available: ToolId[] = Array.from(new Set<ToolId>([...tools, s.open]));
   return (
-    <aside className={`drawer ${s.open === 'table' ? 'wide' : ''}`} role="dialog" aria-label={LABEL[s.open]}>
+    <aside className={`drawer ${s.open === 'table' ? 'wide' : ''} ${s.open === 'tutor' ? 'is-tutor' : ''}`} role="dialog" aria-label={LABEL[s.open]}>
       <div className="drawer-head">
         <div className="seg" role="tablist">
           {available.map((t) => (
@@ -66,6 +67,7 @@ export function ToolDrawer() {
         <button className="icon-btn" onClick={closeTools} aria-label="Close tools"><Icon name="close" /></button>
       </div>
       <div className="drawer-body">
+        {s.open === 'tutor' && <Tutor />}
         {s.open === 'calc' && <Calculator />}
         {s.open === 'table' && <PeriodicTable />}
         {s.open === 'formula' && (REFERENCE[s.subject] ? <div className="md-compact"><Markdown text={REFERENCE[s.subject]} /></div> : <p className="muted">No formula sheet for this subject.</p>)}

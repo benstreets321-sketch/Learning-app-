@@ -101,21 +101,39 @@ const emptyProgress = (): Progress => ({
   v: 1, items: {}, cards: {}, topics: {}, mistakes: {}, days: {}, xp: 0, essays: {}, notes: {},
 });
 
+// ---------- persistence ----------
+// Saved to localStorage straight away (debounced 250 ms), flushed immediately when the app is hidden or closed,
+// with a second "last good" copy so a corrupted write can never lose everything.
+const KEY_META = 'gcse-hub.meta.v1';
+const BAK = '.bak';
+
 function safeRead<T>(key: string): T | null {
+  for (const k of [key, key + BAK]) {
+    try {
+      const raw = localStorage.getItem(k);
+      if (raw) return JSON.parse(raw) as T;
+    } catch { /* corrupt or blocked: try the backup copy */ }
+  }
+  return null;
+}
+
+function safeWrite(key: string, value: unknown): boolean {
   try {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
   } catch {
-    return null;
+    return false; // storage full or blocked: keep working in memory and tell the user
   }
 }
 
-function safeWrite(key: string, value: unknown) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    /* storage full or blocked: keep working in memory */
-  }
+export type SaveState = { status: 'saved' | 'pending' | 'error'; at: number; updatedAt: number; cloud: 'off' | 'syncing' | 'synced' | 'error'; cloudAt: number };
+let save: SaveState = { status: 'saved', at: 0, updatedAt: safeRead<{ updatedAt: number }>(KEY_META)?.updatedAt ?? 0, cloud: 'off', cloudAt: 0 };
+const saveListeners = new Set<() => void>();
+const setSave = (patch: Partial<SaveState>) => { save = { ...save, ...patch }; saveListeners.forEach((l) => l()); };
+export const getSaveState = () => save;
+export const setCloudState = (cloud: SaveState['cloud']) => setSave({ cloud, cloudAt: cloud === 'synced' ? Date.now() : save.cloudAt });
+export function useSaveState(): SaveState {
+  return useSyncExternalStore((l) => { saveListeners.add(l); return () => saveListeners.delete(l); }, getSaveState, getSaveState);
 }
 
 let profile: Profile = { ...defaultProfile(), ...(safeRead<Partial<Profile>>(KEY_PROFILE) ?? {}) };
@@ -130,13 +148,55 @@ const subscribe = (l: () => void) => {
 };
 
 let saveTimer: ReturnType<typeof setTimeout> | undefined;
-function persist() {
+let dirty = false;
+function flush() {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    safeWrite(KEY_PROFILE, profile);
-    safeWrite(KEY_PROGRESS, progress);
-  }, 150);
+  if (!dirty) return;
+  const ok = safeWrite(KEY_PROFILE, profile) && safeWrite(KEY_PROGRESS, progress) && safeWrite(KEY_META, { updatedAt: save.updatedAt });
+  dirty = !ok;
+  setSave({ status: ok ? 'saved' : 'error', at: ok ? Date.now() : save.at });
 }
+/** Mark state changed: saves within 250 ms, and immediately if the page is hidden. */
+function persist(touch = true) {
+  dirty = true;
+  if (touch) save = { ...save, updatedAt: Date.now() };
+  setSave({ status: 'pending' });
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flush, 250);
+}
+export const saveNow = flush;
+
+/** Keep a "last good" copy, refreshed every few minutes while the app is open */
+function backup() {
+  if (dirty) flush();
+  safeWrite(KEY_PROFILE + BAK, profile);
+  safeWrite(KEY_PROGRESS + BAK, progress);
+}
+
+if (typeof window !== 'undefined') {
+  const onHide = () => { flush(); };
+  window.addEventListener('pagehide', onHide);
+  window.addEventListener('beforeunload', onHide);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { flush(); backup(); } });
+  setInterval(backup, 3 * 60 * 1000);
+  setTimeout(backup, 5000);
+  // ask the browser not to clear our data when space runs low
+  try { void navigator.storage?.persist?.(); } catch { /* not supported */ }
+}
+
+/** Replace everything with a newer copy (from a backup file or the cloud) */
+export function replaceState(p: Partial<Profile>, pr: Partial<Progress>, updatedAt = Date.now()) {
+  profile = { ...defaultProfile(), ...p };
+  profile.options = { ...defaultProfile().options, ...profile.options };
+  progress = { ...emptyProgress(), ...pr };
+  save = { ...save, updatedAt };
+  persist(false);
+  flush();
+  emit();
+}
+
+/** Listen to every profile/progress change (used by cloud sync) */
+export const subscribeAll = subscribe;
 
 export const getProfile = () => profile;
 export const getProgress = () => progress;
@@ -291,17 +351,14 @@ export function savePlan(weeks: PlanWeek[]) {
 }
 
 export function exportData(): string {
-  return JSON.stringify({ app: 'gcse-revision-hub', exportedAt: new Date().toISOString(), profile, progress }, null, 1);
+  return JSON.stringify({ app: 'gcse-revision-hub', exportedAt: new Date().toISOString(), updatedAt: save.updatedAt, profile, progress }, null, 1);
 }
 
 export function importData(json: string): boolean {
   try {
     const data = JSON.parse(json);
     if (!data || data.app !== 'gcse-revision-hub' || !data.progress) return false;
-    profile = { ...defaultProfile(), ...data.profile };
-    progress = { ...emptyProgress(), ...data.progress };
-    persist();
-    emit();
+    replaceState(data.profile ?? {}, data.progress);
     return true;
   } catch {
     return false;
@@ -309,10 +366,7 @@ export function importData(json: string): boolean {
 }
 
 export function resetAll() {
-  profile = defaultProfile();
-  progress = emptyProgress();
-  persist();
-  emit();
+  replaceState(defaultProfile(), emptyProgress());
 }
 
 /** Consecutive days (ending today or yesterday) with some study */

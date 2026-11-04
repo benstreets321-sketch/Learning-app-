@@ -4,6 +4,7 @@ import { href } from '../lib/router';
 import { level, mastery } from '../lib/engine';
 import { streak, useProfile, useProgress } from '../lib/store';
 import { subjectStats } from '../lib/insights';
+import { specCoverage } from '../lib/coverage';
 import { todayKey } from '../lib/util';
 import { ProgressBar, Section } from '../components/ui';
 
@@ -65,6 +66,22 @@ export function ProgressPage() {
           <div className="week-cell"><span className="muted small">Minutes</span><span className="mono big-n">{tw.mins}</span><span className="muted small">{delta(tw.mins, lw.mins) ? `${delta(tw.mins, lw.mins)} vs last week` : 'nothing last week'}</span></div>
           <div className="week-cell"><span className="muted small">Questions</span><span className="mono big-n">{tw.q}</span><span className="muted small">{delta(tw.q, lw.q) ? `${delta(tw.q, lw.q)} vs last week` : 'nothing last week'}</span></div>
           <div className="week-cell"><span className="muted small">Accuracy</span><span className="mono big-n">{tw.q ? Math.round((tw.c / tw.q) * 100) : 0}%</span><span className="muted small">last week {lw.q ? Math.round((lw.c / lw.q) * 100) : 0}%</span></div>
+        </div>
+      </Section>
+
+      <Section title="Exam coverage">
+        <p className="muted small">How much of each specification you have practised. Open a subject's Spec checklist to see every point.</p>
+        <div className="list">
+          {activeSubjects(profile).map((s) => {
+            const c = specCoverage(s, profile, progress);
+            return (
+              <a key={s.id} className="cov-row" href={href(`/s/${s.id}`, { tab: 'spec' })}>
+                <span className="row gap"><SubjectMark subject={s} size="sm" /> {s.short}</span>
+                <div className="cov-bar"><span className="sec" style={{ width: `${(c.secure / Math.max(1, c.total)) * 100}%` }} /><span className="prog" style={{ width: `${((c.started - c.secure) / Math.max(1, c.total)) * 100}%` }} /></div>
+                <span className="mono small">{c.started}/{c.total}</span>
+              </a>
+            );
+          })}
         </div>
       </Section>
 

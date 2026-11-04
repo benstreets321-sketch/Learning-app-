@@ -4,6 +4,9 @@ import type { Profile } from '../lib/store';
 import { hash, mulberry32 } from '../lib/util';
 import { GENERATORS } from './generators';
 import { EXTRA } from './extra';
+import { SUPPLEMENTS, NEW_TOPICS } from './supplements';
+import { EXAM_STEM } from './exam-extra-stem';
+import { EXAM_OTHER } from './exam-extra-other';
 
 import englishLanguage from './subjects/english-language';
 import englishLiterature from './subjects/english-literature';
@@ -73,7 +76,7 @@ function deriveQuestions(topic: Topic, speakers: string[]): Question[] {
 const plain = (s: string) => s.replace(/[*_`]/g, '').trim();
 const isShort = (s: string, n: number) => s.length <= n && !s.includes('\n');
 
-const isQuestion = (s: string) => /[?:]$/.test(s.trim()) || /^(what|which|who|when|where|why|how|name|give|state|define|list|explain|describe|outline|identify)\b/i.test(s.trim());
+const isQuestion = (s: string) => /[?:]$/.test(s.trim()) || /^(what|which|who|when|where|why|how|name|give|state|define|list|explain|describe|outline|identify|solve|work out|calculate|find|simplify|expand|factorise|convert|write|estimate|round|is|are|does|do|can)\b/i.test(s.trim());
 const numeric = (s: string) => /^[\s£$€\d.,%×x^/+\-−=()a-zµ²³]{1,24}$/i.test(plain(s)) && /\d/.test(s);
 
 /** Choose 3 distractors that look like the answer (similar length and form), preferring the same topic. */
@@ -144,9 +147,21 @@ function deriveCards(topic: Topic) {
 
 for (const subject of SUBJECTS) {
   for (const unit of subject.units) {
+    // gap-filling content from the specification coverage check
+    for (const nt of NEW_TOPICS[unit.id] ?? []) if (!unit.topics.some((t) => t.id === nt.id)) unit.topics.push(nt);
     for (const t of unit.topics) {
+      const sup = SUPPLEMENTS[t.id];
+      if (sup && !t.notes.includes(sup.notes.trim().slice(0, 40))) {
+        t.notes = `${t.notes.trimEnd()}\n\n${sup.notes.trim()}\n`;
+        t.keyPoints = [...t.keyPoints, ...(sup.keyPoints ?? [])];
+        t.questions = [...t.questions, ...(sup.questions ?? [])];
+        t.flashcards = [...t.flashcards, ...(sup.flashcards ?? [])];
+      }
       const extra = EXTRA[t.id];
       if (extra && !t.questions.includes(extra[0])) t.questions = [...t.questions, ...extra];
+      for (const add of [EXAM_STEM[t.id], EXAM_OTHER[t.id]]) {
+        if (add && !(t.examQuestions ?? []).includes(add[0])) t.examQuestions = [...(t.examQuestions ?? []), ...add];
+      }
     }
     const unitCards = unit.topics.flatMap((t) => t.flashcards.map((c) => ({ ...c, topicId: t.id })));
     for (const t of unit.topics) {

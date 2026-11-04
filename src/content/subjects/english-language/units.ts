@@ -2,7 +2,7 @@ import type { Unit } from '../../types';
 import { cards, mc, multi, tf, txt, topic, examQ, ord, match, cloze } from '../../dsl';
 
 // Practice sources are ORIGINAL texts written for this app (no copyrighted extracts).
-const P1_SOURCE = `> *This extract is from the opening of a short story. Mara, a teenager, has been exploring the rocks below a lighthouse where her father works.* (Practice source written for this app.)
+export const P1_SOURCE = `> *This extract is from the opening of a short story. Mara, a teenager, has been exploring the rocks below a lighthouse where her father works.* (Practice source written for this app.)
 >
 > **1** Mara had not meant to stay so long on the rocks. When she had climbed down that afternoon, the sea had been a lazy, glittering thing, stretching itself in the sun like a cat. Now, as the light thinned, it had changed its mind.
 >

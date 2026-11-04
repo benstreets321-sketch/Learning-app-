@@ -5,6 +5,11 @@ import { href } from '../lib/router';
 import { Markdown } from '../components/Markdown';
 import { Empty } from '../components/ui';
 import { ToolBar } from '../components/Tools';
+import { setTutorContext } from '../lib/tutor';
+import { aiErrorText, useAIProvider } from '../lib/ai';
+import { markWithAI, type AIMark } from '../lib/marking';
+import { openTool } from '../components/Tools';
+import { Icon } from '../components/Icon';
 
 export function ExamPage({ query }: { query: URLSearchParams }) {
   const topicId = query.get('topic') ?? '';
@@ -19,6 +24,10 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
   const [secs, setSecs] = useState(0);
   const [running, setRunning] = useState(false);
   const timer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+  const provider = useAIProvider();
+  const [ai, setAi] = useState<AIMark | null>(null);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiErr, setAiErr] = useState('');
 
   useEffect(() => {
     if (!running) return;
@@ -28,16 +37,35 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
 
   useEffect(() => {
     if (!eq) return;
-    const h = setTimeout(() => { if (text) saveDraft(examId, text); }, 600);
-    return () => clearTimeout(h);
+    // save as you type: the store writes within a quarter of a second, and at once if the app is closed
+    if (text && text !== getProgress().essays[examId]?.text) saveDraft(examId, text);
   }, [text, examId, eq]);
+
+  useEffect(() => {
+    if (ref && eq) setTutorContext({ kind: 'exam', key: examId, eq, topic: ref.topic, subjectId: ref.subject.id, draft: text });
+  }, [examId, text]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => setTutorContext(null), []);
 
   if (!ref || !eq) return <Empty title="Question not found"><a href="#/">Home</a></Empty>;
   const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   const suggested = Math.round(eq.time ?? Math.max(2, eq.marks * 1.2));
-  const tickScore = Math.round((ticks.size / Math.max(1, eq.markScheme.length)) * eq.marks);
+  const levelScheme = eq.markScheme.some((m) => /\bLevel \d/i.test(m));
+  // one mark per point when there are enough points; otherwise (levels or holistic schemes) the proportion met
+  const tickScore = !levelScheme && eq.markScheme.length >= eq.marks ? Math.min(eq.marks, ticks.size) : Math.round((ticks.size / Math.max(1, eq.markScheme.length)) * eq.marks);
   const finalScore = score ?? tickScore;
-  const levelScheme = eq.markScheme.some((m) => /^Level \d/i.test(m));
+  const runAI = async () => {
+    setAiBusy(true); setAiErr('');
+    try {
+      const r = await markWithAI(eq, ref.subject.name, text);
+      setAi(r);
+      setTicks(new Set(r.met));
+      setScore(r.mark);
+    } catch (e) {
+      setAiErr(aiErrorText(e));
+    } finally {
+      setAiBusy(false);
+    }
+  };
 
   return (
     <div className="page narrow session" style={{ ['--subj' as string]: ref.subject.color }}>
@@ -77,6 +105,33 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
 
       {phase !== 'write' && (
         <div className="marking">
+          <div className="ai-mark card pad">
+            {!ai ? (
+              <div className="row gap wrap">
+                <div className="grow">
+                  <strong>Get it marked</strong>
+                  <p className="muted small">{provider === 'none' ? 'Mark it yourself below. To have Claude mark it against the mark scheme, add an API key in Settings or open the app inside Claude.' : 'Claude marks your answer against the mark scheme and ticks the points you made. Check its marking – you have the final say.'}</p>
+                </div>
+                {provider !== 'none' && <button className="btn primary" disabled={aiBusy || phase === 'saved'} onClick={() => void runAI()}>{aiBusy ? 'Marking…' : 'Mark it with AI'}</button>}
+              </div>
+            ) : (
+              <div>
+                <div className="row gap wrap">
+                  <span className="ai-score mono">{ai.mark}/{eq.marks}</span>
+                  <div className="grow">
+                    <strong>Suggested mark{ai.level ? ` · ${ai.level}` : ''}</strong>
+                    <p className="small" style={{ margin: 0 }}>{ai.comment}</p>
+                  </div>
+                </div>
+                <div className="two-col ai-fb">
+                  {ai.strengths.length > 0 && <div><div className="small strong">What went well</div><ul className="small">{ai.strengths.map((x, k) => <li key={k}>{x}</li>)}</ul></div>}
+                  {ai.improvements.length > 0 && <div><div className="small strong">Even better if</div><ul className="small">{ai.improvements.map((x, k) => <li key={k}>{x}</li>)}</ul></div>}
+                </div>
+                <p className="muted small">The ticks below are Claude's suggestion. Adjust them if you disagree, then save. <button className="btn link small" onClick={() => openTool('tutor', ref.subject.id)}><Icon name="message" size={14} /> Ask the tutor about this feedback</button></p>
+              </div>
+            )}
+            {aiErr && <p className="small fb-detail">{aiErr}</p>}
+          </div>
           <div className="two-col">
             <div>
               <h3>Your answer</h3>

@@ -15,6 +15,10 @@ export function HelpPage() {
           <p>Hints one at a time, "remove two wrong answers", a step-by-step guided solution, another explanation, a worked example, common mistakes and the lesson – all without leaving the question. The calculator, periodic table, formula sheet and a working-out pad are in the toolbar above every question.</p>
         </li>
         <li>
+          <strong>Ask the tutor</strong>
+          <p>Every question and exam question has an <em>Ask tutor</em> button. It gives clues without spoiling the answer, explains what the question is asking, helps you analyse a quote or source, and gives feedback on your writing. After you answer, it explains exactly where your thinking went wrong.</p>
+        </li>
+        <li>
           <strong>After a wrong answer: "Help me understand this" or "Try a similar, easier one"</strong>
           <p>See why the answer is right, then prove it to yourself on an easier version before going back up.</p>
         </li>
@@ -60,6 +64,14 @@ export function HelpPage() {
             <li>Three right in a row: it steps up the challenge.</li>
             <li>Each question and flashcard has its own review schedule (spaced repetition), and mastery slowly fades if you leave a topic alone.</li>
           </ul>
+        </details>
+        <details>
+          <summary>How do I know I've covered everything for the exam?</summary>
+          <p>Each subject has a <strong>Spec checklist</strong> tab listing every point on the exam board's specification for your options, linked to the lessons that teach it and coloured by how secure you are. The home page suggests points you haven't started yet, and Progress shows coverage for every subject.</p>
+        </details>
+        <details>
+          <summary>How are long exam answers marked?</summary>
+          <p>After you write an answer, compare it with the mark scheme and model answer and tick what you included. With the AI tutor available, press <em>Mark it with AI</em>: Claude marks it against the same mark scheme, ticks the points you made and suggests improvements. You can change any tick before saving.</p>
         </details>
         <details>
           <summary>What is the Fix-it list?</summary>

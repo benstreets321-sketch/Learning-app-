@@ -775,3 +775,56 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 0.05rem 0.35rem; bo
 .search-hit .smark { margin-top: 0.15rem; }
 .hit-title { display: block; font-weight: 500; }
 .hit-detail { display: block; }
+.save-status { display: flex; align-items: flex-start; gap: 0.4rem; font-size: 0.76rem; color: var(--faint); padding: 0.3rem 0.6rem 0.5rem; line-height: 1.35; }
+.save-status .icon { color: var(--good); margin-top: 0.1rem; }
+.save-status.err, .save-status.err .icon { color: var(--bad); }
+
+/* ---------- tutor ---------- */
+.tool-btn.tutor-btn { color: var(--accent-text); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); background: var(--accent-tint); }
+.drawer.is-tutor .drawer-body { display: flex; flex-direction: column; padding: 0; }
+.tutor { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.tutor-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.7rem 1rem 0.3rem; }
+.tutor > .callout { margin: 0.4rem 1rem; }
+.tutor-log { flex: 1; overflow-y: auto; padding: 0.4rem 1rem 0.6rem; display: flex; flex-direction: column; gap: 0.6rem; min-height: 120px; }
+.bubble { padding: 0.6rem 0.8rem; border-radius: 10px; max-width: 92%; font-size: 0.94rem; line-height: 1.5; white-space: pre-wrap; }
+.bubble .md { white-space: normal; line-height: 1.5; }
+.bubble .md p:first-child { margin-top: 0; }
+.bubble .md p:last-child { margin-bottom: 0; }
+.bubble.user { align-self: flex-end; background: var(--accent-tint); color: var(--text); border-bottom-right-radius: 3px; }
+.bubble.assistant { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--line); border-bottom-left-radius: 3px; }
+.tutor-chips { padding: 0 1rem; margin: 0.2rem 0 0.5rem; }
+.tutor-chips .chip { font-size: 0.8rem; }
+.tutor-input { display: flex; gap: 0.5rem; align-items: flex-end; padding: 0.6rem 1rem 0.3rem; border-top: 1px solid var(--line); }
+.tutor-input textarea { flex: 1; resize: none; min-height: 44px; max-height: 140px; }
+.tiny { font-size: 0.72rem; padding: 0 1rem calc(0.6rem + env(safe-area-inset-bottom)); margin: 0; }
+.tutor-empty { padding: 1rem; }
+.ai-mark { margin: 1rem 0; }
+.ai-score { font-size: 1.8rem; font-weight: 500; padding: 0.2rem 0.7rem; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); }
+.ai-fb { margin-top: 0.6rem; gap: 0.6rem; }
+.ai-fb ul { margin: 0.2rem 0; }
+.strong { font-weight: 600; }
+
+/* ---------- spec checklist ---------- */
+.cov-head { display: grid; grid-template-columns: 1fr 260px; gap: 1rem; align-items: center; margin: 0.5rem 0 1rem; }
+.cov-line { font-size: 1.05rem; margin: 0.2rem 0; }
+.cov-bar { display: flex; height: 10px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.cov-bar span { height: 100%; }
+.cov-bar .sec, .dot.sec { background: var(--good); }
+.cov-bar .prog, .dot.prog { background: var(--l-dev); }
+.cov-legend { display: flex; gap: 0.8rem; margin-top: 0.4rem; flex-wrap: wrap; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--surface-3); margin-right: 0.25rem; }
+.spec-code { min-width: 4.8rem; color: var(--muted); }
+.spec-tier { margin-left: 0.4rem; }
+.spec-status { flex-shrink: 0; padding: 0.1rem 0.5rem; border-radius: 5px; background: var(--surface-2); color: var(--muted); }
+.spec-status.st-secure { background: var(--good-bg); color: var(--good); }
+.spec-status.st-started { background: var(--warn-bg); color: var(--warn); }
+.spec-status.st-weak { background: var(--bad-bg); color: var(--bad); }
+.cov-row { display: grid; grid-template-columns: 180px 1fr auto; gap: 0.8rem; align-items: center; padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--line); color: var(--text); }
+.cov-row:last-child { border-bottom: 0; }
+.cov-row:hover { background: var(--surface-2); text-decoration: none; }
+@media (max-width: 760px) {
+  .cov-head { grid-template-columns: 1fr; }
+  .spec-code { min-width: 3.6rem; font-size: 0.72rem; }
+  .cov-row { grid-template-columns: 1fr auto; }
+  .cov-row .cov-bar { grid-column: 1 / -1; }
+}

@@ -1,4 +1,6 @@
 import { canCalendar, canNotify, disableReminders, downloadCalendar, enableReminders, permission, reminderText, showReminder } from '../lib/reminders';
+import { SaveStatus } from '../components/SaveStatus';
+import { getApiKey, setApiKey, testKey, useAIProvider } from '../lib/ai';
 import { SubjectMark } from '../components/SubjectMark';
 import { useRef, useState } from 'react';
 import { SUBJECTS } from '../content/registry';
@@ -132,6 +134,7 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
         </Section>
       ))}
 
+      {!firstRun && <AITutorSettings />}
       {!firstRun && <Reminders />}
 
       <Section title="Reading">
@@ -164,7 +167,8 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
         </div>
       ) : (
         <Section title="Your data">
-          <p className="muted small">Progress is saved on this device only. Export a backup to move it to another device.</p>
+          <SaveStatus detail />
+          <p className="muted small">Every answer, flashcard, note and exam draft is saved automatically as you go, and again the moment the app is closed. A second copy is kept in case anything goes wrong. To move to another device, export a backup and import it there.</p>
           <div className="row gap wrap">
             {import.meta.env.MODE !== 'single' && <button className="btn" onClick={() => {
               const blob = new Blob([exportData()], { type: 'application/json' });
@@ -228,6 +232,42 @@ function Reminders() {
       {perm === 'denied' && canNotify() && !note && <p className="small muted">Notifications are blocked for this site. Change it in your browser's site settings.</p>}
       <p className="small muted">On iPhone and iPad, notifications only work once the app is added to your Home Screen. "Add to calendar" works everywhere.</p>
       {note && <p className="small">{note}</p>}
+    </Section>
+  );
+}
+
+function AITutorSettings() {
+  const provider = useAIProvider();
+  const [key, setKey] = useState('');
+  const [msg, setMsg] = useState('');
+  const [busy, setBusy] = useState(false);
+  const has = !!getApiKey();
+  return (
+    <Section title="AI tutor">
+      {provider === 'claude' ? (
+        <p className="small"><strong>Connected through Claude.</strong> The tutor and exam marking use your own Claude account while you use the app inside Claude. Nothing to set up.</p>
+      ) : (
+        <>
+          <p className="muted small">The tutor gives clues, explanations and feedback on every question, and marks written exam answers against the mark scheme. Without a key it uses the app's own hints and notes. With a Claude API key it can answer any question. Ask a parent, carer or teacher to create a key at console.anthropic.com – usage is charged to that account.</p>
+          {has ? (
+            <div className="row gap wrap">
+              <span className="pill pill-good">API key saved on this device</span>
+              <button className="btn small" disabled={busy} onClick={async () => { setBusy(true); setMsg(await testKey()); setBusy(false); }}>{busy ? 'Testing…' : 'Test it'}</button>
+              <button className="btn small danger" onClick={() => { setApiKey(''); setMsg('Key removed.'); }}>Remove key</button>
+            </div>
+          ) : (
+            <form className="row gap wrap" onSubmit={async (e) => { e.preventDefault(); if (!key.trim()) return; setApiKey(key); setKey(''); setBusy(true); setMsg(await testKey()); setBusy(false); }}>
+              <label className="field inline grow">
+                <span>API key</span>
+                <input type="password" autoComplete="off" spellCheck={false} placeholder="sk-ant-…" value={key} onChange={(e) => setKey(e.target.value)} />
+              </label>
+              <button className="btn primary" type="submit" disabled={!key.trim() || busy}>{busy ? 'Checking…' : 'Save key'}</button>
+            </form>
+          )}
+          <p className="muted small">The key is stored only in this browser and is sent only to Anthropic (api.anthropic.com). It is not included in backups.</p>
+        </>
+      )}
+      {msg && <p className="small">{msg}</p>}
     </Section>
   );
 }
