@@ -70,3 +70,11 @@ NOT given (must learn): rectangle/triangle/parallelogram areas, cuboid/cylinder 
 similarity k, k^2, k^3, exact trig values, circle theorems, y = mx + c & perpendicular gradients, x^2 + y^2 = r^2,
 index laws, difference of two squares, speed/density/pressure, % change, proportion, independent events, histograms.
 (Sources: Mathinar 2027 sheet article; Cognito Sept 2026 article; AQA news 1 Sep 2026.)
+
+## Physics equations sheet (AQA news, 31 Aug 2026)
+- 2027: FULL physics equations sheet (includes the equations normally recalled) for 8463 papers 1 and 2 and Trilogy physics.
+  Same as 2026. Questions assessing recall direct learners to use the sheet.
+- 2028 onwards (Ofqual decision): sheets continue for the lifetime of current specs; boards must publish by 1 Sept the
+  year before; clean copies with every paper; boards must NOT set questions answerable solely by copying from the sheet -
+  this affects standard-demand "write down the equation that links..." science questions (AQA to give details in 2026/27).
+- Reformed GCSEs (Curriculum and Assessment Review) planned for first teaching 2029 or 2030; current GCSEs run to ~2030/2031.

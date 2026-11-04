@@ -46,4 +46,90 @@ export const REFERENCE: Record<string, string> = {
 ## Useful numbers
 Squares to 15² = 225 · Cubes 2³ = 8, 3³ = 27, 4³ = 64, 5³ = 125, 10³ = 1000 · Primes to 50: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47
 `,
+  physics: `
+In **2027** the full equation sheet (all of these) is provided. From **2028** it is still provided, but questions won't just ask you to copy an equation - so learn what each symbol and unit means.
+
+## Paper 1
+| Equation | Quantities (units) |
+|---|---|
+| Eₖ = ½mv² | kinetic energy (J), mass (kg), speed (m/s) |
+| Eₑ = ½ke² | elastic PE (J), spring constant (N/m), extension (m) |
+| Eₚ = mgh | GPE (J), mass (kg), g (N/kg), height (m) |
+| ΔE = mcΔθ | energy (J), mass (kg), SHC (J/kg°C), temp change (°C) |
+| P = E/t | power (W), energy (J), time (s) |
+| P = W/t | power (W), work done (J), time (s) |
+| efficiency = useful output ÷ total input | (energy or power) |
+| Q = It | charge (C), current (A), time (s) |
+| V = IR | p.d. (V), current (A), resistance (Ω) |
+| P = VI | power (W) |
+| P = I²R | power (W) |
+| E = Pt | energy (J) |
+| E = QV | energy (J), charge (C), p.d. (V) |
+| ρ = m/V | density (kg/m³), mass (kg), volume (m³) |
+| E = mL | energy (J), mass (kg), specific latent heat (J/kg) |
+| pV = constant (Physics only) | pressure (Pa), volume (m³) |
+
+## Paper 2
+| Equation | Quantities (units) |
+|---|---|
+| W = mg | weight (N), mass (kg), g (N/kg) |
+| W = Fs | work done (J), force (N), distance (m) |
+| F = ke | force (N), spring constant (N/m), extension (m) |
+| M = Fd (Physics only) | moment (Nm), force (N), perpendicular distance (m) |
+| p = F/A | pressure (Pa), force (N), area (m²) |
+| p = hρg (Physics only) | pressure (Pa), height (m), density (kg/m³), g |
+| s = vt | distance (m), speed (m/s), time (s) |
+| a = Δv/t | acceleration (m/s²), change in velocity (m/s), time (s) |
+| v² − u² = 2as | final/initial velocity (m/s), acceleration, distance (m) |
+| F = ma | force (N), mass (kg), acceleration (m/s²) |
+| p = mv (Higher) | momentum (kg m/s) |
+| F = mΔv/Δt (Higher, Physics only) | force (N) |
+| v = fλ | wave speed (m/s), frequency (Hz), wavelength (m) |
+| T = 1/f | period (s) |
+| magnification = image height ÷ object height (Physics only) | |
+| F = BIl (Higher) | force (N), magnetic flux density (T), current (A), length (m) |
+| Vp/Vs = np/ns (Higher, Physics only) | transformer p.d.s and turns |
+| VpIp = VsIs (Higher, Physics only) | |
+
+## Must-know values
+g = 9.8 N/kg · speed of EM waves 3 × 10⁸ m/s · UK mains 230 V, 50 Hz · speed of sound ~330 m/s
+`,
+  chemistry: `
+You get a **periodic table**. Everything below must be learned.
+
+## Common ions
+| Positive | Negative |
+|---|---|
+| H⁺, Na⁺, K⁺, Li⁺, Ag⁺, NH₄⁺ | Cl⁻, Br⁻, I⁻, OH⁻, NO₃⁻ |
+| Mg²⁺, Ca²⁺, Cu²⁺, Zn²⁺, Fe²⁺ | O²⁻, S²⁻, SO₄²⁻, CO₃²⁻ |
+| Al³⁺, Fe³⁺ | |
+
+## Reactivity series
+K > Na > Li > Ca > Mg > **(C)** > Zn > Fe > **(H)** > Cu > Ag > Au
+
+## Key formulae
+| | |
+|---|---|
+| moles = mass ÷ Mᵣ (Higher) | concentration (g/dm³) = mass ÷ volume (dm³) |
+| concentration (mol/dm³) = moles ÷ volume (dm³) | % yield = actual ÷ theoretical × 100 |
+| atom economy = Mᵣ desired ÷ total Mᵣ reactants × 100 | Rf = distance by spot ÷ distance by solvent |
+| mean rate = quantity ÷ time | 1 mol of gas = 24 dm³ at RTP (Higher) |
+
+## Tests
+| Test | Positive result |
+|---|---|
+| Hydrogen - lit splint | Squeaky pop |
+| Oxygen - glowing splint | Relights |
+| Carbon dioxide - limewater | Turns cloudy |
+| Chlorine - damp litmus | Bleached white |
+| Alkene - bromine water | Orange → colourless |
+| Flame: Li⁺ / Na⁺ / K⁺ / Ca²⁺ / Cu²⁺ | Crimson / yellow / lilac / orange-red / green |
+| NaOH: Cu²⁺ / Fe²⁺ / Fe³⁺ | Blue / green / brown precipitate |
+| Halides (HNO₃ + AgNO₃): Cl⁻ / Br⁻ / I⁻ | White / cream / yellow precipitate |
+| Sulfate (HCl + BaCl₂) | White precipitate |
+| Carbonate (acid) | Fizzes; gas turns limewater cloudy |
+
+## Salt rules
+acid + metal → salt + hydrogen · acid + base → salt + water · acid + carbonate → salt + water + CO₂
+`,
 };
