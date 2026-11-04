@@ -29,10 +29,65 @@ const topicMap = new Map<string, TopicRef>();
 const questionMap = new Map<string, QItem>();
 const questionsByTopic = new Map<string, QItem[]>();
 
+// ---------- Derived practice from quotes and timelines ----------
+const stripEnd = (s: string) => s.replace(/[.,;:!?’'"“”—–-]+$/g, '').trim();
+
+function deriveQuestions(topic: Topic, speakers: string[]): Question[] {
+  const out: Question[] = [];
+  for (const qt of topic.quotes ?? []) {
+    const words = qt.text.split(/\s+/);
+    if (words.length >= 5) {
+      const lastN = stripEnd(words[words.length - 1]).length >= 4 ? 1 : 2;
+      const answer = stripEnd(words.slice(-lastN).join(' '));
+      const start = words.slice(0, -lastN).join(' ');
+      out.push({ type: 'text', q: `Complete the quotation${qt.who ? ` (${qt.who})` : ''}: “${start} …”`, accept: [answer], why: `“${qt.text}”${qt.where ? ` (${qt.where})` : ''}\n\n${qt.analysis}`, d: 2 });
+    }
+    if (qt.who) {
+      const others = speakers.filter((s) => s !== qt.who);
+      if (others.length >= 2) {
+        const off = qt.text.length % others.length;
+        const pickOthers = [...new Set([others[off], others[(off + 1) % others.length], others[(off + 2) % others.length]])];
+        out.push({ type: 'mcq', q: `Which character, speaker or poem is this quotation from? “${qt.text}”`, options: [qt.who, ...pickOthers], answer: 0, why: qt.analysis, d: 2 });
+      }
+    }
+  }
+  const tl = topic.timeline ?? [];
+  if (tl.length >= 4) {
+    for (let i = 0; i + 4 <= tl.length; i += 4) {
+      out.push({ type: 'order', q: 'Put these events in chronological order (earliest first).', items: tl.slice(i, i + 4).map((e) => e.event), why: tl.slice(i, i + 4).map((e) => `**${e.date}**: ${e.event}`).join('  \n'), d: 3 });
+    }
+    const dates = [...new Set(tl.map((e) => e.date))];
+    tl.slice(0, 8).forEach((e, i) => {
+      const wrong = dates.filter((d) => d !== e.date);
+      if (wrong.length < 3) return;
+      const w = [wrong[(i + 1) % wrong.length], wrong[(i + 3) % wrong.length], wrong[(i + 5) % wrong.length]];
+      const opts = [...new Set([e.date, ...w])];
+      if (opts.length >= 3) out.push({ type: 'mcq', q: `When did this happen? **${e.event}**`, options: opts, answer: 0, why: `${e.date}: ${e.event}`, d: 2 });
+    });
+  }
+  return out;
+}
+
+function deriveCards(topic: Topic) {
+  const cardsOut = (topic.quotes ?? []).map((qt) => ({
+    front: `“${qt.text}”\n\n*Who / where - and what does it show?*`,
+    back: `**${[qt.who, qt.where].filter(Boolean).join(', ') || 'Key quote'}**\n\n${qt.analysis}`,
+  }));
+  return cardsOut;
+}
+
 for (const subject of SUBJECTS) {
+  const speakers = [...new Set(subject.units.flatMap((u) => u.topics.flatMap((t) => (t.quotes ?? []).map((q) => q.who).filter((w): w is string => !!w))))];
   for (const unit of subject.units) {
     for (const topic of unit.topics) {
       topicMap.set(topic.id, { subject, unit, topic });
+      // per-text speakers make better distractors: prefer speakers from the same unit
+      const unitSpeakers = [...new Set(unit.topics.flatMap((t) => (t.quotes ?? []).map((q) => q.who).filter((w): w is string => !!w)))];
+      const derived = deriveQuestions(topic, unitSpeakers.length >= 4 ? unitSpeakers : speakers);
+      if (derived.length && !topic.questions.some((q) => (q as { derived?: boolean }).derived)) {
+        topic.questions = [...topic.questions, ...derived.map((d) => ({ ...d, derived: true }))];
+        topic.flashcards = [...topic.flashcards, ...deriveCards(topic)];
+      }
       const seen = new Set<string>();
       const items: QItem[] = topic.questions.map((q, i) => {
         const text = 'q' in q && q.q ? q.q : q.type === 'cloze' ? q.text : String(i);
