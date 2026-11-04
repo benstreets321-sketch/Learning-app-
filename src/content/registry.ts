@@ -1,0 +1,151 @@
+// Central index of all subjects, topics and questions, plus profile-aware filtering.
+import type { GeneratedQuestion, QItem, Question, Subject, Topic, Unit } from './types';
+import type { Profile } from '../lib/store';
+import { hash, mulberry32 } from '../lib/util';
+import { GENERATORS } from './generators';
+
+import englishLanguage from './subjects/english-language';
+import englishLiterature from './subjects/english-literature';
+import maths from './subjects/maths';
+import biology from './subjects/biology';
+import chemistry from './subjects/chemistry';
+import physics from './subjects/physics';
+import imedia from './subjects/imedia';
+import business from './subjects/business';
+import history from './subjects/history';
+import statistics from './subjects/statistics';
+
+export const SUBJECTS: Subject[] = [
+  englishLanguage, englishLiterature, maths, biology, chemistry, physics, imedia, business, history, statistics,
+];
+
+export interface TopicRef {
+  subject: Subject;
+  unit: Unit;
+  topic: Topic;
+}
+
+const topicMap = new Map<string, TopicRef>();
+const questionMap = new Map<string, QItem>();
+const questionsByTopic = new Map<string, QItem[]>();
+
+for (const subject of SUBJECTS) {
+  for (const unit of subject.units) {
+    for (const topic of unit.topics) {
+      topicMap.set(topic.id, { subject, unit, topic });
+      const seen = new Set<string>();
+      const items: QItem[] = topic.questions.map((q, i) => {
+        const text = 'q' in q && q.q ? q.q : q.type === 'cloze' ? q.text : String(i);
+        let id = `${topic.id}:${hash(text)}`;
+        if (seen.has(id)) id = `${id}-${i}`;
+        seen.add(id);
+        const item = { ...q, id, topicId: topic.id, subjectId: subject.id } as QItem;
+        questionMap.set(id, item);
+        return item;
+      });
+      questionsByTopic.set(topic.id, items);
+    }
+  }
+}
+
+export const getSubject = (id: string) => SUBJECTS.find((s) => s.id === id);
+export const getTopic = (id: string) => topicMap.get(id);
+export const getQuestion = (id: string) => questionMap.get(id);
+export const topicQuestions = (topicId: string) => questionsByTopic.get(topicId) ?? [];
+export const allTopicRefs = () => [...topicMap.values()];
+
+/** Is this unit relevant to the student's chosen options (set texts, history units, course)? */
+export function unitVisible(unit: Unit, profile: Profile): boolean {
+  if (!unit.option) return true;
+  if (profile.showAllOptions) return true;
+  const { group, value } = unit.option;
+  const chosen = profile.options[group];
+  const multi = profile.multiOptions[group];
+  if (multi && multi.length) return multi.includes(value);
+  if (chosen === undefined) return true;
+  if (chosen === 'all' || chosen === 'both') return true;
+  return chosen === value || value === 'all';
+}
+
+export function tierOk(t: { tier?: string }, subjectId: string, profile: Profile): boolean {
+  if (!t.tier || t.tier === 'both' || t.tier === 'F') return true;
+  return (profile.tiers[subjectId] ?? 'H') === 'H';
+}
+
+export function visibleUnits(subject: Subject, profile: Profile): Unit[] {
+  return subject.units
+    .filter((u) => unitVisible(u, profile))
+    .map((u) => ({ ...u, topics: u.topics.filter((t) => tierOk(t, subject.id, profile)) }))
+    .filter((u) => u.topics.length > 0);
+}
+
+export function visibleTopics(subject: Subject, profile: Profile): Topic[] {
+  return visibleUnits(subject, profile).flatMap((u) => u.topics);
+}
+
+export function activeSubjects(profile: Profile): Subject[] {
+  return SUBJECTS.filter((s) => profile.subjects.includes(s.id));
+}
+
+export function questionPool(topicIds: string[], profile: Profile): QItem[] {
+  return topicIds.flatMap((tid) => {
+    const ref = topicMap.get(tid);
+    if (!ref) return [];
+    return topicQuestions(tid).filter((q) => tierOk(q, ref.subject.id, profile));
+  });
+}
+
+// ---------- Generated (procedural) questions ----------
+
+export interface GenSnapshot {
+  g: string;
+  s: number;
+  l: number;
+  t: string;
+}
+
+export function generatedToQuestion(gq: GeneratedQuestion): Question {
+  const why = gq.steps.join('\n\n');
+  if (gq.options && gq.options.length) {
+    return { type: 'mcq', q: gq.q, options: gq.options, answer: 0, why, hints: gq.hints, d: gq.d };
+  }
+  if (typeof gq.answer === 'number') {
+    return { type: 'num', q: gq.q, answer: gq.answer, tol: gq.tol, unit: gq.unit, steps: gq.steps, why, hints: gq.hints, d: gq.d };
+  }
+  return { type: 'text', q: gq.q, accept: gq.accept ?? [String(gq.answer)], steps: gq.steps, why, hints: gq.hints, d: gq.d };
+}
+
+export function makeGenerated(snap: GenSnapshot): QItem | undefined {
+  const gen = GENERATORS[snap.g];
+  const ref = topicMap.get(snap.t);
+  if (!gen || !ref) return undefined;
+  try {
+    const gq = gen.make(mulberry32(snap.s), snap.l);
+    const q = generatedToQuestion(gq);
+    return { ...q, id: `gen:${snap.g}:${snap.s}`, topicId: snap.t, subjectId: ref.subject.id, generated: true } as QItem;
+  } catch {
+    return undefined;
+  }
+}
+
+export function randomGenerated(topicId: string, level: number, profile: Profile, rand = Math.random): QItem | undefined {
+  const ref = topicMap.get(topicId);
+  if (!ref?.topic.generators?.length) return undefined;
+  const ids = ref.topic.generators.filter((g) => GENERATORS[g] && tierOk(GENERATORS[g], ref.subject.id, profile));
+  if (!ids.length) return undefined;
+  const g = ids[Math.floor(rand() * ids.length)];
+  const s = Math.floor(rand() * 2 ** 31);
+  return makeGenerated({ g, s, l: level, t: topicId });
+}
+
+export const totalCounts = () => {
+  let topics = 0, questions = 0, cards = 0, exam = 0, generators = 0;
+  for (const { topic } of topicMap.values()) {
+    topics++;
+    questions += topic.questions.length;
+    cards += topic.flashcards.length;
+    exam += topic.examQuestions?.length ?? 0;
+    generators += topic.generators?.length ?? 0;
+  }
+  return { topics, questions, cards, exam, generators, generatorTypes: Object.keys(GENERATORS).length };
+};
