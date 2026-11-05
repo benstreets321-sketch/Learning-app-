@@ -2,8 +2,12 @@
 import type { GeneratedQuestion, QItem, Question, Subject, Topic, Unit } from './types';
 import type { Profile } from '../lib/store';
 import { hash, mulberry32 } from '../lib/util';
-import { GENERATORS } from './generators';
+import { askedDp } from '../lib/answer';
+import { GENERATORS, FACT_TOPICS } from './generators';
+import { plotGenerator, quoteGenerator, timelineGenerator, type UnitEvent, type UnitQuote } from './generators/topic-facts';
 import { EXTRA } from './extra';
+import { EXTRA_LIT } from './extra-lit';
+import { finishCluster } from './subjects/english-literature/poetry-helpers';
 import { SUPPLEMENTS, NEW_TOPICS } from './supplements';
 import { EXAM_STEM } from './exam-extra-stem';
 import { EXAM_OTHER } from './exam-extra-other';
@@ -157,10 +161,16 @@ for (const subject of SUBJECTS) {
         t.questions = [...t.questions, ...(sup.questions ?? [])];
         t.flashcards = [...t.flashcards, ...(sup.flashcards ?? [])];
       }
-      const extra = EXTRA[t.id];
-      if (extra && !t.questions.includes(extra[0])) t.questions = [...t.questions, ...extra];
+      for (const extra of [EXTRA[t.id], EXTRA_LIT[t.id]]) if (extra && !t.questions.includes(extra[0])) t.questions = [...t.questions, ...extra];
       for (const add of [EXAM_STEM[t.id], EXAM_OTHER[t.id]]) {
         if (add && !(t.examQuestions ?? []).includes(add[0])) t.examQuestions = [...(t.examQuestions ?? []), ...add];
+      }
+    }
+    if (/^(pc|lr|wl)$/.test(unit.id)) {
+      for (const g of finishCluster(unit)) {
+        GENERATORS[g.id] = g;
+        const t = unit.topics.find((x) => `pm-${x.id}` === g.id);
+        if (t) t.generators = [...new Set([...(t.generators ?? []), g.id])];
       }
     }
     const unitCards = unit.topics.flatMap((t) => t.flashcards.map((c) => ({ ...c, topicId: t.id })));
@@ -172,6 +182,24 @@ for (const subject of SUBJECTS) {
   }
   const speakers = [...new Set(subject.units.flatMap((u) => u.topics.flatMap((t) => (t.quotes ?? []).map((q) => q.who).filter((w): w is string => !!w))))];
   for (const unit of subject.units) {
+    // endless varied practice: fact-table generators, and generators built from each topic's timeline and quotations
+    const unitEvents: UnitEvent[] = unit.topics.flatMap((t) => (t.timeline ?? []).map((e, idx) => ({ ...e, topicId: t.id, idx })));
+    const unitQuotes: UnitQuote[] = unit.topics.flatMap((t) => (t.quotes ?? []).map((q) => ({ ...q, topicId: t.id })));
+    const poetry = /^(pc|lr|wl)$/.test(unit.id);
+    for (const t of unit.topics) {
+      const add = [...(FACT_TOPICS[t.id] ?? [])];
+      const own = unitEvents.filter((e) => e.topicId === t.id);
+      const tl = subject.id === 'history' ? timelineGenerator(`tl-${t.id}`, `Dates and order: ${t.title}`, own, unitEvents)
+        : subject.id === 'english-literature' ? plotGenerator(`tl-${t.id}`, `Plot order: ${t.title}`, own, unit.title) : null;
+      const qg = subject.id === 'english-literature' ? quoteGenerator(`qt-${t.id}`, `Quotations: ${t.title}`, unitQuotes.filter((q) => q.topicId === t.id), unitQuotes, unit.title, poetry) : null;
+      for (const g of [tl, qg]) if (g) { GENERATORS[g.id] = g; add.push(g.id); }
+      if (add.length) t.generators = [...new Set([...(t.generators ?? []), ...add])];
+    }
+    // Literature themes, context and exam-practice topics practise with the whole text's quotations and plot
+    if (subject.id === 'english-literature') {
+      const unitGens = [...new Set(unit.topics.flatMap((t) => (t.generators ?? []).filter((g) => /^(qt|tl)-/.test(g))))];
+      if (unitGens.length) for (const t of unit.topics) if (!(t.generators ?? []).length) t.generators = [...unitGens];
+    }
     for (const topic of unit.topics) {
       topicMap.set(topic.id, { subject, unit, topic });
       // per-text speakers make better distractors: prefer speakers from the same unit
@@ -252,7 +280,19 @@ export interface GenSnapshot {
   t: string;
 }
 
-export function generatedToQuestion(gq: GeneratedQuestion): Question {
+/** "= 0.8" in the worked steps becomes "= 0.80" when the question asks for 2 dp */
+function padSteps(gq: GeneratedQuestion): GeneratedQuestion {
+  const ans = gq.answer;
+  if (typeof ans !== 'number') return gq;
+  const dp = askedDp(gq.q);
+  const shown = String(ans);
+  if (dp === null || shown.includes('e') || (shown.split('.')[1]?.length ?? 0) >= dp) return gq;
+  const re = new RegExp(`([=≈] ?)${shown.replace('.', '\\.')}(?![\\d.])`, 'g');
+  return { ...gq, steps: gq.steps.map((st) => st.replace(re, `$1${ans.toFixed(dp)}`)) };
+}
+
+export function generatedToQuestion(raw: GeneratedQuestion): Question {
+  const gq = padSteps(raw);
   const why = gq.steps.join('\n\n');
   if (gq.spot) {
     return { type: 'spot', q: gq.q, steps: gq.spot.lines, wrong: gq.spot.wrong, fix: gq.spot.fix, why, hints: gq.hints, d: gq.d };

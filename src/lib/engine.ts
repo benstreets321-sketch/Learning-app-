@@ -171,6 +171,24 @@ export interface SelectContext {
   rand: () => number;
 }
 
+/**
+ * How strongly to hold back a question that is NOT due yet, by how recently it was seen. Seeing the same question
+ * again within a day is what makes practice feel repetitive; due reviews and mistakes are never held back.
+ */
+export function recentPenalty(s: SrsState | undefined, now: number): number {
+  if (!s || !s.seen || s.due <= now) return 0;
+  const ago = now - s.last;
+  const exposure = Math.min(1.2, s.seen * 0.12); // questions seen many times step aside for less familiar ones
+  if (ago < 60 * MIN) return 7 + exposure;
+  if (ago < DAY) return 4 + exposure;
+  if (ago < 3 * DAY) return 2.5 + exposure;
+  if (ago < 7 * DAY) return 1.2 + exposure;
+  return 0.4 + exposure;
+}
+
+/** Seen recently and not due: better replaced by a fresh variant if one can be generated */
+export const isStale = (c: Candidate, ctx: Pick<SelectContext, 'srs' | 'now'>) => !c.generated && recentPenalty(ctx.srs[c.id], ctx.now) >= 2.5;
+
 export function scoreCandidate(c: Candidate, ctx: SelectContext): number {
   const t = ctx.topics[c.topicId];
   const theta = t ? effectiveTheta(t, ctx.now) : newTopicState().theta;
@@ -180,7 +198,7 @@ export function scoreCandidate(c: Candidate, ctx: SelectContext): number {
   if (ctx.askedThisSession.has(c.id)) score -= 10;
   if (!s || s.seen === 0) score += 0.8; // fresh material
   else if (s.due <= ctx.now) score += s.lastWrong ? 3 : 2; // due review (mistakes first)
-  else score -= 1.5; // not due yet
+  else score -= 1 + recentPenalty(s, ctx.now); // not due yet: the more recently seen, the less likely
   // weaker topics get a nudge so practice flows to where it's needed
   if (t && t.n > 0) score += (1 - pCorrect(theta, 3)) * 1.2;
   score += ctx.rand() * 0.8; // variety

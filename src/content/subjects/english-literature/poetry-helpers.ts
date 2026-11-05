@@ -1,4 +1,6 @@
-import type { Question, Quote, Topic, PastQuestion } from '../../types';
+import type { Generator, Question, Quote, Topic, PastQuestion, Unit } from '../../types';
+import { mcq, pick } from '../../generators/facts-kit';
+import { shuffle } from '../../../lib/util';
 import { topic, mc, examQ } from '../../dsl';
 
 export interface PoemSpec {
@@ -18,7 +20,71 @@ export interface PoemSpec {
   copyrightNote?: boolean;
 }
 
+const SPECS = new Map<string, PoemSpec>();
+
+/**
+ * After a cluster is built: make "Who wrote...?" offer other poets from the SAME cluster and era, and make the
+ * comparison question name the reason and offer other poems from the cluster - so neither can be guessed.
+ */
+export function finishCluster(unit: Unit): Generator[] {
+  const specs = unit.topics.map((t) => SPECS.get(t.id)).filter((x): x is PoemSpec => !!x);
+  if (specs.length < 5) return [];
+  const yr = (d: string) => Number(/\d{4}/.exec(d)?.[0] ?? 2015);
+  for (const p of specs) {
+    const t = unit.topics.find((x) => x.id === p.id)!;
+    const poets = [...new Set(specs.filter((x) => x.poet !== p.poet).map((x) => x.poet))]
+      .sort((a, b) => Math.abs(yr(specs.find((x) => x.poet === a)!.date) - yr(p.date)) - Math.abs(yr(specs.find((x) => x.poet === b)!.date) - yr(p.date)));
+    const listed = new Set(p.compare.map((c) => c[0]));
+    const rot = p.title.length % Math.max(1, specs.length);
+    const others = [...specs.slice(rot), ...specs.slice(0, rot)].filter((x) => x.id !== p.id && !listed.has(x.title)).map((x) => x.title);
+    t.questions = t.questions.map((q) => {
+      if (q.type !== 'mcq') return q;
+      if (q.q.startsWith('Who wrote') && poets.length >= 3) return { ...q, options: [p.poet, ...poets.slice(0, 3)] };
+      if (q.q.startsWith('Which poem is a strong comparison') && others.length >= 3) {
+        const [title, why] = p.compare[0];
+        // titles of a similar length, so the answer doesn't stand out
+        const alike = [...others].sort((a, b) => Math.abs(a.length - title.length) - Math.abs(b.length - title.length));
+        return { ...q, q: `Which poem from the cluster is a strong comparison for '${p.title}' for this reason: *${why}*`, options: [title, ...alike.slice(0, 3)] };
+      }
+      return q;
+    });
+  }
+  return specs.map((p) => poemGenerator(p, specs));
+}
+
+/** Endless questions about one poem, with every wrong option taken from another poem in the same cluster */
+function poemGenerator(p: PoemSpec, specs: PoemSpec[]): Generator {
+  const others = specs.filter((x) => x.id !== p.id);
+  const yr = (d: string) => Number(/\d{4}/.exec(d)?.[0] ?? 2015);
+  const redact = (s: string) => s.replace(new RegExp(p.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), 'this poem').replace(new RegExp(p.poet, 'g'), 'the poet');
+  // poems sharing a theme are the most confusable
+  const near = (x: PoemSpec) => (x.themes.some((t) => p.themes.includes(t)) ? 0 : 1);
+  return {
+    id: `pm-${p.id}`, title: `Know the poem: ${p.title}`,
+    make: (rand) => {
+      const why = [`**${p.title}** – ${p.poet} (${p.date})`, p.about];
+      const kinds = ['about', 'context', 'form', 'poet', 'themes', ...(p.compare.length ? ['compare'] : [])];
+      const k = pick(rand, kinds);
+      const ranked = shuffle(others, rand).sort((a, b) => near(a) - near(b));
+      if (k === 'about') return mcq(rand, `Which poem from the cluster is this?\n\n> ${redact(p.about)}`, p.title, ranked.map((x) => x.title), why, 2);
+      if (k === 'context') return mcq(rand, `Which piece of context belongs to **${p.title}**?`, p.context, ranked.map((x) => x.context), [`${p.title}: ${p.context}`], 3);
+      if (k === 'form') return mcq(rand, `Which description of form and structure fits **${p.title}**?`, p.form, ranked.filter((x) => x.form !== p.form).map((x) => x.form), [`${p.title}: ${p.form}`], 3);
+      if (k === 'poet') return mcq(rand, `Who wrote **${p.title}**?`, p.poet, [...new Set(others.filter((x) => x.poet !== p.poet).sort((a, b) => Math.abs(yr(a.date) - yr(p.date)) - Math.abs(yr(b.date) - yr(p.date))).map((x) => x.poet))], why, 1);
+      if (k === 'themes') {
+        const right = p.themes.slice(0, 2).join(' and ');
+        const wrong = others.filter((x) => !x.themes.some((t) => p.themes.includes(t))).map((x) => x.themes.slice(0, 2).join(' and '));
+        if (wrong.length >= 2) return mcq(rand, `Which two themes are central to **${p.title}**?`, right, wrong, [`${p.title}: ${p.themes.join(', ')}.`], 2);
+        return mcq(rand, `Which poem from the cluster is this?\n\n> ${redact(p.about)}`, p.title, ranked.map((x) => x.title), why, 2);
+      }
+      const [title, reason] = p.compare[0];
+      const reasons = others.flatMap((x) => x.compare.filter((c) => c[0] !== p.title && c[0] !== title).map((c) => c[1]));
+      return mcq(rand, `**${p.title}** is often compared with **${title}**. What is the reason?`, reason, shuffle(reasons, rand), [`${p.title} and ${title}: ${reason}`], 3);
+    },
+  };
+}
+
 export function poem(p: PoemSpec, cluster: string): Topic {
+  SPECS.set(p.id, p);
   const notes = `
 **${p.poet}** · ${p.date}${p.copyrightNote ? ' · *in copyright - read it in your printed anthology*' : ''}
 

@@ -2,11 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { activeSubjects, getSubject, questionPool, randomGenerated, visibleTopics } from '../content/registry';
 import type { QItem } from '../content/types';
 import { getProfile, getProgress, recordAnswer, recordSprint, addStudyTime } from '../lib/store';
-import { checkNumber } from '../lib/answer';
+import { checkNumber, formatAnswer } from '../lib/answer';
+import { recentPenalty } from '../lib/engine';
 import { href, refresh } from '../lib/router';
 import { shuffle } from '../lib/util';
 import { Markdown } from '../components/Markdown';
 import { Icon } from '../components/Icon';
+import { ToolBar, resetTools, syncTools, type ToolId } from '../components/Tools';
+import { equipmentForQuestion } from '../lib/equipment';
 
 const LENGTH = 90;
 
@@ -32,11 +35,14 @@ export function SprintPage({ query }: { query: URLSearchParams }) {
       return false;
     });
     const gens: QItem[] = [];
-    for (const t of shuffle(ids).slice(0, 40)) {
+    for (const t of shuffle(ids).slice(0, 60)) {
       const g = randomGenerated(t, 1 + Math.floor(Math.random() * 2), profile);
-      if (g && (g.type === 'num' || g.type === 'mcq')) gens.push(g);
+      if (g && (g.type === 'num' || g.type === 'mcq' || g.type === 'tf')) gens.push(g);
     }
-    return shuffle([...shuffle(qs).slice(0, 80), ...gens]);
+    // least recently seen first, so a sprint isn't the same questions as the last one
+    const now = Date.now();
+    const fresh = qs.map((q) => ({ q, k: recentPenalty(progress.items[q.id], now) + Math.random() * 1.5 })).sort((a, b) => a.k - b.k).map((x) => x.q);
+    return shuffle([...fresh.slice(0, 80), ...gens]);
   }, [subjectId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const key = subject ? subject.id : 'all';
@@ -77,6 +83,9 @@ function Run({ deck, sprintKey, best, title }: { deck: QItem[]; sprintKey: strin
   const order = useMemo(() => deck.map((q) => (q.type === 'mcq' ? shuffle(q.options.map((_, k) => k)) : [])), [deck]);
   const shownAt = useRef(Date.now());
   const q = deck[i % deck.length];
+  const tools = useMemo(() => equipmentForQuestion(q) as ToolId[], [q]);
+  useEffect(() => { syncTools(tools, q.subjectId); }, [tools, q.subjectId]);
+  useEffect(() => () => resetTools(), []);
 
   useEffect(() => {
     if (done) return;
@@ -107,7 +116,8 @@ function Run({ deck, sprintKey, best, title }: { deck: QItem[]; sprintKey: strin
     if (q.type === 'tf' && (n === 1 || n === 2)) answer((n === 1) === q.answer, n === 1 ? 'True' : 'False');
   };
   useEffect(() => {
-    const h = (e: KeyboardEvent) => { if ((e.target as HTMLElement).tagName !== 'INPUT') keyRef.current(e); };
+    // typing in the calculator or working pad must never answer the question
+    const h = (e: KeyboardEvent) => { const t = e.target as HTMLElement; if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName) && !t.closest('.drawer')) keyRef.current(e); };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, []);
@@ -153,6 +163,7 @@ function Run({ deck, sprintKey, best, title }: { deck: QItem[]; sprintKey: strin
       <div className="sprint-timer" aria-label={`${left} seconds left`}><div style={{ width: `${(left / LENGTH) * 100}%` }} className={left <= 10 ? 'low' : ''} /></div>
       <div className={`qcard sprint-card ${flash === 'ok' ? 'is-right' : flash === 'bad' ? 'is-wrong' : ''}`}>
         <div className="qmeta"><span className="mono">{left}s</span><span className="qtopic">{getSubject(q.subjectId)?.short}</span></div>
+        {tools.length > 1 && <div className="q-tools"><ToolBar subjectId={q.subjectId} tools={tools} compact /></div>}
         <div className="qtext"><Markdown text={'q' in q ? q.q ?? '' : ''} /></div>
         {q.type === 'mcq' && (
           <div className="options">
@@ -177,7 +188,7 @@ function Run({ deck, sprintKey, best, title }: { deck: QItem[]; sprintKey: strin
             <button className="btn primary" type="submit"><Icon name="arrow" size={18} /></button>
           </form>
         )}
-        {flash === 'bad' && q.type === 'num' && <p className="small fb-detail">Answer: {q.answer}{q.unit ? ` ${q.unit}` : ''}</p>}
+        {flash === 'bad' && q.type === 'num' && <p className="small fb-detail">Answer: {formatAnswer(q.answer, q.q)}{q.unit ? ` ${q.unit}` : ''}</p>}
       </div>
       <button className="btn ghost small" onClick={() => answer(false, '(skipped)')}>Skip</button>
     </div>

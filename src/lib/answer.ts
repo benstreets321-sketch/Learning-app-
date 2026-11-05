@@ -138,3 +138,20 @@ export function checkSelect(tokens: SelectToken[], picked: Set<number>) {
   const extra = [...picked].filter((i) => tokens[i] && tokens[i].group < 0).length;
   return { ok: found.size === groups.size && extra === 0, found: found.size, total: groups.size, extra };
 }
+
+const DP_WORDS: Record<string, number> = { one: 1, two: 2, three: 3 };
+/** decimal places a question asks for ("(2 dp)", "to 1 decimal place"), if any */
+export function askedDp(q: string): number | null {
+  const m = /\((\d) ?d\.?p\.?\)|\bto (\d|one|two|three) (?:d\.?p\.?|decimal places?)\b/i.exec(q);
+  if (!m) return null;
+  const v = m[1] ?? m[2];
+  return DP_WORDS[v.toLowerCase()] ?? Number(v);
+}
+
+/** How a numeric answer is shown: with the decimal places the question asked for (0.80, not 0.8) */
+export function formatAnswer(n: number, q = ''): string {
+  const dp = askedDp(q);
+  if (dp !== null && Number.isFinite(n)) return n.toFixed(dp);
+  if (Number.isInteger(n)) return n.toLocaleString('en-GB');
+  return String(Math.round(n * 1e6) / 1e6);
+}

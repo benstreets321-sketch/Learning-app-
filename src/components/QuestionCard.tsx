@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { QItem, Topic } from '../content/types';
 import type { Confidence } from '../lib/engine';
-import { checkNumber, checkSelect, checkText, parseCloze, parseSelect } from '../lib/answer';
+import { checkNumber, checkSelect, checkText, formatAnswer, parseCloze, parseSelect } from '../lib/answer';
 import { shuffle } from '../lib/util';
 import { Markdown } from './Markdown';
 import { StuckPanel } from './StuckPanel';
-import { ToolBar } from './Tools';
+import { ToolBar, syncTools, type ToolId } from './Tools';
+import { equipmentForQuestion } from '../lib/equipment';
 import { SpeakButton } from './Speak';
 import { setTutorContext } from '../lib/tutor';
 import { Icon } from './Icon';
@@ -37,6 +38,9 @@ const CONF: { id: Confidence; label: string; title: string }[] = [
 
 export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next question', canEasier = false }: Props) {
   // Shuffle presentation order once per question
+  // only the equipment this question needs (calculator, periodic table, formula sheet...)
+  const tools = useMemo(() => equipmentForQuestion(item) as ToolId[], [item]);
+  useEffect(() => { syncTools(tools, item.subjectId); }, [tools, item.subjectId]);
   const order = useMemo(() => {
     if (item.type === 'mcq' || item.type === 'multi') return shuffle(item.options.map((_, i) => i));
     return [];
@@ -240,7 +244,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       case 'mcq': return item.options[item.answer];
       case 'multi': return item.answers.map((a) => item.options[a]).join('; ');
       case 'tf': return item.answer ? 'True' : 'False';
-      case 'num': return `${formatNum(item.answer)}${item.unit ? ' ' + item.unit : ''}`;
+      case 'num': return `${formatAnswer(item.answer, item.q)}${item.unit ? ' ' + item.unit : ''}`;
       case 'text': return item.accept[0];
       case 'order': return item.items.map((s, i) => `${i + 1}. ${s}`).join('  ');
       case 'match': return item.pairs.map(([l, r]) => `${l} → ${r}`).join('; ');
@@ -258,12 +262,12 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       <div className="qmeta">
         <span className={`diff diff-${item.d}`} title="Difficulty">{'●'.repeat(item.d)}{'○'.repeat(5 - item.d)}</span>
         {item.tier === 'H' && <span className="pill pill-info">Higher</span>}
-        {item.generated && <span className="pill pill-plain">Fresh numbers</span>}
+        {item.generated && <span className="pill pill-plain">{item.type === 'num' ? 'Fresh numbers' : 'New variation'}</span>}
         {topic && <span className="qtopic">{topic.title}</span>}
       </div>
 
       <div className="q-tools">
-        <ToolBar subjectId={item.subjectId} />
+        <ToolBar subjectId={item.subjectId} tools={tools} />
         <SpeakButton text={[item.ctx ?? '', item.type === 'cloze' ? item.text.replace(/\{\{[^}]*\}\}/g, 'blank') : item.q, item.type === 'mcq' || item.type === 'multi' ? order.map((i, n) => `Option ${n + 1}: ${item.options[i]}`).join('. ') : ''].filter(Boolean).join('. ')} />
       </div>
 
@@ -547,7 +551,3 @@ function shuffleNotSorted(items: string[]): string[] {
   return items.slice().reverse();
 }
 
-function formatNum(n: number): string {
-  if (Number.isInteger(n)) return n.toLocaleString('en-GB');
-  return String(Math.round(n * 1e6) / 1e6);
-}

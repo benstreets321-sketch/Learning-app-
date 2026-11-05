@@ -90,7 +90,7 @@ AO3 isn't assessed on unseen poetry, so don't guess about the poet's life.
         ['What should 27.2 focus on?', 'Similarities and/or differences in the METHODS poets use (language, form, structure).'],
       ]),
       questions: [
-        mc('What does 27.2 assess?', ['Comparison of methods (AO2)', 'Context (AO3)', 'Spelling (AO4)', 'Plot summary'], 'It\'s about how the poets write, not just what they say.', { d: 1 }),
+        mc('What does 27.2 assess?', ['Comparison of methods (AO2)', 'Comparison of context (AO3)', 'Spelling and grammar (AO4)', 'Personal response (AO1 only)'], 'It\'s about how the poets write, not just what they say.', { d: 1 }),
         ord('Put the reading method in order.', ['Read for gist: speaker, situation, mood', 'Annotate striking words and the shift', 'Decide the big idea linked to the question', 'Write, moving through the poem'], 'Three reads, then write.', { d: 1 }),
         tf('You should write about the poet\'s biography in 27.1 to gain context marks.', false, 'There are no AO3 marks for unseen poetry.'),
         multi('Which of these are "methods"?', ['Enjambment', 'Personification', 'A cyclical structure'], ['The poet\'s age', 'Your opinion of the topic'], 'Methods = language, form and structure choices.', { d: 2 }),

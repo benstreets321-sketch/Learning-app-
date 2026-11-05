@@ -153,8 +153,8 @@ Long chains joined by strong covalent bonds; intermolecular forces between chain
         keyPoints: ['Ionic: high mp, conducts when molten/dissolved', 'Simple molecular: low mp - weak intermolecular forces', 'Giant covalent: very high mp', 'Graphite conducts (delocalised electrons) and is slippery', 'Alloys are harder - distorted layers', 'Nanoparticles: large surface area to volume'],
         flashcards: cards([['Why does ionic compound conduct only when molten or dissolved?', 'The ions are free to move and carry charge.'], ['Why do simple molecular substances have low melting points?', 'Only weak intermolecular forces need to be overcome, not covalent bonds.'], ['Why does graphite conduct electricity?', 'Each carbon has one delocalised electron that can move through the structure.'], ['Why are alloys harder than pure metals?', 'Different-sized atoms distort the layers so they can\'t slide over each other.'], ['What size are nanoparticles?', '1-100 nm.']]),
         questions: [
-          mc('Why does sodium chloride have a high melting point?', ['Strong electrostatic forces between ions in a giant lattice', 'Weak intermolecular forces', 'It contains delocalised electrons', 'It is a simple molecule'], 'Lots of energy needed to overcome strong ionic bonds.', { d: 2 }),
-          mc('Why is graphite soft and slippery?', ['Layers are held by weak forces so they slide', 'It has no covalent bonds', 'It is a metal', 'It contains ions'], 'Strong bonds within layers, weak between layers.', { d: 2 }),
+          mc('Why does sodium chloride have a high melting point?', ['Strong electrostatic forces between ions in a giant lattice', 'Weak intermolecular forces between small molecules', 'Delocalised electrons moving through the structure', 'Strong covalent bonds between pairs of atoms'], 'Lots of energy needed to overcome strong ionic bonds.', { d: 2 }),
+          mc('Why is graphite soft and slippery?', ['Layers are held by weak forces so they slide', 'It has no covalent bonds between its atoms', 'It is a metal, so its atoms can roll over', 'Its ions are free to move past each other'], 'Strong bonds within layers, weak between layers.', { d: 2 }),
           tf('When water boils, the covalent bonds within water molecules break.', false, 'Only the weak intermolecular forces are overcome.', { d: 3 }),
           multi('Which substances conduct electricity as solids?', ['Copper', 'Graphite'], ['Diamond', 'Solid sodium chloride', 'Sulfur'], 'Need free electrons (or mobile ions).', { d: 2 }),
         ],
@@ -195,7 +195,7 @@ Sum of Aᵣ: CO₂ = 12 + 16 × 2 = **44**.
           txt('Balance: __ Na + Cl₂ → __ NaCl. What number goes in front of Na?', ['2'], '2Na + Cl₂ → 2NaCl.', { d: 2 }),
           num('How many moles in 88 g of CO₂ (Mᵣ 44)?', 2, '88 ÷ 44 = 2 mol.', { d: 2, tier: 'H', unit: 'mol' }),
           num('What mass of MgO is made from 6 g of magnesium? 2Mg + O₂ → 2MgO (Mg = 24, MgO = 40)', 10, '6 ÷ 24 = 0.25 mol Mg → 0.25 mol MgO → 0.25 × 40 = 10 g.', { d: 4, tier: 'H', unit: 'g' }),
-          mc('Magnesium ribbon is heated in a crucible and gains mass. Why?', ['It combines with oxygen from the air', 'Atoms are created', 'Heat has mass', 'It absorbs water'], 'The oxide contains oxygen atoms from the air.', { d: 2 }),
+          mc('Magnesium ribbon is heated in a crucible and gains mass. Why?', ['It combines with oxygen from the air', 'New atoms are created when it is heated', 'The heat energy adds mass to the metal', 'It absorbs water vapour from the flame'], 'The oxide contains oxygen atoms from the air.', { d: 2 }),
         ],
       }),
       topic({

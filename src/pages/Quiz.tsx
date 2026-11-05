@@ -4,7 +4,7 @@ import {
   type GenSnapshot,
 } from '../content/registry';
 import type { QItem } from '../content/types';
-import { adaptTarget, effectiveTheta, level, mastery, newTopicState, pCorrect, pickNext, type Confidence } from '../lib/engine';
+import { adaptTarget, effectiveTheta, isStale, level, mastery, newTopicState, pCorrect, pickNext, type Confidence } from '../lib/engine';
 import { addStudyTime, getProfile, getProgress, recordAnswer } from '../lib/store';
 import { href, refresh } from '../lib/router';
 import { QuestionCard } from '../components/QuestionCard';
@@ -136,9 +136,14 @@ export function QuizPage({ query }: { query: URLSearchParams }) {
     if (!remaining.length) return undefined;
     // interleave: avoid the same topic twice in a row when there is a choice
     const candidates = setup.topicIds.length > 1 ? remaining.filter((q) => q.topicId !== lastTopic.current) : remaining;
-    const item = pickNext(candidates.length ? candidates : remaining, {
-      now, srs: progress.items, topics: progress.topics, askedThisSession: asked.current, target, rand: Math.random,
-    });
+    const ctx = { now, srs: progress.items, topics: progress.topics, askedThisSession: asked.current, target, rand: Math.random };
+    const item = pickNext(candidates.length ? candidates : remaining, ctx);
+    // the best question left was seen very recently: give a freshly generated one on the same topic instead
+    if (item && isStale(item, ctx) && genTopics.length) {
+      const tid = genTopics.includes(item.topicId) ? item.topicId : genTopics[Math.floor(Math.random() * genTopics.length)];
+      const g = randomGenerated(tid, Math.max(1, Math.min(5, item.d)), profile);
+      if (g) { asked.current.add(g.id); lastTopic.current = tid; return g; }
+    }
     if (item) { asked.current.add(item.id); lastTopic.current = item.topicId; }
     return item;
   }

@@ -18,6 +18,12 @@ export const openTool = (tool: ToolId, subject = state.subject, allowed: ToolId[
   set({ open: tool, subject, allowed: nextAllowed });
 };
 export const closeTools = () => set({ ...state, open: null });
+/** Practice modes: show only the tools this question needs; an open tool that isn't needed any more closes */
+export const syncTools = (tools: ToolId[], subject: string) => {
+  const open = state.open && !tools.includes(state.open) ? null : state.open;
+  if (open === state.open && subject === state.subject && state.allowed && state.allowed.join() === tools.join()) return;
+  set({ open, subject, allowed: tools });
+};
 export const resetTools = () => set({ open: null, subject: '', allowed: null });
 export const useTools = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => state);
 

@@ -82,7 +82,7 @@ Compare how fast hot water in beakers cools with different insulating materials 
         questions: [
           num('A kettle uses 2000 J and transfers 1700 J usefully. What is its efficiency as a percentage?', 85, '1700 ÷ 2000 × 100 = 85%.', { d: 1, unit: '%' }),
           num('How much energy is needed to heat 2 kg of water by 10°C? (c = 4200 J/kg°C)', 84000, '2 × 4200 × 10 = 84 000 J.', { d: 2, unit: 'J' }),
-          mc('In the SHC practical, why is the measured value usually higher than the true value?', ['Some energy is lost to the surroundings, so more energy is supplied than heats the block', 'The thermometer is broken', 'The block is too heavy', 'The heater is too efficient'], 'Insulating the block reduces this error.', { d: 3 }),
+          mc('In the SHC practical, why is the measured value usually higher than the true value?', ['Some energy is lost to the surroundings, so more energy is supplied than heats the block', 'The thermometer reads too low because it is faulty or badly placed', 'The block is too heavy for the heater to warm all the way through', 'The heater is more than 100% efficient when it is first switched on'], 'Insulating the block reduces this error.', { d: 3 }),
           tf('A material with a high thermal conductivity is a good insulator.', false, 'Good insulators have LOW thermal conductivity.', { d: 1 }),
         ],
         examQuestions: [examQ('Describe how you would determine the specific heat capacity of a metal block.', 6, SIX(['Measure mass of the block with a balance', 'Insert immersion heater and thermometer; insulate the block', 'Record starting temperature', 'Switch on; measure energy with joulemeter (or V, I, t)', 'Record temperature rise after a set time', 'Calculate c = ΔE ÷ (mΔθ)']), { meta: 'Required practical · 6-mark', time: 7 })],
@@ -189,7 +189,7 @@ Power stations → **step-up transformers** (very high p.d., e.g. 400 000 V, **l
         questions: [
           num('A 230 V heater draws 10 A. Calculate its power.', 2300, '230 × 10 = 2300 W.', { d: 1, unit: 'W' }),
           mc('What colour is the neutral wire?', ['Blue', 'Brown', 'Green and yellow', 'Red'], 'Neutral = blue.', { d: 1 }),
-          mc('Why do step-up transformers make the National Grid efficient?', ['They increase p.d. so current is lower and less energy is lost as heat', 'They increase the current', 'They generate electricity', 'They make it safe for homes'], 'Power loss in cables ∝ I².', { d: 3 }),
+          mc('Why do step-up transformers make the National Grid efficient?', ['They increase p.d. so current is lower and less energy is lost as heat', 'They increase the current so more energy reaches homes', 'They generate the electricity at the power station', 'They reduce the p.d. so it is safe to use in homes'], 'Power loss in cables ∝ I².', { d: 3 }),
           num('A 2 kW kettle is used for 3 minutes. How many joules are transferred?', 360000, '2000 × 180 = 360 000 J.', { d: 3, unit: 'J' }),
         ],
       }),
@@ -243,7 +243,7 @@ Gas particles move randomly; collisions with walls cause **pressure**.
         questions: [
           num('A stone has mass 120 g and displaces 40 cm³ of water. Find its density in g/cm³.', 3, '120 ÷ 40 = 3 g/cm³.', { d: 1, unit: 'g/cm³' }),
           mc('What happens to the temperature of ice while it is melting?', ['It stays the same', 'It rises steadily', 'It falls', 'It rises then falls'], 'Energy goes into breaking bonds (latent heat).', { d: 2 }),
-          mc('Why does gas pressure in a sealed can increase when heated?', ['Particles move faster and hit the walls more often and with more force', 'Particles get bigger', 'More particles are made', 'The can shrinks'], 'Kinetic theory of gases.', { d: 2 }),
+          mc('Why does gas pressure in a sealed can increase when heated?', ['Particles move faster and hit the walls more often and with more force', 'The particles get bigger, so they take up more space', 'More particles are made as the gas gets hotter', 'The can shrinks slightly, so there is less space'], 'Kinetic theory of gases.', { d: 2 }),
           num('How much energy is needed to melt 0.5 kg of ice? (L = 334 000 J/kg)', 167000, '0.5 × 334 000 = 167 000 J.', { d: 2, unit: 'J' }),
         ],
       }),

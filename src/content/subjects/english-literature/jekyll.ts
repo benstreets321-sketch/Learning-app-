@@ -55,7 +55,7 @@ export const jekyllUnit: Unit[] = [{
       ]),
       questions: [
         mc('Why does Stevenson tell most of the story through Utterson?', ['To keep the mystery hidden, as he doesn\'t know the truth', 'Because Utterson is Hyde', 'To make it a comedy', 'Because Jekyll is dead from the start'], 'Utterson\'s limited viewpoint creates suspense; the truth is revealed only at the end.', { d: 2 }),
-        mc('What clue in Chapter 5 links Jekyll and Hyde?', ['The handwriting on Hyde\'s letter is like Jekyll\'s', 'They wear the same hat', 'They live together', 'They have the same name'], 'Guest, a handwriting expert, notes the similarity - but Utterson keeps it quiet to protect reputations.', { d: 2 }),
+        mc('What clue in Chapter 5 links Jekyll and Hyde?', ['The handwriting on Hyde\'s letter is like Jekyll\'s', 'Hyde is seen wearing Jekyll\'s clothes in the street', 'Jekyll and Hyde are seen together at the old door', 'Hyde\'s footprints are found in Jekyll\'s study'], 'Guest, a handwriting expert, notes the similarity - but Utterson keeps it quiet to protect reputations.', { d: 2 }),
         tf('Lanyon dies because Hyde attacks him.', false, 'He dies from the shock of witnessing the transformation - his rational, scientific worldview is shattered.', { d: 2 }),
         mc('What is the effect of multiple narratives (letters, statements)?', ['It feels like evidence in a case and reflects fragmented identity', 'It confuses the reader for no reason', 'It shows Stevenson couldn\'t decide on a narrator', 'It makes it a romance'], 'The title calls it a "Case" - documents are like legal evidence.', { d: 3 }),
       ],
@@ -104,10 +104,10 @@ export const jekyllUnit: Unit[] = [{
         ['Why is Carew\'s murder so shocking?', 'He was an elderly, respectable MP - an attack on the establishment.'],
       ]),
       questions: [
-        mc('Why do characters struggle to describe Hyde?', ['His evil is felt rather than seen - it can\'t be rationally explained', 'He is invisible', 'He wears a mask', 'He looks exactly like Jekyll'], 'Repeated "something" shows evil beyond words - a Gothic technique.', { d: 2 }),
-        mc('What does animal imagery ("ape-like", "like a rat") suggest about Hyde?', ['He is primitive and less than human, linking to fears from Darwin\'s theory', 'He is a cute pet', 'He loves animals', 'He is a zookeeper'], 'Victorians feared humans could "degenerate" back towards animals.', { d: 3 }),
+        mc('Why do characters struggle to describe Hyde?', ['His evil is felt rather than seen - it can\'t be rationally explained', 'He wears a mask so nobody ever sees his real face', 'He is invisible except when standing in the lamplight', 'He looks exactly like Jekyll, so people are confused'], 'Repeated "something" shows evil beyond words - a Gothic technique.', { d: 2 }),
+        mc('What does animal imagery ("ape-like", "like a rat") suggest about Hyde?', ['He is primitive and less than human, linking to fears from Darwin\'s theory', 'He is gentle and harmless, like a pet that has escaped', 'He loves animals and spends his nights at London Zoo', 'He is a skilled hunter who is admired by other men'], 'Victorians feared humans could "degenerate" back towards animals.', { d: 3 }),
         tf('Utterson immediately tells the police that the handwriting matches Jekyll\'s.', false, 'He keeps it secret to protect Jekyll\'s reputation - showing how Victorian gentlemen hid scandal.', { d: 2 }),
-        mc('Which statement about Jekyll is most accurate?', ['He created Hyde to indulge hidden desires without damaging his reputation', 'He is entirely good', 'He never wanted to be Hyde', 'He is a lawyer'], 'Jekyll admits to "irregularities" and wanted to enjoy them freely as Hyde.', { d: 3 }),
+        mc('Which statement about Jekyll is most accurate?', ['He created Hyde to indulge hidden desires without damaging his reputation', 'He is entirely good and is the innocent victim of an accident', 'He never wanted to become Hyde and fought it from the first night', 'He is a lawyer who helps Utterson investigate the case'], 'Jekyll admits to "irregularities" and wanted to enjoy them freely as Hyde.', { d: 3 }),
       ],
     }),
     topic({
@@ -149,8 +149,8 @@ export const jekyllUnit: Unit[] = [{
         ['What does the fog symbolise?', 'Secrecy, confusion and the moral murkiness of Victorian London.'],
       ]),
       questions: [
-        mc('What does the "blistered and distained" door symbolise?', ['The neglected, hidden side of Jekyll - Hyde', 'Jekyll\'s wealth', 'Utterson\'s office', 'Victorian technology'], 'Behind a respectable house lies a decaying back entrance - duality in architecture.', { d: 2 }),
-        mc('How does Darwin\'s theory of evolution link to Hyde?', ['Hyde\'s ape-like features reflect fears humans might degenerate', 'Hyde is a scientist like Darwin', 'Darwin wrote the novella', 'Hyde disproves evolution'], 'Victorians feared the "beast" within civilised humans.', { d: 2 }),
+        mc('What does the "blistered and distained" door symbolise?', ['The neglected, hidden side of Jekyll - Hyde', 'Jekyll\'s great wealth and respectable reputation', 'Utterson\'s cold, unwelcoming personality', 'The progress of Victorian science and technology'], 'Behind a respectable house lies a decaying back entrance - duality in architecture.', { d: 2 }),
+        mc('How does Darwin\'s theory of evolution link to Hyde?', ['Hyde\'s ape-like features reflect fears humans might degenerate', 'Hyde is a scientist who studies Darwin\'s theory', 'Darwin helped Stevenson to plan and write the novella', 'Hyde\'s behaviour proves that evolution cannot be true'], 'Victorians feared the "beast" within civilised humans.', { d: 2 }),
         multi('Which characters keep secrets to protect reputation?', ['Utterson', 'Enfield', 'Jekyll'], ['The maid who witnesses the Carew murder'], 'The maid reports the murder; the gentlemen hide the truth.', { d: 2 }),
         tf('The novella suggests that repressing desires makes them weaker.', false, 'Jekyll says his devil "came out roaring" after being "long caged" - repression makes Hyde stronger.', { d: 3 }),
       ],

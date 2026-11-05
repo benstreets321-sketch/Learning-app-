@@ -190,7 +190,7 @@ Cuts, **transitions** (fade, dissolve, wipe), **pace** (fast cuts = excitement),
         flashcards: cards([['Three phases of production?', 'Pre-production, production, post-production.'], ['What is a milestone?', 'A key checkpoint in a project (e.g. storyboard approved).'], ['What is a contingency?', 'Spare time or a back-up plan in case something goes wrong.'], ['What is a Gantt chart?', 'A chart showing tasks against time - their start, end and overlap.']]),
         questions: [
           ord('Put these in production order.', ['Write the script', 'Film the scenes', 'Edit the footage', 'Export the final video'], 'Pre-production → production → post-production.', { d: 1 }),
-          mc('Why should a work plan include contingencies?', ['To allow for problems such as bad weather or equipment failure', 'To make the plan longer', 'To list the target audience', 'To show the budget'], 'Contingencies protect the deadline.', { d: 2 }),
+          mc('Why should a work plan include contingencies?', ['To allow for problems such as bad weather or equipment failure', 'To make the plan look longer and more detailed for the client', 'To list the target audience and what they want from the product', 'To show the budget for each stage of the production'], 'Contingencies protect the deadline.', { d: 2 }),
         ],
       }),
       topic({
@@ -232,7 +232,7 @@ Cuts, **transitions** (fade, dissolve, wipe), **pace** (fast cuts = excitement),
         questions: [
           match('Match the product to the most useful planning document.', [['Magazine cover', 'Visualisation diagram'], ['TV advert', 'Storyboard'], ['Website navigation', 'Flow chart'], ['Radio drama', 'Script']], 'Choose the document by product type.', { d: 2 }),
           multi('Which would you expect on a storyboard?', ['Shot type', 'Camera movement', 'Timing of each shot', 'Audio notes'], ['Copyright status of fonts', 'Budget breakdown'], 'Storyboards plan visual sequence and sound.', { d: 2 }),
-          mc('Why is an asset log important?', ['It records sources and permissions so copyright isn\'t breached', 'It plans camera angles', 'It shows the colour scheme', 'It writes the dialogue'], 'Legal protection and organisation.', { d: 2 }),
+          mc('Why is an asset log important?', ['It records sources and permissions so copyright isn\'t breached', 'It plans the camera angles and shot types for each scene', 'It shows the colour scheme and fonts for the product', 'It sets out the dialogue and directions for the actors'], 'Legal protection and organisation.', { d: 2 }),
         ],
         examQuestions: [examQ('A client wants an interactive museum kiosk for children aged 7-11. Explain how a flow chart and a wireframe would help plan the product.', 6, EXT(['Flow chart shows navigation/structure - how screens link', 'Decision points (e.g. user chooses a gallery) shown with diamonds', 'Helps check every route works before building', 'Wireframe shows the layout of each screen - button positions, images, text', 'Can test layout suits children (large buttons, little text)', 'Both can be shown to the client for approval, saving time']), { meta: 'Applied explanation', time: 7 })],
       }),
@@ -289,7 +289,7 @@ Choose by: **audience** (age, access to devices), **product** type, **cost**, **
         keyPoints: ['Online: websites, apps, social, streaming', 'Physical: discs, print, kiosks, broadcast', 'Online: global, cheap, updatable', 'Physical: no internet needed, tangible', 'Choose by audience, product, cost, compatibility'],
         flashcards: cards([['Two advantages of online distribution?', 'Global reach and low distribution cost (also easy updates and analytics).'], ['Two advantages of physical distribution?', 'No internet needed; tangible/collectable product.']]),
         questions: [
-          mc('Why might a museum choose a physical kiosk for an interactive guide?', ['Visitors can use it without their own device or internet', 'It reaches a global audience', 'It costs nothing to make', 'It cannot be interactive'], 'Kiosks are on-site and accessible.', { d: 2 }),
+          mc('Why might a museum choose a physical kiosk for an interactive guide?', ['Visitors can use it without their own device or internet', 'It reaches a global audience through the internet', 'It costs nothing to make, install or maintain', 'It works best for visitors who stay at home'], 'Kiosks are on-site and accessible.', { d: 2 }),
         ],
       }),
       topic({

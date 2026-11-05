@@ -108,7 +108,7 @@ export function TopicPage({ id, tab }: { id: string; tab: string }) {
           {topic.generators?.length ? (
             <a className="cta" href={href('/quiz', { scope: 'topic', id, n: 15, gen: 1 })}>
               <span className="cta-title">Unlimited practice</span>
-              <span className="cta-sub">Fresh numbers each time with step-by-step solutions.</span>
+              <span className="cta-sub">{(topic.generators ?? []).some((g) => !/^(f|tl|qt|pm)-/.test(g)) ? 'Fresh numbers each time with step-by-step solutions.' : 'A new variation every time, with a different set of answer options.'}</span>
             </a>
           ) : null}
           {topic.flashcards.length > 0 && (

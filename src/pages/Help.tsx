@@ -12,7 +12,7 @@ export function HelpPage() {
       <ol className="ladder">
         <li>
           <strong>On a question: press "I'm stuck"</strong>
-          <p>Hints one at a time, "remove two wrong answers", a step-by-step guided solution, another explanation, a worked example, common mistakes and the lesson – all without leaving the question. The calculator, periodic table, formula sheet and a working-out pad are in the toolbar above every question.</p>
+          <p>Hints one at a time, "remove two wrong answers", a step-by-step guided solution, another explanation, a worked example, common mistakes and the lesson – all without leaving the question. The toolbar above each question has exactly the equipment that question needs – a calculator and working-out pad for calculations, the periodic table for Chemistry about elements and formulae, the formula sheet when one of its formulae is used – in every mode, including the 90-second sprint.</p>
         </li>
         <li>
           <strong>Ask the tutor</strong>
@@ -84,6 +84,8 @@ export function HelpPage() {
             <li>Two wrong in a row on a topic: the app pauses to re-teach the key idea, then eases the difficulty.</li>
             <li>Three right in a row: it steps up the challenge.</li>
             <li>Each question and flashcard has its own review schedule (spaced repetition), and mastery slowly fades if you leave a topic alone.</li>
+            <li>Questions you saw recently are held back. Almost every topic can also make brand-new questions (fresh numbers, other elements, other quotations, other events), so you get far fewer repeats.</li>
+            <li>Wrong options are always the closest mix-ups – other parts of the same topic, other characters from the same text – so you can't pass by guessing.</li>
           </ul>
         </details>
         <details>

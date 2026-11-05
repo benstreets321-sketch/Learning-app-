@@ -36,7 +36,7 @@ People who take a **risk** to start a business, aiming for **rewards**.
         flashcards: cards([['What does SMART stand for?', 'Specific, Measurable, Achievable, Realistic, Time-bound.'], ['Two risks of starting a business?', 'Financial loss and business failure (also lack of security).'], ['Give two non-financial objectives', 'Social objectives, personal satisfaction (also independence, challenge).'], ['What is "adding value"?', 'Increasing the worth of a product (branding, quality, convenience, USP) so customers pay more than the cost of inputs.']]),
         questions: [
           mc('Which is a non-financial objective?', ['Personal satisfaction', 'Increasing profit by 10%', 'Survival', 'Increasing market share'], 'Not measured in money.', { d: 1 }),
-          mc('Why might a new business\'s main objective be survival?', ['It has few customers and limited cash, so it must avoid failure first', 'It already dominates the market', 'Survival is always the only objective', 'It has too much profit'], 'New businesses face high risk.', { d: 2 }),
+          mc('Why might a new business\'s main objective be survival?', ['It has few customers and limited cash, so it must avoid failure first', 'It already dominates its market and has no rivals left', 'Survival is the only objective any business can have', 'It is making too much profit and must slow its growth'], 'New businesses face high risk.', { d: 2 }),
           multi('Which are characteristics of successful entrepreneurs?', ['Willingness to take risks', 'Creativity', 'Resilience'], ['Avoiding all risk', 'Dislike of hard work'], 'Entrepreneurs embrace calculated risk.', { d: 1 }),
         ],
       }),
@@ -247,7 +247,7 @@ Full-time, part-time, **zero-hours** (no guaranteed hours - flexible but insecur
         keyPoints: ['Tall vs flat structures; span of control', 'Centralised vs decentralised decisions', 'Job description vs person specification', 'Internal vs external recruitment', 'On-the-job vs off-the-job training', 'Financial and non-financial motivation', 'Motivation reduces staff turnover'],
         flashcards: cards([['What is span of control?', 'The number of subordinates a manager is directly responsible for.'], ['Job description vs person specification?', 'Job description = duties of the job; person specification = skills and qualities required.'], ['What is a zero-hours contract?', 'A contract with no guaranteed minimum hours.'], ['Give two non-financial motivators', 'Praise, job rotation, job enrichment, autonomy, promotion.'], ['Advantage of a flat structure?', 'Faster communication and more empowered staff.']]),
         questions: [
-          mc('Which is a feature of a tall organisational structure?', ['Narrow spans of control and many layers', 'Wide spans of control', 'Few managers', 'Very fast communication'], 'Tall = many levels.', { d: 2 }),
+          mc('Which is a feature of a tall organisational structure?', ['Narrow spans of control and many layers', 'Wide spans of control and few layers', 'Few managers and a short chain of command', 'Very fast communication from top to bottom'], 'Tall = many levels.', { d: 2 }),
           mc('Which is a financial method of motivation?', ['Commission', 'Job rotation', 'Praise', 'Job enrichment'], 'Commission = pay linked to sales.', { d: 1 }),
           match('Match the term to its meaning.', [['Induction', 'Training for new starters'], ['Job enrichment', 'Giving more responsibility'], ['Commission', 'Pay based on sales'], ['Delegation', 'Passing authority down the hierarchy']], 'Key HR vocabulary.', { d: 2 }),
           tf('Internal recruitment brings more new ideas into a business than external recruitment.', false, 'External recruitment brings new ideas; internal is cheaper and motivating.', { d: 2 }),
@@ -280,8 +280,8 @@ A **market map** plots products on two axes (e.g. price vs quality) to find **ga
         keyPoints: ['Research reduces risk', 'Primary: specific but costly; secondary: cheap but less specific', 'Qualitative vs quantitative', 'Segmentation by demographics/lifestyle', 'Market maps reveal gaps'],
         flashcards: cards([['What is a market map?', 'A diagram plotting brands on two dimensions (e.g. price and quality) to show positioning and gaps.'], ['Disadvantage of secondary research?', 'May be out of date or not specific to the business\'s needs.'], ['What is segmentation?', 'Dividing a market into groups of customers with similar characteristics.']]),
         questions: [
-          mc('Which is primary research?', ['A questionnaire given to customers', 'Government statistics', 'A Mintel report', 'A newspaper article'], 'Primary = collected first-hand.', { d: 1 }),
-          mc('Why do businesses segment markets?', ['To target products and promotion at specific customer groups', 'To increase costs', 'To avoid competitors', 'To set up as a PLC'], 'Better targeting = more effective marketing.', { d: 1 }),
+          mc('Which is primary research?', ['A questionnaire given to customers', 'Government population statistics', 'A published Mintel market report', 'A newspaper article about the market'], 'Primary = collected first-hand.', { d: 1 }),
+          mc('Why do businesses segment markets?', ['To target products and promotion at specific customer groups', 'To increase costs so that prices can be raised', 'To avoid competitors by selling to nobody else', 'To meet the legal requirements for becoming a plc'], 'Better targeting = more effective marketing.', { d: 1 }),
         ],
       }),
       topic({
@@ -379,7 +379,7 @@ The 4Ps must be consistent: a premium product needs a premium price, upmarket pr
         questions: [
           num('Fixed costs £12,000; price £15; variable cost per unit £7. Calculate break-even output.', 1500, 'Contribution = £8 → 12,000 ÷ 8 = 1,500 units.', { d: 2, unit: 'units' }),
           num('A business sells 800 units at £25 each. Fixed costs are £6,000 and variable cost is £12 per unit. Calculate profit.', 4400, 'Revenue £20,000 − (6,000 + 9,600) = £4,400.', { d: 2, unit: '£' }),
-          mc('On a break-even chart, where does the total cost line start?', ['At the level of fixed costs on the y-axis', 'At the origin', 'At the break-even point', 'At maximum output'], 'Even with zero output, fixed costs must be paid.', { d: 2 }),
+          mc('On a break-even chart, where does the total cost line start?', ['At the level of fixed costs on the y-axis', 'At the origin, where output and costs are zero', 'At the break-even point, where it meets revenue', 'At maximum output on the right of the x-axis'], 'Even with zero output, fixed costs must be paid.', { d: 2 }),
           tf('If variable costs per unit rise, break-even output falls.', false, 'Contribution falls, so more units are needed to break even.', { d: 3 }),
         ],
         workedExamples: [{ title: 'Break-even and margin of safety', problem: 'A café\'s fixed costs are £4,800 per month. Each meal sells for £10 with variable costs of £4. It sells 1,000 meals a month. Find the break-even output and margin of safety.', steps: ['Contribution per unit = £10 − £4 = £6', 'Break-even = £4,800 ÷ £6 = 800 meals', 'Margin of safety = 1,000 − 800 = 200 meals'], answer: 'Break-even 800 meals; margin of safety 200 meals', tryIt: 'Fixed costs £9,000, price £20, variable cost £11. Break-even?', tryAnswer: '9,000 ÷ 9 = 1,000 units' }],
@@ -469,7 +469,7 @@ Make a decision → give the main reason → acknowledge the key factor it depen
         keyPoints: ['Always apply to the case study', 'Show working in calculations', 'Explain = point + consequence + context', 'Analyse = developed chains of reasoning', 'Evaluate = both sides + justified judgement + "it depends"'],
         flashcards: cards([['What does "application" mean in Business exams?', 'Using the specific context of the case study (names, products, numbers) in your answer.'], ['What is a chain of reasoning?', 'A linked series of consequences: because → which means → leading to → so.'], ['What makes a strong evaluation?', 'Weighing both sides and reaching a justified judgement, considering what it depends on.']]),
         questions: [
-          mc('Which sentence shows application?', ['Because Joe\'s Bikes sells to cyclists in a small town, a local radio advert would reach its customers.', 'Advertising increases sales.', 'Radio adverts are a type of promotion.', 'Businesses should advertise.'], 'It uses the case study\'s context.', { d: 2 }),
+          mc('Which sentence shows application?', ['Because Joe\'s Bikes sells to cyclists in a small town, a local radio advert would reach its customers.', 'Advertising increases sales, so it is always worth paying for, even for a small business.', 'Radio adverts are a type of promotion used by many businesses to reach their customers.', 'Businesses should advertise so that more customers become aware of their products.'], 'It uses the case study\'s context.', { d: 2 }),
           tf('A 12-mark evaluation question needs a final judgement.', true, 'Without a justified conclusion you can\'t reach the top level.', { d: 1 }),
         ],
       }),

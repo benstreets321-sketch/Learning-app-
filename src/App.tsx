@@ -1,32 +1,57 @@
-import { useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { useRoute, href, go } from './lib/router';
 import { useProfile, useProgress } from './lib/store';
 import { Home } from './pages/Home';
-import { Setup } from './pages/Setup';
 import { SubjectPage } from './pages/Subject';
 import { TopicPage } from './pages/Topic';
 import { QuizPage } from './pages/Quiz';
-import { FlashcardsPage } from './pages/Flashcards';
-import { ExamPage } from './pages/Exam';
-import { MistakesPage } from './pages/Mistakes';
-import { ProgressPage } from './pages/Progress';
-import { PlannerPage } from './pages/Planner';
-import { StrategiesPage } from './pages/Strategies';
-import { ToolsPage } from './pages/Tools';
-import { HelpPage } from './pages/Help';
-import { RescuePage } from './pages/Rescue';
-import { SessionPage } from './pages/Session';
-import { MocksPage, MockPaperPage, MockTakePage, MockReviewPage } from './pages/Mocks';
 import { StartSession } from './components/StartSession';
-import { SprintPage } from './pages/Sprint';
-import { SearchPage } from './pages/Search';
 import { Icon } from './components/Icon';
-import { ToolDrawer, useTools } from './components/Tools';
+import { ToolDrawer, resetTools, useTools } from './components/Tools';
 import { InstallButton } from './components/Install';
 import { SubjectMark } from './components/SubjectMark';
 import { SaveStatus, SaveWarning } from './components/SaveStatus';
 import { activeSubjects } from './content/registry';
 import { schedule as scheduleReminder, syncReminderState } from './lib/reminders';
+
+// Pages that aren't needed for the first screen load on demand (and are prefetched once the app is idle),
+// so the app opens faster without any page feeling slower.
+const loaders = {
+  setup: () => import('./pages/Setup'), cards: () => import('./pages/Flashcards'), exam: () => import('./pages/Exam'),
+  fix: () => import('./pages/Mistakes'), progress: () => import('./pages/Progress'), plan: () => import('./pages/Planner'),
+  how: () => import('./pages/Strategies'), tools: () => import('./pages/Tools'), help: () => import('./pages/Help'),
+  rescue: () => import('./pages/Rescue'), session: () => import('./pages/Session'), mocks: () => import('./pages/Mocks'),
+  sprint: () => import('./pages/Sprint'), search: () => import('./pages/Search'), mockCards: () => import('./components/MockCards'),
+};
+const Setup = lazy(() => loaders.setup().then((m) => ({ default: m.Setup })));
+const FlashcardsPage = lazy(() => loaders.cards().then((m) => ({ default: m.FlashcardsPage })));
+const ExamPage = lazy(() => loaders.exam().then((m) => ({ default: m.ExamPage })));
+const MistakesPage = lazy(() => loaders.fix().then((m) => ({ default: m.MistakesPage })));
+const ProgressPage = lazy(() => loaders.progress().then((m) => ({ default: m.ProgressPage })));
+const PlannerPage = lazy(() => loaders.plan().then((m) => ({ default: m.PlannerPage })));
+const StrategiesPage = lazy(() => loaders.how().then((m) => ({ default: m.StrategiesPage })));
+const ToolsPage = lazy(() => loaders.tools().then((m) => ({ default: m.ToolsPage })));
+const HelpPage = lazy(() => loaders.help().then((m) => ({ default: m.HelpPage })));
+const RescuePage = lazy(() => loaders.rescue().then((m) => ({ default: m.RescuePage })));
+const SessionPage = lazy(() => loaders.session().then((m) => ({ default: m.SessionPage })));
+const MocksPage = lazy(() => loaders.mocks().then((m) => ({ default: m.MocksPage })));
+const MockPaperPage = lazy(() => loaders.mocks().then((m) => ({ default: m.MockPaperPage })));
+const MockTakePage = lazy(() => loaders.mocks().then((m) => ({ default: m.MockTakePage })));
+const MockReviewPage = lazy(() => loaders.mocks().then((m) => ({ default: m.MockReviewPage })));
+const SprintPage = lazy(() => loaders.sprint().then((m) => ({ default: m.SprintPage })));
+const SearchPage = lazy(() => loaders.search().then((m) => ({ default: m.SearchPage })));
+let prefetched = false;
+function prefetchPages() {
+  if (prefetched) return;
+  prefetched = true;
+  const run = () => Object.values(loaders).forEach((l) => void l().catch(() => undefined));
+  const w = window as unknown as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => void };
+  if (w.requestIdleCallback) w.requestIdleCallback(run, { timeout: 2500 }); else setTimeout(run, 1200);
+}
+/** Shown for the moment a page's code is still arriving */
+function PageLoading() {
+  return <div className="page page-loading" aria-busy="true" aria-label="Loading"><div className="sk sk-title" /><div className="sk" /><div className="sk" /><div className="sk sk-short" /></div>;
+}
 
 const NAV = [
   { path: '/', label: 'Today', icon: 'home' },
@@ -49,6 +74,10 @@ export function App() {
   }, [profile.theme]);
 
   useEffect(() => { window.scrollTo(0, 0); }, [route.raw]);
+  useEffect(() => { prefetchPages(); }, []);
+  // a new page starts with the drawer closed and no tool restrictions left over from the last question
+  const pathKey = route.path.join('/');
+  useEffect(() => { resetTools(); }, [pathKey]);
 
   // "/" jumps to search
   useEffect(() => {
@@ -166,7 +195,7 @@ export function App() {
           </div>
         )}
         <SaveWarning />
-        {page}
+        <Suspense fallback={<PageLoading />}>{page}</Suspense>
       </main>
 
       <nav className="bottomnav" aria-label="Main mobile">

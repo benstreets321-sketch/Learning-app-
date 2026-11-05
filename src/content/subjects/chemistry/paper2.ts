@@ -38,7 +38,7 @@ Graphs: steeper = faster; levels off when a reactant is used up. Same amount of 
         misconceptions: [{ wrong: 'Higher temperature just makes particles collide more.', right: 'It also means a greater proportion of collisions have energy ≥ activation energy - the main reason.' }],
         flashcards: cards([['Collision theory?', 'Particles must collide with at least the activation energy to react.'], ['How does a catalyst work?', 'Provides an alternative pathway with a lower activation energy.'], ['Why does a powder react faster than a lump?', 'Larger surface area → more frequent collisions.'], ['How do you find the rate at a specific time on a graph?', 'Draw a tangent and calculate its gradient.']]),
         questions: [
-          mc('Why does increasing concentration increase rate?', ['More particles in the same volume, so more frequent collisions', 'Particles move faster', 'Activation energy is lowered', 'Particles become bigger'], 'Frequency of collisions increases.', { d: 2 }),
+          mc('Why does increasing concentration increase rate?', ['More particles in the same volume, so more frequent collisions', 'The particles move faster, so they collide with more energy', 'The activation energy is lowered, so more collisions succeed', 'The particles become larger, so they are easier to hit'], 'Frequency of collisions increases.', { d: 2 }),
           mc('Which change would NOT increase the rate of reaction between marble chips and acid?', ['Using larger marble chips', 'Warming the acid', 'Using more concentrated acid', 'Crushing the chips'], 'Larger chips = smaller surface area.', { d: 2 }),
           num('40 cm³ of gas is produced in 20 s. Calculate the mean rate in cm³/s.', 2, '40 ÷ 20 = 2 cm³/s.', { d: 1, unit: 'cm³/s' }),
           tf('A catalyst is used up during a reaction.', false, 'Catalysts are not used up and are chemically unchanged.', { d: 1 }),
@@ -107,8 +107,8 @@ Breaking long-chain alkanes into **shorter, more useful alkanes + alkenes**. **C
         flashcards: cards([['General formula of alkanes?', 'CₙH₂ₙ₊₂'], ['First four alkanes?', 'Methane, ethane, propane, butane.'], ['What is cracking?', 'Breaking long-chain hydrocarbons into shorter, more useful ones (alkanes + alkenes).'], ['Test for an alkene?', 'Bromine water decolourises (orange → colourless).'], ['Products of complete combustion of a hydrocarbon?', 'Carbon dioxide and water.']]),
         questions: [
           txt('What is the formula of the alkane with 5 carbon atoms?', ['C5H12', 'C₅H₁₂'], 'CₙH₂ₙ₊₂ → C₅H₁₂ (pentane).', { d: 2 }),
-          mc('How do long-chain hydrocarbons compare to short-chain ones?', ['Higher boiling point and more viscous', 'More flammable', 'Lower boiling point', 'Less viscous'], 'Stronger intermolecular forces.', { d: 2 }),
-          mc('Why is cracking carried out?', ['To meet demand for shorter chains like petrol and to make alkenes for polymers', 'To make crude oil', 'To make longer chains', 'To remove sulfur'], 'Supply vs demand.', { d: 2 }),
+          mc('How do long-chain hydrocarbons compare to short-chain ones?', ['Higher boiling point and more viscous', 'More flammable and less viscous', 'Lower boiling point and more viscous', 'Lower boiling point and less viscous'], 'Stronger intermolecular forces.', { d: 2 }),
+          mc('Why is cracking carried out?', ['To meet demand for shorter chains like petrol and to make alkenes for polymers', 'To turn short-chain alkanes back into crude oil for storage', 'To join short molecules into longer chains for fuel oil', 'To remove sulfur so the fuels do not cause acid rain'], 'Supply vs demand.', { d: 2 }),
           tf('Alkanes decolourise bromine water.', false, 'Only alkenes (with a C=C double bond) do.', { d: 2 }),
         ],
       }),
@@ -214,7 +214,7 @@ CO₂, **methane** and water vapour absorb **long-wavelength (infrared)** radiat
         keyPoints: ['Atmosphere ~80% N₂, ~20% O₂', 'Early atmosphere mainly CO₂ from volcanoes', 'Oxygen from photosynthesis (algae, plants)', 'Greenhouse gases: CO₂, CH₄, H₂O absorb infrared', 'CO toxic; SO₂ and NOₓ cause acid rain; soot causes global dimming'],
         flashcards: cards([['Composition of today\'s atmosphere?', 'About 80% nitrogen, 20% oxygen, small amounts of other gases.'], ['Where did the oxygen come from?', 'Photosynthesis by algae and plants.'], ['Name three greenhouse gases', 'Carbon dioxide, methane, water vapour.'], ['Why is carbon monoxide dangerous?', 'It binds to haemoglobin, reducing oxygen transport; it\'s colourless and odourless.'], ['What causes acid rain?', 'Sulfur dioxide and nitrogen oxides dissolving in rainwater.']]),
         questions: [
-          mc('Where did most of the early atmosphere\'s carbon dioxide go?', ['Dissolved in oceans and locked in rocks and fossil fuels', 'Into space', 'Turned into nitrogen', 'Into the Sun'], 'Carbonates, sedimentary rocks and fossil fuels.', { d: 2 }),
+          mc('Where did most of the early atmosphere\'s carbon dioxide go?', ['Dissolved in oceans and locked in rocks and fossil fuels', 'It escaped into space as the Earth cooled down', 'It was turned into nitrogen by volcanic activity', 'It was used up by animals breathing it in'], 'Carbonates, sedimentary rocks and fossil fuels.', { d: 2 }),
           mc('Which pollutant causes global dimming?', ['Soot (particulates)', 'Carbon dioxide', 'Methane', 'Oxygen'], 'Particulates reflect sunlight.', { d: 2 }),
           multi('Which human activities increase greenhouse gases?', ['Burning fossil fuels', 'Cattle farming', 'Deforestation', 'Landfill'], ['Planting forests'], 'CO₂ and methane sources.', { d: 1 }),
         ],
@@ -253,7 +253,7 @@ Metals, glass and plastics can be recycled - saves energy and resources.
           mc('Why is desalination not widely used in the UK?', ['It requires large amounts of energy', 'The UK has no sea water', 'It produces unsafe water', 'It is illegal'], 'The UK has enough fresh water; desalination is energy-expensive.', { d: 2 }),
           ord('Put the stages of a life cycle assessment in order.', ['Extracting and processing raw materials', 'Manufacturing and packaging', 'Use and operation', 'Disposal at end of life'], 'Cradle to grave.', { d: 1 }),
           tf('Potable water is pure water.', false, 'It contains dissolved substances - it is safe to drink, not chemically pure.', { d: 2 }),
-          mc('Why is 450°C used in the Haber process even though a lower temperature gives a higher yield?', ['It is a compromise - lower temperatures make the rate too slow', 'The catalyst melts below 450°C', 'Ammonia only forms above 450°C', 'It is cheaper to heat'], 'Rate vs yield compromise.', { d: 4, tier: 'H' }),
+          mc('Why is 450°C used in the Haber process even though a lower temperature gives a higher yield?', ['It is a compromise - lower temperatures make the rate too slow', 'The iron catalyst melts at temperatures below 450 °C', 'Ammonia only forms at temperatures above 450 °C', 'Higher temperatures make heating the gases cheaper'], 'Rate vs yield compromise.', { d: 4, tier: 'H' }),
         ],
       }),
     ],

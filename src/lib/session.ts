@@ -11,7 +11,7 @@ import type { QItem, Subject } from '../content/types';
 import {
   activeSubjects, getQuestion, makeGenerated, questionPool, randomGenerated, topicQuestions, visibleTopics, getTopic, type GenSnapshot,
 } from '../content/registry';
-import { effectiveTheta, level, mastery, newTopicState, pCorrect, pickNext } from './engine';
+import { effectiveTheta, isStale, level, mastery, newTopicState, pCorrect, pickNext } from './engine';
 import { getProfile, getProgress, type Profile, type Progress } from './store';
 import { uncovered } from './coverage';
 
@@ -97,7 +97,11 @@ export class SessionEngine {
 
   private best(cands: QItem[], progress: Progress, now: number): QItem | undefined {
     const varied = cands.filter((c) => !this.recentTopic(c.topicId));
-    return pickNext(varied.length ? varied : cands, { now, srs: progress.items, topics: progress.topics, askedThisSession: this.asked, target: 0.72, rand: Math.random });
+    const ctx = { now, srs: progress.items, topics: progress.topics, askedThisSession: this.asked, target: 0.72, rand: Math.random };
+    const item = pickNext(varied.length ? varied : cands, ctx);
+    // seen very recently and not due: a fresh generated variant on the same topic keeps practice varied
+    if (item && isStale(item, ctx)) return this.generatedFor(item.topicId) ?? item;
+    return item;
   }
 
   private generatedFor(topicId: string | undefined, harder = 0): QItem | undefined {

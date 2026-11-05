@@ -55,10 +55,10 @@ Dickens calls the chapters **"staves"** - the verses of a song (a carol), sugges
       ]),
       questions: [
         mc('Who is Scrooge\'s former employer, whose party he sees in Stave 2?', ['Fezziwig', 'Marley', 'Fred', 'Topper'], 'Fezziwig shows how an employer can bring joy cheaply - a contrast with Scrooge\'s treatment of Bob.', { d: 1 }),
-        mc('What does Scrooge see at the end of Stave 4 that makes him beg to change?', ['His own neglected gravestone', 'Belle\'s wedding', 'Fred\'s party', 'Marley\'s chains'], 'The name on the grave is "EBENEZER SCROOGE" - the final shock.', { d: 1 }),
+        mc('What does Scrooge see at the end of Stave 4 that makes him beg to change?', ['His own neglected gravestone', 'Belle\'s happy family', 'Fred\'s Christmas party', 'Marley\'s heavy chains'], 'The name on the grave is "EBENEZER SCROOGE" - the final shock.', { d: 1 }),
         tf('The Ghost of Christmas Yet to Come speaks to Scrooge to explain the visions.', false, 'It is silent and only points - making it more frightening and forcing Scrooge to interpret.', { d: 2 }),
-        mc('What is the effect of Stave 5 mirroring Stave 1?', ['It highlights how completely Scrooge has changed', 'It shows nothing has changed', 'It introduces new characters', 'It makes the story longer'], 'The same encounters with opposite reactions make the transformation clear.', { d: 2 }),
-        mc('Why did Dickens write a short novella rather than a long novel?', ['To make it cheap, quick to read and to be read aloud to families at Christmas', 'Because he ran out of ideas', 'Because novels were illegal', 'To win a competition'], 'Accessibility spread his message widely - it sold out by Christmas Eve 1843.', { d: 3 }),
+        mc('What is the effect of Stave 5 mirroring Stave 1?', ['It highlights how completely Scrooge has changed', 'It shows that Scrooge has not really changed at all', 'It introduces new characters for a possible sequel', 'It makes the story longer so it can be serialised'], 'The same encounters with opposite reactions make the transformation clear.', { d: 2 }),
+        mc('Why did Dickens write a short novella rather than a long novel?', ['To make it cheap, quick to read and to be read aloud to families at Christmas', 'Because he ran out of ideas and could not finish a longer novel in time', 'Because long novels were taxed heavily, so few people could buy them', 'To win a magazine competition for the best short Christmas story'], 'Accessibility spread his message widely - it sold out by Christmas Eve 1843.', { d: 3 }),
       ],
     }),
     topic({
@@ -100,10 +100,10 @@ Scrooge represents the **selfish, wealthy middle and upper classes**. If even Sc
         ['What does Scrooge do for the Cratchits in Stave 5?', 'Sends the prize turkey, raises Bob\'s salary and becomes a second father to Tiny Tim.'],
       ]),
       questions: [
-        mc('What does "solitary as an oyster" suggest about Scrooge?', ['He is isolated and closed off but may hide goodness inside', 'He loves the sea', 'He is generous', 'He is part of a close family'], 'The oyster\'s shell = isolation; the pearl = hidden potential for good.', { d: 2 }),
-        mc('What is the effect of the ghost repeating "decrease the surplus population" in Stave 3?', ['Scrooge is confronted with the human cost of his words - Tiny Tim', 'It shows the ghost agrees with Scrooge', 'It is a joke', 'It makes Scrooge angry'], 'Hearing his words applied to a real child shames him.', { d: 3 }),
+        mc('What does "solitary as an oyster" suggest about Scrooge?', ['He is isolated and closed off but may hide goodness inside', 'He is wealthy and enjoys the luxuries his money can buy', 'He is generous but too shy to show it to other people', 'He is part of a close family who protect him from the world'], 'The oyster\'s shell = isolation; the pearl = hidden potential for good.', { d: 2 }),
+        mc('What is the effect of the ghost repeating "decrease the surplus population" in Stave 3?', ['Scrooge is confronted with the human cost of his words - Tiny Tim', 'It shows the ghost agrees with Scrooge\'s view of the poor', 'It is a joke that makes Scrooge laugh at himself', 'It makes Scrooge angry, so he refuses to listen'], 'Hearing his words applied to a real child shames him.', { d: 3 }),
         tf('Scrooge\'s transformation happens only in Stave 5.', false, 'It is gradual: he weeps in Stave 2, worries about Tiny Tim in Stave 3, and vows to change in Stave 4.', { d: 2 }),
-        mc('What does Scrooge represent for Dickens\'s readers?', ['The selfish wealthy classes who ignored the poor', 'The working poor', 'The Church', 'Children'], 'Dickens aims his message at middle- and upper-class readers who could help.', { d: 2 }),
+        mc('What does Scrooge represent for Dickens\'s readers?', ['The selfish wealthy classes who ignored the poor', 'The hard-working poor who were trapped in poverty', 'The Church, which Dickens felt had failed the poor', 'Children, who had no say in how society was run'], 'Dickens aims his message at middle- and upper-class readers who could help.', { d: 2 }),
         match('Match the quote to the stave.', [['"Bah! Humbug!"', 'Stave 1'], ['"The happiness he gives is quite as great as if it cost a fortune"', 'Stave 2'], ['"tell me if Tiny Tim will live"', 'Stave 3'], ['"I am as light as a feather"', 'Stave 5']], 'Tracking Scrooge\'s journey stave by stave.', { d: 2 }),
       ],
     }),
@@ -140,10 +140,10 @@ Scrooge represents the **selfish, wealthy middle and upper classes**. If even Sc
         ['Who toasts Scrooge as "the Founder of the Feast"?', 'Bob Cratchit.'],
       ]),
       questions: [
-        mc('Why does the Ghost of Christmas Past have a light shining from its head?', ['It represents the truth and clarity of memory', 'It is a lamp to find the way', 'It shows the ghost is angry', 'It represents money'], 'Scrooge tries to put it out - he resists painful truths.', { d: 2 }),
+        mc('Why does the Ghost of Christmas Past have a light shining from its head?', ['It represents the truth and clarity of memory', 'It is a lamp to guide Scrooge through the dark streets', 'It shows the ghost\'s anger at the way Scrooge lives', 'It represents the money Scrooge has hoarded for years'], 'Scrooge tries to put it out - he resists painful truths.', { d: 2 }),
         mc('Which character best shows how an employer should behave?', ['Fezziwig', 'Marley', 'Topper', 'Old Joe'], 'Fezziwig\'s joyful party contrasts with Scrooge\'s meanness to Bob.', { d: 1 }),
         tf('The ghost says Want is the more dangerous of the two children.', false, '"Most of all beware this boy" - Ignorance is more dangerous: Dickens campaigned for education of the poor.', { d: 3 }),
-        mc('What is Tiny Tim\'s main purpose in the novella?', ['To make readers sympathise with the poor and push Scrooge to change', 'To provide comedy', 'To be a villain', 'To represent the wealthy'], 'His likely death "if these shadows remain unaltered" creates urgency.', { d: 2 }),
+        mc('What is Tiny Tim\'s main purpose in the novella?', ['To make readers sympathise with the poor and push Scrooge to change', 'To provide comedy with his cheerful, clumsy behaviour', 'To be a villain whose greed mirrors Scrooge\'s own', 'To represent the wealthy families who ignore the poor'], 'His likely death "if these shadows remain unaltered" creates urgency.', { d: 2 }),
         multi('Which characters embody the true spirit of Christmas?', ['Fred', 'Fezziwig', 'The Cratchits'], ['Scrooge in Stave 1', 'The businessmen in Stave 4'], 'They show generosity and joy regardless of wealth.', { d: 1 }),
       ],
     }),
@@ -183,9 +183,9 @@ Dickens wanted his wealthy readers to **feel** for the poor and **act**: "I have
       ]),
       questions: [
         mc('Which law created the workhouses Scrooge mentions?', ['The 1834 Poor Law Amendment Act', 'The 1870 Education Act', 'The Factory Act of 1833', 'The Reform Act of 1832'], 'Workhouses were deliberately harsh to deter the poor from seeking help.', { d: 2 }),
-        mc('Why did Dickens choose to write a story rather than a political pamphlet?', ['A story would reach more people and move them emotionally', 'Pamphlets were banned', 'He was paid more for pamphlets', 'He disliked politics'], 'He called it a "sledgehammer blow" - emotion persuades more than argument.', { d: 3 }),
+        mc('Why did Dickens choose to write a story rather than a political pamphlet?', ['A story would reach more people and move them emotionally', 'Political pamphlets about poverty were banned in 1843', 'He was paid less for stories but wanted a challenge', 'He disliked politics and wanted to avoid the subject'], 'He called it a "sledgehammer blow" - emotion persuades more than argument.', { d: 3 }),
         tf('Dickens had personal experience of poverty as a child.', true, 'His father was in Marshalsea debtors\' prison and Dickens worked in Warren\'s Blacking Factory.'),
-        mc('How does Dickens present poverty through the Cratchits?', ['As hardship borne with love and dignity - they are the "deserving poor"', 'As a result of laziness', 'As something to laugh at', 'As non-existent'], 'He counters the Victorian view that the poor were idle or immoral.', { d: 2 }),
+        mc('How does Dickens present poverty through the Cratchits?', ['As hardship borne with love and dignity - they are the "deserving poor"', 'As the result of laziness and poor choices by Bob', 'As something comic: the family is laughed at for being poor', 'As a temporary problem that charity has already solved'], 'He counters the Victorian view that the poor were idle or immoral.', { d: 2 }),
       ],
     }),
     topic({

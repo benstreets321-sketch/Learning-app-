@@ -62,7 +62,7 @@ Because there are fewer revision guides, make your own: for each poem write **on
         ['Which W&L poems protest about society?', 'England in 1819, Lines Written in Early Spring, Thirteen, A Century Later.'],
       ]),
       questions: [
-        mc('What was the focus of the first Worlds and Lives question (2025)?', ['The ways places affect people\'s lives', 'Romantic love', 'The effects of war', 'Parents and children'], 'Named poem: In a London Drawingroom.', { d: 1 }),
+        mc('What was the focus of the first Worlds and Lives question (2025)?', ['The ways places affect people\'s lives', 'The ways people remember the past', 'The effects of conflict on families', 'Relationships between parents and children'], 'Named poem: In a London Drawingroom.', { d: 1 }),
         tf('Worlds and Lives contains 15 poems from 1789 to the present day.', true, 'Like the other clusters.'),
       ],
     }),

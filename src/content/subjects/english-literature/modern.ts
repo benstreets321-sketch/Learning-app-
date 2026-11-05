@@ -47,10 +47,10 @@ Liverpool, 1950s-1980s. Working-class **Mrs Johnstone**, abandoned by her husban
           ['What happens to Mickey after prison?', 'He becomes depressed and dependent on anti-depressants.'],
         ]),
         questions: [
-          mc('Why does Russell show the twins\' deaths at the start?', ['To create dramatic irony and a sense of inevitable tragedy', 'To confuse the audience', 'Because he forgot the ending', 'To make it a comedy'], 'We watch knowing the outcome - focusing on WHY it happens.', { d: 2 }),
+          mc('Why does Russell show the twins\' deaths at the start?', ['To create dramatic irony and a sense of inevitable tragedy', 'To confuse the audience about which twin is which', 'To make the audience sympathise with Mrs Lyons first', 'To show that the play is really a comedy about class'], 'We watch knowing the outcome - focusing on WHY it happens.', { d: 2 }),
           mc('What does the Narrator\'s final question suggest killed the twins?', ['Class', 'Bad luck only', 'The police', 'Linda'], '"...what we, the English, have come to know as class?"', { d: 2 }),
           tf('Edward goes to prison for robbery.', false, 'Mickey goes to prison after the robbery with Sammy; Edward goes to university.'),
-          mc('How do the twins\' adult lives differ?', ['Edward has university and a career; Mickey is unemployed and in prison', 'They have identical lives', 'Mickey becomes a councillor', 'Both emigrate'], 'Class determines opportunity.', { d: 1 }),
+          mc('How do the twins\' adult lives differ?', ['Edward has university and a career; Mickey is unemployed and in prison', 'They have identical lives because they are twins', 'Mickey becomes a councillor; Edward works in a factory', 'Both emigrate to America to escape their families'], 'Class determines opportunity.', { d: 1 }),
         ],
       }),
       topic({
@@ -82,7 +82,7 @@ Liverpool, 1950s-1980s. Working-class **Mrs Johnstone**, abandoned by her husban
           ['What does the "Easy Terms" song show?', 'Mrs Johnstone trapped in debt from buying on hire purchase.'],
         ]),
         questions: [
-          mc('How does the policeman scene show class difference?', ['He threatens Mrs Johnstone but is friendly with Mr Lyons over the same behaviour', 'He arrests Edward', 'He helps Mickey get a job', 'He is the Narrator'], 'Authority treats the classes differently.', { d: 3 }),
+          mc('How does the policeman scene show class difference?', ['He threatens Mrs Johnstone but is friendly with Mr Lyons over the same behaviour', 'He arrests Edward but lets Mickey off with a warning', 'He helps Mickey find a job after he leaves prison', 'He blames Mrs Lyons for letting the boys play together'], 'Authority treats the classes differently.', { d: 3 }),
           multi('Which are themes in Blood Brothers?', ['Social class', 'Superstition and fate', 'Motherhood'], ['Space travel', 'Medieval chivalry'], 'Class is central; superstition is a red herring.', { d: 1 }),
         ],
         examQuestions: [
@@ -131,8 +131,8 @@ During a war, a plane evacuating British schoolboys crashes on a tropical island
           ['Who kills Piggy?', 'Roger, by releasing a boulder.'],
         ]),
         questions: [
-          mc('What happens to the conch when Piggy dies?', ['It is shattered - order and democracy are destroyed', 'Ralph keeps it', 'Jack blows it', 'It washes away'], 'Its destruction marks the end of civilisation on the island.', { d: 1 }),
-          mc('What does Simon realise about the beast?', ['It is the evil within the boys themselves', 'It is a real animal', 'It is a ghost', 'It is Jack in disguise'], '"maybe it\'s only us".', { d: 2 }),
+          mc('What happens to the conch when Piggy dies?', ['It is shattered - order and democracy are destroyed', 'Ralph keeps it safe as a symbol of hope', 'Jack blows it to call his tribe together', 'It washes out to sea, untouched by anyone'], 'Its destruction marks the end of civilisation on the island.', { d: 1 }),
+          mc('What does Simon realise about the beast?', ['It is the evil within the boys themselves', 'It is a real animal hiding on the mountain', 'It is the ghost of the dead parachutist', 'It is Jack, who dresses up to scare them'], '"maybe it\'s only us".', { d: 2 }),
           tf('The naval officer\'s arrival suggests the adult world is free of violence.', false, 'He is part of a war - the adult world mirrors the island\'s savagery on a larger scale.', { d: 3 }),
         ],
       }),
@@ -166,7 +166,7 @@ During a war, a plane evacuating British schoolboys crashes on a tropical island
           ['What novel was Lord of the Flies responding to?', 'The Coral Island (1857) by R.M. Ballantyne.'],
         ]),
         questions: [
-          mc('Why is the island a "microcosm"?', ['It represents society in miniature', 'It is very small', 'It is a real place', 'It has a volcano'], 'Golding uses it to explore how all societies work.', { d: 2 }),
+          mc('Why is the island a "microcosm"?', ['It represents society in miniature', 'It is very small and easy to explore', 'It is based on a real Pacific island', 'It contains every type of habitat'], 'Golding uses it to explore how all societies work.', { d: 2 }),
           tf('Golding believed humans are naturally good and only society corrupts them.', false, 'He believed evil is innate - civilisation only restrains it.'),
         ],
         examQuestions: [examQ('**How does Golding present fear in *Lord of the Flies*?**', 34, [...LEVELS, 'Explores the beast, littluns\' fears, how Jack uses fear for power', 'Uses Simon\'s insight and the Lord of the Flies scene'], { meta: 'Paper 2 Section A · practice', time: 45 })],
@@ -213,7 +213,7 @@ During a war, a plane evacuating British schoolboys crashes on a tropical island
         ]),
         questions: [
           mc('What does Squealer represent?', ['Propaganda', 'Religion', 'The working class', 'Capitalism'], 'He twists facts to justify the pigs.', { d: 1 }),
-          mc('What does the final scene suggest?', ['The pigs have become as oppressive as the humans', 'The revolution succeeded', 'The animals are free', 'Snowball returns'], 'The animals can\'t tell pigs from men - power corrupts.', { d: 2 }),
+          mc('What does the final scene suggest?', ['The pigs have become as oppressive as the humans', 'The revolution has finally succeeded for all', 'The animals have won freedom from the pigs', 'Snowball returns to lead a second rebellion'], 'The animals can\'t tell pigs from men - power corrupts.', { d: 2 }),
           tf('Moses the raven represents religion.', true, 'His tales of Sugarcandy Mountain distract the animals from their suffering.'),
         ],
       }),
@@ -246,7 +246,7 @@ During a war, a plane evacuating British schoolboys crashes on a tropical island
           ['What war did Orwell fight in?', 'The Spanish Civil War (1936-39), against Franco\'s fascists.'],
         ]),
         questions: [
-          mc('Why was Animal Farm hard to publish in 1945?', ['The USSR was Britain\'s wartime ally', 'Paper was banned', 'Orwell was unknown', 'It was too long'], 'Publishers didn\'t want to criticise Stalin during the war.', { d: 2 }),
+          mc('Why was Animal Farm hard to publish in 1945?', ['The USSR was Britain\'s wartime ally', 'Paper rationing stopped all new novels', 'Orwell was unknown to publishers then', 'It was far too long for a wartime book'], 'Publishers didn\'t want to criticise Stalin during the war.', { d: 2 }),
           multi('Which methods do the pigs use to control the animals?', ['Propaganda from Squealer', 'Fear of the dogs', 'Rewriting the commandments'], ['Free and fair elections', 'Teaching everyone to read'], 'Control through fear and manipulation of truth.', { d: 1 }),
         ],
         examQuestions: [examQ('**How does Orwell present the importance of education and knowledge in *Animal Farm*?**', 34, [...LEVELS, 'Explores the pigs\' literacy, Benjamin, the sheep, rewritten commandments', 'Links to Orwell\'s warning about propaganda'], { meta: 'Paper 2 Section A · practice', time: 45 })],

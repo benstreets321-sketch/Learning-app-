@@ -91,7 +91,7 @@ Remove or correct errors, missing values and impossible entries (e.g. age 300); 
         keyPoints: ['Avoid leading questions', 'Non-overlapping, exhaustive response boxes with a time frame', 'Open vs closed questions', 'Lab, field and natural experiments', 'Control groups and matched pairs', 'Clean data before analysing'],
         flashcards: cards([['What is a leading question?', 'A question that encourages a particular answer.'], ['Two features of good response boxes?', 'No overlaps and cover all possible answers (plus a time frame).'], ['Lab vs field experiment?', 'Lab: controlled, artificial setting. Field: real-world, harder to control.'], ['What is data cleaning?', 'Identifying and correcting or removing errors and missing values before analysis.']]),
         questions: [
-          mc('Which is a problem with these response boxes: 0-2 hours, 2-4 hours, 4-6 hours?', ['They overlap and miss "more than 6 hours", with no time frame', 'They are too detailed', 'They are open questions', 'There is no problem'], 'Where does exactly 2 go? What about 7 hours? Per day or week?', { d: 2 }),
+          mc('Which is a problem with these response boxes: 0-2 hours, 2-4 hours, 4-6 hours?', ['They overlap and miss "more than 6 hours", with no time frame', 'They are too detailed for people to answer honestly', 'They turn the question into an open question', 'They are biased towards people who watch a lot of TV'], 'Where does exactly 2 go? What about 7 hours? Per day or week?', { d: 2 }),
           mc('"Don\'t you agree that school starts too early?" This question is...', ['Leading', 'Closed and fair', 'Open', 'Anonymous'], 'It pushes towards "yes".', { d: 1 }),
         ],
       }),
@@ -204,7 +204,7 @@ Always compare **an average AND a measure of spread** in context, e.g. "Group A'
         generators: ['s-spearman', 's-regression'],
         flashcards: cards([['Spearman\'s rank formula?', 'rₛ = 1 − 6Σd² ÷ n(n² − 1)'], ['What point should a line of best fit pass through?', 'The mean point (x̄, ȳ).'], ['What does "b" mean in y = a + bx?', 'The gradient - the change in y for each one-unit increase in x.'], ['Why is extrapolation unreliable?', 'The relationship may not continue outside the range of the data.'], ['What is a lurking variable?', 'A third variable that affects both variables, creating an apparent link.']]),
         questions: [
-          mc('rₛ = −0.92 means...', ['Strong negative correlation between the rankings', 'Weak positive correlation', 'No correlation', 'Strong positive correlation'], 'Close to −1.', { d: 2 }),
+          mc('rₛ = −0.92 means...', ['Strong negative correlation between the rankings', 'Weak negative correlation between the rankings', 'Strong positive correlation between the rankings', 'No correlation between the rankings'], 'Close to −1.', { d: 2 }),
           tf('Ice cream sales and drownings are positively correlated, so ice cream causes drowning.', false, 'Hot weather (a lurking variable) increases both.', { d: 1 }),
           num('Regression line y = 12 + 3.5x. Estimate y when x = 8.', 40, '12 + 3.5 × 8 = 40.', { d: 1 }),
         ],
@@ -222,7 +222,7 @@ Always compare **an average AND a measure of spread** in context, e.g. "Group A'
         flashcards: cards([['What does a moving average show?', 'The underlying trend with seasonal variation smoothed out.'], ['Seasonal variation formula?', 'Actual value − trend value (moving average).'], ['How do you predict a future value?', 'Read the trend line value and add the mean seasonal variation for that season.']]),
         questions: [
           num('Quarterly sales: 20, 35, 28, 41. Calculate the 4-point moving average.', 31, '(20 + 35 + 28 + 41) ÷ 4 = 31.', { d: 2 }),
-          mc('Why use a 4-point moving average for quarterly data?', ['It covers a full year, cancelling out seasonal variation', 'It is easiest to calculate', 'It always increases', 'It shows outliers'], 'One value from each season.', { d: 3 }),
+          mc('Why use a 4-point moving average for quarterly data?', ['It covers a full year, cancelling out seasonal variation', 'It is the easiest moving average to calculate by hand', 'It always produces a trend line that increases', 'It highlights outliers so they can be removed'], 'One value from each season.', { d: 3 }),
         ],
       }),
       topic({
@@ -240,7 +240,7 @@ Always compare **an average AND a measure of spread** in context, e.g. "Group A'
         flashcards: cards([['Index number formula?', '(Current value ÷ base value) × 100'], ['What is a chain base index?', 'Each year compared to the previous year rather than a fixed base year.'], ['Crude death rate formula?', '(Number of deaths ÷ population) × 1000'], ['Why use standardised rates?', 'To compare areas fairly by adjusting for different age structures.']]),
         questions: [
           num('A price rises from £4.00 (base year) to £4.60. Calculate the index number.', 115, '4.60 ÷ 4.00 × 100 = 115.', { d: 1 }),
-          mc('An index number of 92 means...', ['An 8% decrease since the base year', 'A 92% increase', 'A 92% decrease', 'An 8% increase'], 'Below 100 = decrease.', { d: 2 }),
+          mc('An index number of 92 means...', ['An 8% decrease since the base year', 'A 92% increase since the base year', 'A 92% decrease since the base year', 'An 8% increase since the base year'], 'Below 100 = decrease.', { d: 2 }),
         ],
       }),
     ],
@@ -301,7 +301,7 @@ P(X = r) = ⁿCᵣ pʳ (1 − p)ⁿ⁻ʳ. The coefficients come from **Pascal's 
         keyPoints: ['Control charts track sample means over time', 'Warning limits ±2 SD → resample', 'Action limits ±3 SD → stop and adjust', 'Watch for trends towards limits'],
         flashcards: cards([['What should happen if a sample mean is outside the action limits?', 'Stop the process and adjust the machinery.'], ['What are warning limits?', 'Lines usually at target ± 2 standard deviations; a point outside means take another sample.']]),
         questions: [
-          mc('A sample mean falls between the warning and action limits. What should happen?', ['Take another sample immediately', 'Stop production', 'Do nothing ever', 'Change the target'], 'Resample to check.', { d: 2 }),
+          mc('A sample mean falls between the warning and action limits. What should happen?', ['Take another sample immediately', 'Stop production and reset the machine', 'Carry on and take no further action', 'Change the target value for the process'], 'Resample to check.', { d: 2 }),
         ],
       }),
     ],

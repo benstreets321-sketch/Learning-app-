@@ -50,7 +50,7 @@ export function MocksPage() {
             <h2 className="row gap"><SubjectMark subject={s} size="sm" /> {s.name}</h2>
             <div className="list">
               {list.map((p) => {
-                const attempts = p.tests().flatMap((t) => progress.mocks?.[t.id] ?? []).filter((a) => a.status !== 'in-progress');
+                const attempts = Object.entries(progress.mocks ?? {}).filter(([k]) => k.startsWith(`${p.id}-t`)).flatMap(([, v]) => v).filter((a) => a.status !== 'in-progress');
                 const best = attempts.reduce((m, a) => Math.max(m, (a.score ?? 0) / a.max), -1);
                 return (
                   <a key={p.id} className="list-row" href={href(`/mocks/${p.id}`)}>

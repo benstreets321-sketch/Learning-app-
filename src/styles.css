@@ -899,3 +899,15 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 0.05rem 0.35rem; bo
   .taking-mock .topbar, .taking-mock .bottomnav { display: none; }
   .taking-mock .main { padding-bottom: 2rem; }
 }
+
+/* ---------- loading states ---------- */
+.page-loading { padding-top: 0.5rem; }
+.sk { height: 14px; border-radius: 7px; margin: 0 0 14px; background: var(--surface-3); animation: skPulse 1.1s ease-in-out infinite; }
+.sk-title { height: 26px; width: 46%; margin-bottom: 24px; }
+.sk-short { width: 58%; }
+@keyframes skPulse { 50% { opacity: 0.55; } }
+@media (prefers-reduced-motion: reduce) { .sk { animation: none; } }
+/* a gentle fade as each page opens */
+.main > .page { animation: pageIn 0.16s ease-out; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .main > .page { animation: none; } }

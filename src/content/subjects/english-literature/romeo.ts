@@ -53,11 +53,11 @@ A **sonnet** spoken by the Chorus: it tells us the "**star-crossed lovers**" wil
         ['How long do the events of the play take?', 'About four days - Sunday to Thursday morning.'],
       ]),
       questions: [
-        mc('What is the effect of the Prologue telling us the ending?', ['Dramatic irony: we watch the lovers knowing they are doomed', 'It removes all tension', 'It shows the play is a comedy', 'It introduces Rosaline'], 'Knowing the end makes every hopeful moment painful.', { d: 2 }),
-        mc('Which scene is the turning point of the play?', ['Act 3 Scene 1 - the deaths of Mercutio and Tybalt', 'Act 1 Scene 5 - the feast', 'Act 5 Scene 3 - the tomb', 'Act 2 Scene 2 - the balcony'], 'After Mercutio\'s curse and Romeo\'s banishment, events slide into tragedy.', { d: 2 }),
+        mc('What is the effect of the Prologue telling us the ending?', ['Dramatic irony: we watch the lovers knowing they are doomed', 'It removes all tension, so the audience can relax and laugh', 'It shows the play is a comedy that will end in a wedding', 'It introduces Rosaline as the main character of the story'], 'Knowing the end makes every hopeful moment painful.', { d: 2 }),
+        mc('Which scene is the turning point of the play?', ['Act 3 Scene 1 - the deaths of Mercutio and Tybalt', 'Act 1 Scene 5 - Romeo and Juliet meet at the feast', 'Act 5 Scene 3 - the lovers die in the Capulet tomb', 'Act 2 Scene 2 - the lovers declare their love on the balcony'], 'After Mercutio\'s curse and Romeo\'s banishment, events slide into tragedy.', { d: 2 }),
         tf('Romeo and Juliet\'s first conversation forms a sonnet.', true, 'They share a 14-line sonnet (1.5), showing they are perfectly matched.', { d: 3 }),
-        mc('Why is Romeo banished rather than executed?', ['The Prince shows mercy because Tybalt killed Mercutio first', 'Capulet asks for mercy', 'Juliet begs the Prince', 'Romeo escapes before he is caught'], 'Tybalt killed the Prince\'s kinsman Mercutio, so Romeo\'s revenge is partly understood.', { d: 3 }),
-        mc('How do the families respond at the end?', ['They reconcile and promise golden statues of each other\'s child', 'They continue fighting', 'They blame the Nurse', 'They leave Verona'], 'The tragedy achieves what the lovers could not alive - peace.', { d: 1 }),
+        mc('Why is Romeo banished rather than executed?', ['The Prince shows mercy because Tybalt killed Mercutio first', 'Capulet asks the Prince to show mercy to the young man', 'Juliet secretly begs the Prince to spare her husband\'s life', 'Romeo escapes from Verona before the guards can catch him'], 'Tybalt killed the Prince\'s kinsman Mercutio, so Romeo\'s revenge is partly understood.', { d: 3 }),
+        mc('How do the families respond at the end?', ['They reconcile and promise golden statues of each other\'s child', 'They blame each other and the feud continues more bitterly', 'They blame the Nurse and the Friar, then banish them both', 'They leave Verona so they never have to see each other'], 'The tragedy achieves what the lovers could not alive - peace.', { d: 1 }),
       ],
     }),
     topic({
@@ -91,10 +91,10 @@ A **sonnet** spoken by the Chorus: it tells us the "**star-crossed lovers**" wil
         ['What does Romeo say after killing Tybalt?', '"O, I am fortune\'s fool!"'],
       ]),
       questions: [
-        mc('What do Romeo\'s oxymorons in Act 1 Scene 1 suggest?', ['His love for Rosaline is confused and clichéd', 'He hates Juliet', 'He is a skilled fighter', 'He is happy and content'], '"O brawling love! O loving hate!" - conventional, self-indulgent misery.', { d: 2 }),
+        mc('What do Romeo\'s oxymorons in Act 1 Scene 1 suggest?', ['His love for Rosaline is confused and clichéd', 'His love for Juliet is mature and sincere', 'He is a skilled fighter eager to join the feud', 'He is calm, content and happy with his life'], '"O brawling love! O loving hate!" - conventional, self-indulgent misery.', { d: 2 }),
         mc('How does Romeo\'s language change when he meets Juliet?', ['It becomes fresher, full of light imagery', 'It becomes more violent', 'He stops speaking in verse', 'He uses only oxymorons'], 'Light imagery ("teach the torches to burn bright") shows sincere wonder.', { d: 2 }),
         tf('Romeo initially tries to avoid fighting Tybalt in Act 3 Scene 1.', true, 'He says he loves Tybalt "better than thou canst devise" - because they are now related by marriage.'),
-        mc('How could you argue Romeo is responsible for the tragedy?', ['His impulsive choices - killing Tybalt, rushing to the tomb - drive events', 'He follows the Friar\'s advice carefully', 'He never acts without thinking', 'The Prologue says he is innocent'], 'Fate frames the play, but Romeo\'s haste makes it happen.', { d: 3 }),
+        mc('How could you argue Romeo is responsible for the tragedy?', ['His impulsive choices - killing Tybalt, rushing to the tomb - drive events', 'He follows the Friar\'s advice carefully at every stage', 'He always thinks before he acts, unlike the other men', 'The Prologue makes clear he is completely innocent'], 'Fate frames the play, but Romeo\'s haste makes it happen.', { d: 3 }),
       ],
     }),
     topic({
@@ -134,7 +134,7 @@ Juliet as a **female character with strong emotions** (2021), Juliet's **feeling
       ]),
       questions: [
         mc('What does "Wherefore art thou Romeo?" mean?', ['Why are you Romeo - a Montague?', 'Where are you, Romeo?', 'Are you Romeo?', 'Come here, Romeo'], '"Wherefore" means "why" - she laments that he belongs to the enemy family.', { d: 1 }),
-        mc('How does Juliet change between Act 1 Scene 3 and Act 3 Scene 5?', ['From obedient daughter to defiant, independent woman', 'From defiant to obedient', 'She does not change', 'From happy to bored'], 'She moves from "I\'ll look to like" to refusing her father\'s choice of husband.', { d: 2 }),
+        mc('How does Juliet change between Act 1 Scene 3 and Act 3 Scene 5?', ['From obedient daughter to defiant, independent woman', 'From defiant rebel to obedient, dutiful daughter', 'She stays exactly the same from start to finish', 'From a happy girl to a bored and lonely wife'], 'She moves from "I\'ll look to like" to refusing her father\'s choice of husband.', { d: 2 }),
         tf('The Nurse supports Juliet\'s refusal to marry Paris to the end.', false, 'In 3.5 the Nurse advises her to marry Paris ("I think it best you married with the County") - Juliet feels betrayed.', { d: 2 }),
         mc('Why is Juliet\'s potion speech (4.3) significant?', ['It shows her courage in facing terrifying fears alone', 'It shows she is happy to marry Paris', 'It is spoken to the Nurse', 'It is comic relief'], 'She imagines waking among corpses and Tybalt\'s body, yet drinks - remarkable bravery.', { d: 3 }),
       ],
@@ -170,8 +170,8 @@ Juliet as a **female character with strong emotions** (2021), Juliet's **feeling
         ['How does Capulet react to Juliet\'s refusal?', 'With rage: insults ("green-sickness carrion") and threatens to throw her out: "hang, beg, starve, die in the streets".'],
       ]),
       questions: [
-        mc('Why is Mercutio\'s death so important?', ['It drives Romeo to kill Tybalt, leading to his banishment', 'It ends the feud', 'It makes Juliet hate Romeo', 'It is a comic moment'], 'It is the turning point: love gives way to revenge.', { d: 2 }),
-        mc('What does Capulet\'s outburst in 3.5 reveal about Elizabethan fathers?', ['They had near-total authority over daughters\' marriages', 'They let daughters choose freely', 'They had no interest in marriage', 'They were legally powerless'], 'Daughters were expected to obey; disobedience could mean being disowned.', { d: 2 }),
+        mc('Why is Mercutio\'s death so important?', ['It drives Romeo to kill Tybalt, leading to his banishment', 'It ends the feud, as both families mourn him together', 'It makes Juliet hate Romeo and refuse to see him', 'It is a comic moment that lightens the mood of Act 3'], 'It is the turning point: love gives way to revenge.', { d: 2 }),
+        mc('What does Capulet\'s outburst in 3.5 reveal about Elizabethan fathers?', ['They had near-total authority over daughters\' marriages', 'They let daughters choose husbands freely for love', 'They took little interest in their daughters\' marriages', 'They had no legal power over their adult daughters'], 'Daughters were expected to obey; disobedience could mean being disowned.', { d: 2 }),
         match('Match each character to their attitude.', [['Tybalt', 'Hates peace'], ['Benvolio', 'Keeps the peace'], ['Friar Laurence', 'Advises caution'], ['Mercutio', 'Mocks romantic love']], 'These attitudes create contrasts with Romeo.', { d: 2 }),
         tf('Friar Laurence stays in the tomb with Juliet at the end.', false, 'He flees when he hears the watch coming - leaving Juliet alone.', { d: 2 }),
       ],
@@ -218,7 +218,7 @@ Juliet as a **female character with strong emotions** (2021), Juliet's **feeling
       ]),
       questions: [
         mc('Which quote best shows that love and death are linked?', ['"My grave is like to be my wedding bed"', '"I do but keep the peace"', '"What\'s in a name?"', '"I\'ll look to like"'], 'Juliet imagines her wedding bed as her grave - a premonition.', { d: 2 }),
-        mc('What does the Friar mean by "These violent delights have violent ends"?', ['Passionate, extreme love burns out destructively', 'Love is boring', 'Fighting is fun', 'The Capulets will win'], 'A warning about intensity and haste.', { d: 2 }),
+        mc('What does the Friar mean by "These violent delights have violent ends"?', ['Passionate, extreme love burns out destructively', 'Fighting is exciting but always ends in a truce', 'The Capulets will win the feud by force in the end', 'Marriage will make Romeo and Juliet calmer and wiser'], 'A warning about intensity and haste.', { d: 2 }),
         multi('Which events could support the argument that FATE causes the tragedy?', ['The Prologue\'s "star-crossed lovers"', 'The plague stopping the letter', 'Romeo\'s premonition before the feast'], ['Romeo choosing to kill Tybalt', 'Capulet bringing the wedding forward'], 'The other two are human choices - useful for the counter-argument.', { d: 3 }),
         tf('Older characters in the play always act wisely and slowly.', false, 'Capulet rushes the wedding to Thursday, and the Friar\'s potion plan is rash - age is no guarantee of wisdom.'),
       ],
@@ -255,7 +255,7 @@ See the **Past questions** tab for every recent AQA question on the play.
         ['Why would the lovers\' suicides shock an Elizabethan audience?', 'Suicide was a mortal sin in Christian belief, meaning damnation.'],
       ]),
       questions: [
-        mc('Why would Elizabethan audiences see Capulet\'s anger as understandable (if harsh)?', ['Daughters were expected to obey their fathers in marriage', 'Juliet was too old to marry', 'Paris was poor', 'Capulet was the Prince'], 'Patriarchal norms gave fathers control; disobedience was a serious offence.', { d: 2 }),
+        mc('Why would Elizabethan audiences see Capulet\'s anger as understandable (if harsh)?', ['Daughters were expected to obey their fathers in marriage', 'Juliet was thought far too old to still be unmarried', 'Paris was poor, so the match was a great sacrifice', 'Capulet was the Prince, so his word was law in Verona'], 'Patriarchal norms gave fathers control; disobedience was a serious offence.', { d: 2 }),
         tf('Elizabethans commonly believed the stars could influence people\'s lives.', true, 'Astrology was widely believed - hence "star-crossed".'),
         mc('Which focus has NOT been asked recently and is worth preparing?', ['Fate and the role of chance', 'Aggressive male behaviour', 'Parents and children', 'The relationship between Romeo and Juliet'], 'Fate hasn\'t been the headline focus recently - all themes are examinable.', { d: 2 }),
       ],

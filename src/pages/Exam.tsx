@@ -4,7 +4,8 @@ import { recordExam, saveDraft, getProgress, addStudyTime } from '../lib/store';
 import { href } from '../lib/router';
 import { Markdown } from '../components/Markdown';
 import { Empty } from '../components/ui';
-import { ToolBar } from '../components/Tools';
+import { ToolBar, type ToolId } from '../components/Tools';
+import { equipmentForExam } from '../lib/equipment';
 import { setTutorContext } from '../lib/tutor';
 import { aiErrorText, isPermanent, useAIProvider } from '../lib/ai';
 import { keywordCheck, markWithAI, type AIMark } from '../lib/marking';
@@ -82,7 +83,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
         <span className="small">{eq.marks} marks</span>
       </div>
 
-      <div className="q-tools"><ToolBar subjectId={ref.subject.id} /></div>
+      <div className="q-tools"><ToolBar subjectId={ref.subject.id} tools={equipmentForExam(ref.subject.id, eq) as ToolId[]} /></div>
       <div className="exam-q-box">
         {eq.meta && <div className="muted small">{eq.meta}</div>}
         <Markdown text={eq.q} />

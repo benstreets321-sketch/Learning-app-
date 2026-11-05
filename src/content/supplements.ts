@@ -90,7 +90,7 @@ The **population** is everyone or everything you are interested in. A **sample**
     keyPoints: ['Frequency polygon: plot at class midpoints, join with straight lines', 'A sample should be random and large enough to represent the population'],
     questions: [
       mc('Where are the points of a frequency polygon plotted for the class 10 < x ≤ 20?', ['At x = 15', 'At x = 10', 'At x = 20', 'At the class width'], 'Points are plotted at the class midpoint.', { d: 1 }),
-      mc('Why might asking 5 friends be a poor sample for "the favourite sport of students in the school"?', ['It is too small and not random, so it may not represent the school', 'It is too large', 'Friends always tell the truth', 'Samples must include teachers'], 'Small, non-random samples are often biased.', { d: 2 }),
+      mc('Why might asking 5 friends be a poor sample for "the favourite sport of students in the school"?', ['It is too small and not random, so it may not represent the school', 'It is too large and would take far too long to collect', 'Friends always tell the truth, so the data is too accurate', 'Samples must include teachers as well as the students'], 'Small, non-random samples are often biased.', { d: 2 }),
     ],
   },
   // ---------- Biology 4.6.3: Mendel and speciation ----------
@@ -116,9 +116,9 @@ How a new species forms:
 `,
     keyPoints: ['Mendel: pea plants, inherited "units" (genes), dominant and recessive', 'Speciation: isolation → different selection → can no longer produce fertile offspring together'],
     questions: [
-      mc('Why was Mendel\'s work not accepted during his lifetime?', ['Chromosomes and genes had not been discovered, so his ideas could not be explained', 'He used animals instead of plants', 'His results were proved wrong', 'He did not publish his work'], 'No one knew about genes or chromosomes, and he published in an obscure journal.', { d: 2 }),
+      mc('Why was Mendel\'s work not accepted during his lifetime?', ['Chromosomes and genes had not been discovered, so his ideas could not be explained', 'He used animals, which scientists then thought unreliable', 'His results were shown to be wrong by other scientists', 'He never published his work, so nobody could read it'], 'No one knew about genes or chromosomes, and he published in an obscure journal.', { d: 2 }),
       txt('Which scientist independently proposed natural selection alongside Darwin and studied speciation?', ['Wallace', 'Alfred Russel Wallace', 'Alfred Wallace'], 'Alfred Russel Wallace.', { d: 2 }),
-      mc('What finally shows that two populations have become separate species?', ['They can no longer interbreed to produce fertile offspring', 'They look different', 'They live in different places', 'They eat different food'], 'The species definition is about producing fertile offspring.', { d: 2 }),
+      mc('What finally shows that two populations have become separate species?', ['They can no longer interbreed to produce fertile offspring', 'They have evolved to look different from each other', 'They now live in different places or habitats', 'They have started to eat different types of food'], 'The species definition is about producing fertile offspring.', { d: 2 }),
     ],
     flashcards: [
       { front: 'What did Mendel discover?', back: 'Characteristics are inherited in separate "units" (genes), some dominant and some recessive - from breeding pea plants.' },
@@ -159,7 +159,7 @@ S-waves are not detected on the opposite side of the Earth from an earthquake (t
     keyPoints: ['Explanatory variable is changed; response variable is measured', 'Control extraneous variables; use control groups, matched pairs or before-and-after designs'],
     questions: [
       mc('A study tests whether a new revision app improves test scores. The test score is the…', ['Response variable', 'Explanatory variable', 'Extraneous variable', 'Control group'], 'It is what is measured.', { d: 2 }),
-      mc('Why use a control group?', ['To compare with the group that had the treatment', 'To make the sample bigger', 'To remove all variables', 'To save time'], 'A control group shows what happens without the treatment.', { d: 2 }),
+      mc('Why use a control group?', ['To compare with the group that had the treatment', 'To make the sample big enough to be reliable', 'To remove every variable from the experiment', 'To save time by testing fewer people'], 'A control group shows what happens without the treatment.', { d: 2 }),
     ],
   },
   // ---------- BTEC Enterprise C3: sources of support and finance ----------
@@ -179,7 +179,7 @@ Choose by the **amount** needed, **cost** (interest, fees, giving up ownership),
     keyPoints: ['Support can be informal, professional or from government/voluntary bodies', 'Choose finance by amount, cost, time and risk'],
     questions: [
       mc('Which source of support gives free advice but may not be expert?', ['Family and friends', 'An accountant', 'A solicitor', 'A bank business adviser'], 'Informal support is free but may lack specialist knowledge.', { d: 1 }),
-      mc('A business angel provides finance in exchange for…', ['A share of the business (equity)', 'Interest only', 'Nothing', 'Free products'], 'Angels invest for a share of ownership and often give advice.', { d: 2 }),
+      mc('A business angel provides finance in exchange for…', ['A share of the business (equity)', 'Interest payments only', 'A fixed monthly rent', 'Free products for life'], 'Angels invest for a share of ownership and often give advice.', { d: 2 }),
     ],
   },
 };

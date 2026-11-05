@@ -91,8 +91,8 @@ export function germanyTopics(p: string, board: 'edexcel' | 'aqa'): Topic[] {
       ],
       flashcards: cards([['What was Article 48?', 'It allowed the President to rule by decree in an emergency, bypassing the Reichstag.'], ['Why did proportional representation weaken Weimar?', 'It produced many parties and unstable coalition governments.'], ['What caused hyperinflation in 1923?', 'The government printed money to pay striking workers during the Ruhr occupation (on top of reparations and war debts).'], ['What was the Dawes Plan?', 'A 1924 agreement reducing reparation payments and providing US loans to Germany.'], ['Who were the "November Criminals"?', 'The politicians who signed the armistice/Treaty - blamed by nationalists for Germany\'s defeat.']]),
       questions: [
-        mc('Which event triggered hyperinflation in 1923?', ['The French and Belgian occupation of the Ruhr', 'The Wall Street Crash', 'The Kapp Putsch', 'The Dawes Plan'], 'Passive resistance → printing money.', { d: 1 }),
-        mc('Who was hit hardest by hyperinflation?', ['People with savings, such as the middle classes', 'People with large debts', 'Farmers with mortgages', 'Foreign investors only'], 'Savings became worthless.', { d: 2 }),
+        mc('Which event triggered hyperinflation in 1923?', ['The French and Belgian occupation of the Ruhr', 'The Wall Street Crash in New York', 'The Kapp Putsch in Berlin', 'The signing of the Dawes Plan'], 'Passive resistance → printing money.', { d: 1 }),
+        mc('Who was hit hardest by hyperinflation?', ['People with savings, such as the middle classes', 'People with large debts, such as businesses', 'Farmers who owned land and grew food', 'Foreign investors who lent Germany money'], 'Savings became worthless.', { d: 2 }),
         multi('Which were achievements of Stresemann?', ['The Rentenmark', 'The Dawes Plan', 'Joining the League of Nations'], ['The Enabling Act', 'The Munich Putsch'], '1923-29 recovery.', { d: 2 }),
         tf('The Weimar recovery of 1924-29 was independent of foreign money.', false, 'It depended heavily on US loans - which were recalled after 1929.', { d: 2 }),
       ],

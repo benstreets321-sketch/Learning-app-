@@ -51,12 +51,12 @@ export const inspectorUnit: Unit[] = [{
         ['How does the lighting change?', '"pink and intimate" (rose-tinted complacency) → "brighter and harder" when the Inspector arrives.'],
       ]),
       questions: [
-        mc('What is the effect of Birling calling the Titanic "unsinkable"?', ['Dramatic irony: the audience knows it sank, so Birling\'s judgement is undermined', 'It makes Birling seem wise', 'It is a joke the Inspector tells', 'It shows Birling owns the Titanic'], 'Priestley makes the capitalist voice look foolish so we reject his views.', { d: 2 }),
+        mc('What is the effect of Birling calling the Titanic "unsinkable"?', ['Dramatic irony: the audience knows it sank, so Birling\'s judgement is undermined', 'It makes Birling seem wise and sensible about business and the future', 'It is a joke the Inspector tells to make the family relax', 'It shows that Birling has invested in the Titanic\'s shipping line'], 'Priestley makes the capitalist voice look foolish so we reject his views.', { d: 2 }),
         mc('Who is the father of Eva\'s baby?', ['Eric', 'Gerald', 'Mr Birling', 'The Inspector'], 'Revealed in Act 3; Mrs Birling unknowingly condemned her own son.', { d: 1 }),
         tf('The play is set in 1945.', false, 'Set in 1912, written in 1945 - the gap lets the audience see the Birlings\' mistakes in hindsight.'),
         ord_q(),
         mc('Why does the lighting become "brighter and harder" when the Inspector arrives?', ['To show scrutiny and the exposure of truth', 'Because it gets dark outside', 'To show romance', 'To hide the characters'], '"Pink and intimate" suggests a rose-tinted view; the harsh light interrogates.', { d: 2 }),
-        mc('What is the effect of the final phone call?', ['It is cyclical: the lesson must be faced again, especially by those who didn\'t learn', 'It shows the story was all a dream', 'It proves the Inspector was a real police officer', 'It ends the play happily'], 'Priestley denies the older Birlings their escape.', { d: 3 }),
+        mc('What is the effect of the final phone call?', ['It is cyclical: the lesson must be faced again, especially by those who didn\'t learn', 'It shows the whole story was a dream that Sheila had', 'It proves the Inspector was a real police officer all along', 'It ends the play happily as the family celebrate the engagement'], 'Priestley denies the older Birlings their escape.', { d: 3 }),
       ],
     }),
     topic({
@@ -92,7 +92,7 @@ export const inspectorUnit: Unit[] = [{
       ]),
       questions: [
         mc('What does the Inspector represent for Priestley?', ['Priestley\'s own socialist views and conscience', 'The capitalist class', 'The police force\'s corruption', 'Gerald\'s family'], 'He is Priestley\'s mouthpiece - delivering the play\'s message.', { d: 2 }),
-        mc('How does Sheila change?', ['From childish and self-centred to perceptive and morally responsible', 'From kind to cruel', 'She doesn\'t change', 'From poor to rich'], 'She ends challenging her parents\' refusal to learn.', { d: 1 }),
+        mc('How does Sheila change?', ['From childish and self-centred to perceptive and morally responsible', 'From kind and generous to cruel and self-centred', 'She doesn\'t change: she stays loyal to her parents\' views', 'From poor and powerless to rich and influential'], 'She ends challenging her parents\' refusal to learn.', { d: 1 }),
         tf('Mr Birling accepts responsibility for Eva\'s death by the end.', false, 'He is relieved when it seems a hoax and worries about the scandal and his knighthood.'),
         match('Match the character to their attitude at the end.', [['Mr Birling', 'Relieved - "the whole story\'s just a lot of moonshine"'], ['Sheila', 'Still feels responsible'], ['Eric', 'Condemns his parents'], ['Gerald', 'Wants things back to normal']], 'The generational divide is Priestley\'s point: hope lies with the young.', { d: 3 }),
         mc('Why does Eva Smith never appear on stage?', ['So she can represent all exploited working-class people', 'Because the actress was ill', 'Because she is the Inspector in disguise', 'To make the play shorter'], '"Millions and millions of Eva Smiths" - she is symbolic.', { d: 2 }),
@@ -131,7 +131,7 @@ Priestley sets the play in 1912 so the 1945 audience can see where selfishness l
       ]),
       questions: [
         mc('What was Priestley\'s political view?', ['Socialist - he believed in collective responsibility', 'Strongly capitalist', 'He had no political views', 'He supported a monarchy with no parliament'], 'The Inspector voices his beliefs.', { d: 1 }),
-        mc('Why would a 1945 audience distrust Mr Birling?', ['They knew his predictions (no war, Titanic unsinkable) were wrong', 'He was a real criminal', 'He was played badly', 'He agreed with the Inspector'], 'Dramatic irony undermines capitalism\'s spokesman.', { d: 2 }),
+        mc('Why would a 1945 audience distrust Mr Birling?', ['They knew his predictions (no war, Titanic unsinkable) were wrong', 'He was based on a real criminal the audience knew about', 'The actor playing him was famous for playing villains', 'He agreed with the Inspector, which seemed weak to them'], 'Dramatic irony undermines capitalism\'s spokesman.', { d: 2 }),
         multi('Which are examples of gender inequality in the play?', ['Eva\'s vulnerability to men with money and power', 'Mr Birling\'s comment that women need clothes to feel worthwhile', 'Women\'s lack of rights in 1912'], ['Sheila becoming Prime Minister'], 'Priestley exposes how women - especially working-class women - were exploited.', { d: 2 }),
         tf('The NHS already existed in 1912.', false, 'The NHS began in 1948 - part of the post-war welfare state Priestley\'s message supported.'),
       ],
