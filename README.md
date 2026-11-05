@@ -28,10 +28,10 @@ It runs entirely in the browser - no account, no server. Progress is saved on th
 - **Built around how memory works**: a 3-question pre-test before a new lesson, a 90-second **sprint** for quick recall, confidence tracking, a weekly review, spacing, interleaving and keyboard shortcuts (1-9 to choose, Enter to check and continue, H for a hint).
 - **Daily reminder**: notifications at a chosen time (only if you haven't studied yet that day), background reminders for the installed app on Chrome/Edge/Android, and an "Add to calendar" repeating event that works on iPhone too.
 - **Search** across lessons, flashcards, quotations and command words (press `/`), **read aloud** for questions and lessons, and reading settings (larger text, extra spacing).
-- **AI tutor on every question** (clues without spoilers before you answer, full explanations after, analysis of quotes and sources, feedback on writing) and **AI marking** of written exam answers against the mark scheme. Inside claude.ai it uses the viewer's own Claude account; on the installed app it uses an Anthropic API key entered in Settings (stored only on the device). Without either, it falls back to the app's built-in hints.
+- **Tutor on every question**, free with no API key. The built-in tutor (works everywhere, offline) gives graded clues, explains what a question asks and its key terms, finds answers to typed questions in the lesson notes and flashcards, sets a similar practice question and marks the reply, and checks written exam answers for mark-scheme key words. When the app is opened inside claude.ai it also becomes a full AI tutor and can mark exam answers against the mark scheme, using the viewer's own Claude plan.
 - **Over 260 exam-style questions** with exam-board-style mark schemes (method/accuracy marks in Maths, marking points and levels in the sciences, knowledge/application/analysis/evaluation levels in Business and History).
 - **Specification coverage**: every point of each exam board specification is mapped to the lessons that teach it (`src/content/spec.ts`); a test fails if any point has no lesson or practice, or any topic is missing from the map. Each subject has a Spec checklist tab, and the home page suggests points not yet started.
-- **Saving**: progress saves within a quarter of a second, immediately when the app is hidden or closed, keeps a second backup copy, asks the browser for persistent storage, and syncs to the student's Claude account when run inside claude.ai.
+- **Saving**: progress saves within a quarter of a second and immediately when the app is hidden or closed, keeps a second backup copy (and repairs a corrupted save from it), asks the browser for persistent storage, warns if storage is blocked, can be exported/imported (including on the first-run screen), and syncs to the student's Claude account when run inside claude.ai.
 - **Confidence ratings**: guesses come back sooner; confident mistakes go to the top of the Fix-it list (hypercorrection effect).
 - **Spaced repetition** (SM-2) for every question and flashcard; a **Fix-it list** that keeps mistakes until you get them right unaided.
 - **Unlimited practice**: 120+ procedural generators (maths, physics, chemistry, biology, statistics, business finance, iMedia file sizes) with full worked solutions.
@@ -56,7 +56,7 @@ See [`docs/RESEARCH_NOTES.md`](docs/RESEARCH_NOTES.md). Highlights:
 ```bash
 npm install
 npm run dev          # local dev server
-npm test             # engine, generator and content-integrity tests
+npm test             # engine, generator, content, specification, tutor and saving tests
 npm run build        # production build in dist/ (for GitHub Pages or any static host)
 npm run build:single # one self-contained HTML file in dist-single/index.html
 ```

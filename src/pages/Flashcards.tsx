@@ -33,7 +33,7 @@ function buildDeck(query: URLSearchParams): { title: string; cards: Card[]; tota
     const s = getSubject(id);
     if (s) { topics = visibleTopics(s, profile).map((t) => ({ id: t.id, cards: t.flashcards, color: s.color })); title = s.name; }
   } else {
-    title = 'All due cards';
+    title = scope === 'mixed' ? 'Mixed flashcards' : 'Flashcards due';
     for (const s of activeSubjects(profile)) topics.push(...visibleTopics(s, profile).map((t) => ({ id: t.id, cards: t.flashcards, color: s.color })));
   }
 

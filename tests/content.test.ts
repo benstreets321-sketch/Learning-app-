@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { SUBJECTS, allTopicRefs, topicQuestions, getTopic } from '../src/content/registry';
 import { GENERATORS } from '../src/content/generators';
-import { parseCloze, checkText, parseSelect } from '../src/lib/answer';
+import { parseCloze, checkText, parseSelect, checkNumber } from '../src/lib/answer';
 import { EXTRA } from '../src/content/extra';
 import { EXAM_STEM } from '../src/content/exam-extra-stem';
 import { EXAM_OTHER } from '../src/content/exam-extra-other';
@@ -80,6 +80,7 @@ describe('content integrity', () => {
             break;
           case 'num':
             expect(Number.isFinite(q.answer), ctx).toBe(true);
+            expect(checkNumber(String(q.answer), q.answer, q.tol).ok, `${ctx} correct number not accepted`).toBe(true);
             break;
           case 'tf':
             expect(typeof q.answer, ctx).toBe('boolean');

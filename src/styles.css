@@ -828,3 +828,5 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 0.05rem 0.35rem; bo
   .cov-row { grid-template-columns: 1fr auto; }
   .cov-row .cov-bar { grid-column: 1 / -1; }
 }
+
+.tutor-note { padding: 0 1rem; margin: 0.2rem 0 0; }

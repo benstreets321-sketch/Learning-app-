@@ -16,7 +16,7 @@ export function HelpPage() {
         </li>
         <li>
           <strong>Ask the tutor</strong>
-          <p>Every question and exam question has an <em>Ask tutor</em> button. It gives clues without spoiling the answer, explains what the question is asking, helps you analyse a quote or source, and gives feedback on your writing. After you answer, it explains exactly where your thinking went wrong.</p>
+          <p>Every question and exam question has an <em>Ask tutor</em> button. It gives clues without spoiling the answer, explains what the question is asking and its key words, finds answers in your notes, sets you a similar question to try, and checks your writing against the mark scheme. It's free and works offline. Inside Claude it becomes a full AI tutor at no extra cost.</p>
         </li>
         <li>
           <strong>After a wrong answer: "Help me understand this" or "Try a similar, easier one"</strong>
@@ -71,7 +71,7 @@ export function HelpPage() {
         </details>
         <details>
           <summary>How are long exam answers marked?</summary>
-          <p>After you write an answer, compare it with the mark scheme and model answer and tick what you included. With the AI tutor available, press <em>Mark it with AI</em>: Claude marks it against the same mark scheme, ticks the points you made and suggests improvements. You can change any tick before saving.</p>
+          <p>After you write an answer, compare it with the mark scheme and model answer and tick what you included. Press <em>Check key words</em> to see which mark-scheme points your answer seems to cover. When you use the app inside Claude, <em>Mark it with AI</em> marks it against the same mark scheme and suggests improvements, using your Claude plan at no extra cost. You can change any tick before saving.</p>
         </details>
         <details>
           <summary>What is the Fix-it list?</summary>

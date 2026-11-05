@@ -114,25 +114,3 @@ export function quickActions(c: NonNullable<TutorContext>): { label: string; pro
     { label: 'How would this be examined?', prompt: 'How might this come up in a real GCSE exam question, and what would earn the marks?' },
   ];
 }
-
-/** Offline tutor: answers quick actions from the app's own content when no AI is available */
-export function offlineReply(c: NonNullable<TutorContext>, prompt: string, hintIndex: number): string {
-  if (c.kind === 'exam') {
-    const g = c.eq.guidance?.length ? c.eq.guidance.map((x) => `- ${x}`).join('\n') : '- Read the command word and the marks.\n- Plan one point per 2 marks (or one paragraph per 4-6 marks for extended answers).';
-    return /plan|command/i.test(prompt)
-      ? `**How to approach it**\n${g}`
-      : `**What the examiner looks for**\n${c.eq.markScheme.map((m) => `- ${m}`).join('\n')}`;
-  }
-  const it = c.item;
-  if (!c.answered) {
-    if (/clue/i.test(prompt)) {
-      const hints = it.hints ?? [];
-      return hints[hintIndex] ? `**Clue:** ${hints[hintIndex]}` : c.topic?.keyPoints[hintIndex % Math.max(1, c.topic.keyPoints.length)] ? `**Think about this:** ${c.topic!.keyPoints[hintIndex % c.topic!.keyPoints.length]}` : 'Try ruling out anything you know is wrong first, then look at what is left.';
-    }
-    if (/simply|topic/i.test(prompt) && c.topic?.simpler) return c.topic.simpler;
-    if (/method|formula/i.test(prompt) && it.type === 'num' && it.steps?.length) return `**First step:** ${it.steps[0]}`;
-    return c.topic ? `**Key points for ${c.topic.title}:**\n${c.topic.keyPoints.slice(0, 5).map((k) => `- ${k}`).join('\n')}` : 'Read the question twice and underline the key words.';
-  }
-  const steps = it.type === 'num' || it.type === 'text' ? it.steps ?? [] : [];
-  return [`**Answer:** ${answerText(it)}`, it.why, steps.length ? steps.map((s, i) => `${i + 1}. ${s}`).join('\n') : '', c.topic?.simpler && /another way|simply/i.test(prompt) ? c.topic.simpler : ''].filter(Boolean).join('\n\n');
-}

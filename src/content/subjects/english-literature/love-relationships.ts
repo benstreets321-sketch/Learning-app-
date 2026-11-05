@@ -112,7 +112,7 @@ Not named recently: When We Two Parted, Love's Philosophy, Porphyria's Lover, So
       about: 'The speaker, who works in a city with "headlines", receives letters from a man in Yorkshire who works outdoors with the land. Despite distance and different lives, their communication connects them.',
       context: 'Dooley often writes about relationships and distance; contrasts urban media work with rural life.',
       form: '- Five tercets, free verse - conversational, like letters.\n- Shifts between "he" and "you" - growing closeness.',
-      language: '- "**he saw the first lapwings return**" - nature and the seasons.\n- "**It\'s not romance, simply how things are**" - undefined relationship.\n- "**me with my heartful of headlines**".\n- "**Is your life more real because you dig and sow?**" - rhetorical question.\n- "**our souls tap out messages across the icy miles**".',
+      language: '- "**he saw the first lapwings return**" - nature and the seasons.\n- "**It\'s not romance, simply how things are**" - a relationship that resists labels.\n- "**me with my heartful of headlines**".\n- "**Is your life more real because you dig and sow?**" - rhetorical question.\n- "**our souls tap out messages across the icy miles**".',
       themes: ['distance', 'connection', 'nature vs city', 'communication'],
       compare: [['Sonnet 29', 'Longing for an absent loved one.'], ['When We Two Parted', 'Distance in a relationship.'], ['Walking Away', 'Separation and enduring love.']],
       quotes: [

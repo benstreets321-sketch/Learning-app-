@@ -6,8 +6,8 @@ import { Markdown } from '../components/Markdown';
 import { Empty } from '../components/ui';
 import { ToolBar } from '../components/Tools';
 import { setTutorContext } from '../lib/tutor';
-import { aiErrorText, useAIProvider } from '../lib/ai';
-import { markWithAI, type AIMark } from '../lib/marking';
+import { aiErrorText, isPermanent, useAIProvider } from '../lib/ai';
+import { keywordCheck, markWithAI, type AIMark } from '../lib/marking';
 import { openTool } from '../components/Tools';
 import { Icon } from '../components/Icon';
 
@@ -28,6 +28,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
   const [ai, setAi] = useState<AIMark | null>(null);
   const [aiBusy, setAiBusy] = useState(false);
   const [aiErr, setAiErr] = useState('');
+  const [kw, setKw] = useState<ReturnType<typeof keywordCheck> | null>(null);
 
   useEffect(() => {
     if (!running) return;
@@ -61,10 +62,16 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
       setTicks(new Set(r.met));
       setScore(r.mark);
     } catch (e) {
-      setAiErr(aiErrorText(e));
+      if ((e as { code?: string }).code === 'none' || isPermanent(e)) runKeywords();
+      else setAiErr(aiErrorText(e));
     } finally {
       setAiBusy(false);
     }
+  };
+  const runKeywords = () => {
+    const r = keywordCheck(eq, text);
+    setKw(r);
+    if (!r.levelled && eq.markScheme.length >= eq.marks) { setTicks(new Set(r.points.filter((x) => x.likely).map((x) => x.index))); setScore(null); }
   };
 
   return (
@@ -106,15 +113,17 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
       {phase !== 'write' && (
         <div className="marking">
           <div className="ai-mark card pad">
-            {!ai ? (
+            {!ai && !kw ? (
               <div className="row gap wrap">
                 <div className="grow">
-                  <strong>Get it marked</strong>
-                  <p className="muted small">{provider === 'none' ? 'Mark it yourself below. To have Claude mark it against the mark scheme, add an API key in Settings or open the app inside Claude.' : 'Claude marks your answer against the mark scheme and ticks the points you made. Check its marking – you have the final say.'}</p>
+                  <strong>Check your answer</strong>
+                  <p className="muted small">{provider === 'claude' ? 'Claude marks your answer against the mark scheme and ticks the points you made. Check its marking – you have the final say.' : 'Compare your answer with the mark scheme below, or run a quick key-word check to see which points you seem to have covered.'}</p>
                 </div>
-                {provider !== 'none' && <button className="btn primary" disabled={aiBusy || phase === 'saved'} onClick={() => void runAI()}>{aiBusy ? 'Marking…' : 'Mark it with AI'}</button>}
+                {provider === 'claude'
+                  ? <button className="btn primary" disabled={aiBusy || phase === 'saved'} onClick={() => void runAI()}>{aiBusy ? 'Marking…' : 'Mark it with AI'}</button>
+                  : <button className="btn primary" disabled={phase === 'saved'} onClick={runKeywords}>Check key words</button>}
               </div>
-            ) : (
+            ) : ai ? (
               <div>
                 <div className="row gap wrap">
                   <span className="ai-score mono">{ai.mark}/{eq.marks}</span>
@@ -128,6 +137,15 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
                   {ai.improvements.length > 0 && <div><div className="small strong">Even better if</div><ul className="small">{ai.improvements.map((x, k) => <li key={k}>{x}</li>)}</ul></div>}
                 </div>
                 <p className="muted small">The ticks below are Claude's suggestion. Adjust them if you disagree, then save. <button className="btn link small" onClick={() => openTool('tutor', ref.subject.id)}><Icon name="message" size={14} /> Ask the tutor about this feedback</button></p>
+              </div>
+            ) : kw && (
+              <div>
+                <strong>Key-word check</strong>
+                <div className="two-col ai-fb">
+                  <div><div className="small strong">Looks covered</div>{kw.points.some((x) => x.likely) ? <ul className="small">{kw.points.filter((x) => x.likely).map((x) => <li key={x.index}>{x.text}</li>)}</ul> : <p className="small muted">Nothing matched yet.</p>}</div>
+                  <div><div className="small strong">Not found – consider adding</div>{kw.points.some((x) => !x.likely && x.terms.length) ? <ul className="small">{kw.points.filter((x) => !x.likely && x.terms.length).map((x) => <li key={x.index}>{x.text}</li>)}</ul> : <p className="small muted">Every point seems to be there.</p>}</div>
+                </div>
+                <p className="muted small">This only looks for key words, so it can't judge quality. {kw.levelled ? 'Use the level descriptors below to decide your mark.' : 'Likely points are ticked below – check each one honestly before saving.'}</p>
               </div>
             )}
             {aiErr && <p className="small fb-detail">{aiErr}</p>}

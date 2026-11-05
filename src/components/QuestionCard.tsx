@@ -95,6 +95,9 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
     setTutorContext({ kind: 'question', key: item.id, item, topic, answered: result !== null, correct: result?.correct, given: result ? given : undefined });
   }, [item, topic, result]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => () => setTutorContext(null), []);
+  useEffect(() => {
+    try { if (localStorage.getItem('gcse-qa') === '1') (window as unknown as { __qaItem?: QItem }).__qaItem = item; } catch { /* storage blocked */ }
+  }, [item]);
 
   // keyboard shortcuts: 1-9 choose, Enter check / next, H hint
   const keyRef = useRef<(e: KeyboardEvent) => void>(() => {});
@@ -304,7 +307,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
             const gone = !answered && removed.has(i);
             const cls = answered ? (isAns ? 'opt right' : i === choice ? 'opt wrong' : 'opt dim') : gone ? 'opt removed' : choice === i ? 'opt sel' : 'opt';
             return (
-              <button key={i} className={cls} disabled={answered || gone} aria-pressed={choice === i} onClick={() => setChoice(i)}>
+              <button key={i} data-i={i} className={cls} disabled={answered || gone} aria-pressed={choice === i} onClick={() => setChoice(i)}>
                 <span className="opt-key mono" aria-hidden="true">{answered && isAns ? <Icon name="check" size={14} /> : answered && i === choice ? <Icon name="close" size={14} /> : order.indexOf(i) + 1}</span>
                 <Markdown text={item.options[i]} inline />
               </button>
@@ -322,7 +325,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
             const cls = answered ? (isAns ? 'opt right' : on ? 'opt wrong' : 'opt dim') : on ? 'opt sel' : 'opt';
             return (
               <button
-                key={i} className={cls} disabled={answered} aria-pressed={on}
+                key={i} data-i={i} className={cls} disabled={answered} aria-pressed={on}
                 onClick={() => setMultiSel((s) => { const n = new Set(s); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
               >
                 <span className={`box ${on ? 'on' : ''}`} aria-hidden="true">{on && <Icon name="check" size={14} />}</span> <Markdown text={item.options[i]} inline />
@@ -365,7 +368,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       {item.type === 'order' && (
         <ol className="order-list">
           {seq.map((s, i) => (
-            <li key={s} className={answered ? (s === item.items[i] ? 'ok' : 'bad') : ''}>
+            <li key={s} data-i={item.items.indexOf(s)} className={answered ? (s === item.items[i] ? 'ok' : 'bad') : ''}>
               <span className="order-text"><Markdown text={s} inline /></span>
               {!answered && (
                 <span className="order-btns">
@@ -381,7 +384,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       {item.type === 'match' && (
         <div className="match">
           {item.pairs.map(([left, right], i) => (
-            <div key={i} className={`match-row ${answered ? (matches[i] === right ? 'ok' : 'bad') : ''}`}>
+            <div key={i} data-i={i} className={`match-row ${answered ? (matches[i] === right ? 'ok' : 'bad') : ''}`}>
               <div className="match-left"><Markdown text={left} inline /></div>
               <select
                 value={matches[i] ?? ''}
@@ -405,7 +408,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
             const [label, g] = item.items[i];
             const st = answered ? (sorted[i] === g ? 'ok' : 'bad') : '';
             return (
-              <div key={i} className={`sort-row ${st}`}>
+              <div key={i} data-i={i} className={`sort-row ${st}`}>
                 <span className="sort-item"><Markdown text={label} inline /></span>
                 <span className="seg sort-seg" role="radiogroup" aria-label={`Group for ${label}`}>
                   {item.groups.map((name, gi) => (
@@ -431,7 +434,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
             const cls = answered ? (target ? (on ? 'tok hit' : 'tok missed') : on ? 'tok wrong' : 'tok') : on ? 'tok on' : 'tok';
             const toggle = () => { if (!answered) setPicked((sl) => { const n = new Set(sl); if (n.has(i)) n.delete(i); else n.add(i); return n; }); };
             return (
-              <span key={i} className={cls} role="button" tabIndex={answered ? -1 : 0} aria-pressed={on}
+              <span key={i} data-g={t.group} className={cls} role="button" tabIndex={answered ? -1 : 0} aria-pressed={on}
                 onClick={toggle} onKeyDown={(e) => { if (e.key === ' ') { e.preventDefault(); toggle(); } }}>
                 {t.text}
               </span>
@@ -446,7 +449,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
             const cls = answered ? (i === item.wrong ? 'spot right' : i === spotChoice ? 'spot wrong' : 'spot') : spotChoice === i ? 'spot sel' : 'spot';
             return (
               <li key={i}>
-                <button className={cls} disabled={answered} aria-pressed={spotChoice === i} onClick={() => setSpotChoice(i)}>
+                <button data-i={i} className={cls} disabled={answered} aria-pressed={spotChoice === i} onClick={() => setSpotChoice(i)}>
                   <span className="spot-n mono">{i + 1}</span>
                   <span><Markdown text={st} inline /></span>
                 </button>

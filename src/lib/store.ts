@@ -111,7 +111,11 @@ function safeRead<T>(key: string): T | null {
   for (const k of [key, key + BAK]) {
     try {
       const raw = localStorage.getItem(k);
-      if (raw) return JSON.parse(raw) as T;
+      if (!raw) continue;
+      const value = JSON.parse(raw) as T;
+      // recovered from the backup copy: repair the main save straight away
+      if (k !== key) { try { localStorage.setItem(key, raw); } catch { /* storage blocked */ } }
+      return value;
     } catch { /* corrupt or blocked: try the backup copy */ }
   }
   return null;

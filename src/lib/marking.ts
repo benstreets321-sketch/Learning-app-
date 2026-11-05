@@ -48,3 +48,29 @@ Keep strengths to at most 2 and improvements to at most 3, each one short and sp
     comment: typeof r.comment === 'string' ? r.comment : '',
   };
 }
+
+// ---------- free key-word check (no AI) ----------
+const STOPWORDS = new Set('the a an and or of to in on for with is are was were be been this that these those it its as at by from into than then there their they them which who when where why how not can could should would will may might more most less such e.g. eg i.e. ie mark marks max allow accept any one two point level answer use uses using correct correctly shows show seen'.split(' '));
+
+export interface KeywordPoint { index: number; text: string; terms: string[]; hits: string[]; likely: boolean }
+
+/** Which mark-scheme points does the answer appear to mention? A guide only - never a real mark. */
+export function keywordCheck(eq: ExamQuestion, answer: string): { levelled: boolean; points: KeywordPoint[] } {
+  const levelled = eq.markScheme.some((m) => /\bLevel \d/i.test(m));
+  const norm = (s: string) => s.toLowerCase().replace(/[−–]/g, '-').replace(/(\d),(\d{3})/g, '$1$2').replace(/[*_`]/g, '');
+  const a = norm(answer);
+  const lines = levelled
+    ? eq.markScheme.filter((m) => /^Indicative content/i.test(m)).flatMap((m) => m.replace(/^Indicative content:\s*/i, '').split(/;\s*/))
+    : eq.markScheme.filter((m) => !/^Max \d/i.test(m));
+  const points = lines.map((raw, index) => {
+    const text = raw.replace(/\s*\(\d\)\s*$/, '').replace(/^(M|A|B)\d\s+/, '').trim();
+    const t = norm(text);
+    const nums = t.match(/-?\d+(?:\.\d+)?/g) ?? [];
+    const ws = (t.match(/[a-z][a-z'-]{3,}/g) ?? []).filter((w) => !STOPWORDS.has(w));
+    const terms = [...new Set([...ws, ...nums])].slice(0, 10);
+    const hits = terms.filter((w) => (/^-?\d/.test(w) ? new RegExp(`(^|[^\\d.])${w.replace('.', '\\.')}(?![\\d])`).test(a) : a.includes(w.length > 6 ? w.slice(0, w.length - 2) : w)));
+    const need = Math.max(1, Math.ceil(terms.length * (nums.length && nums.length === terms.length ? 1 : 0.5)));
+    return { index, text, terms, hits, likely: terms.length > 0 && hits.length >= Math.min(need, 3) };
+  });
+  return { levelled, points };
+}

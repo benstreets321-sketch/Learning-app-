@@ -1,49 +1,30 @@
-// One way to ask Claude, wherever the app is running:
-// 1) Inside claude.ai (the preview artifact): the viewer's own Claude account, via the artifact `sample` capability.
-// 2) The installed / web app: the Anthropic SDK with an API key the student (or a parent) pastes into Settings.
-//    The key is kept only on this device and sent only to api.anthropic.com.
-// 3) Neither: callers fall back to the app's built-in hints and explanations.
+// Asking Claude, at no extra cost:
+// - Inside claude.ai (the shared app page) the tutor uses the viewer's own Claude plan through the artifact
+//   `sample` capability - no API key, nothing to pay.
+// - Everywhere else (the installed app / website) the tutor runs in built-in mode, answering from the app's
+//   own hints, worked steps, notes and mark schemes. Nothing is sent anywhere.
 import { useSyncExternalStore } from 'react';
 
-export type Provider = 'claude' | 'key' | 'none';
+export type Provider = 'claude' | 'none';
 export interface Turn { role: 'user' | 'assistant'; content: string }
 
-const KEY_STORE = 'gcse-hub.ai-key';
-const MODEL = 'claude-opus-5-5';
-
-type SampleFn = ((input: string | Turn[], opts?: Record<string, unknown>) => Promise<{ text: string }>) & {
-  json?: <T>(input: string | Turn[], opts?: Record<string, unknown>) => Promise<T>;
-};
+type SampleFn = (input: string | Turn[], opts?: Record<string, unknown>) => Promise<{ text: string }>;
 
 let provider: Provider = 'none';
 let sample: SampleFn | null = null;
 let checked = false;
 const subs = new Set<() => void>();
 const emit = () => subs.forEach((f) => f());
-
-export function getApiKey(): string {
-  try { return localStorage.getItem(KEY_STORE) ?? ''; } catch { return ''; }
-}
-export function setApiKey(k: string) {
-  try { if (k) localStorage.setItem(KEY_STORE, k.trim()); else localStorage.removeItem(KEY_STORE); } catch { /* storage blocked */ }
-  refreshProvider();
-}
-
-function refreshProvider() {
-  provider = sample ? 'claude' : getApiKey() ? 'key' : 'none';
-  emit();
-}
+const setProvider = (p: Provider) => { if (p !== provider) { provider = p; emit(); } };
 
 /** Detect the claude.ai runtime once (it answers within ~10 s, or never) */
 export async function detectAI() {
   if (checked) return;
   checked = true;
-  refreshProvider();
-  const rt = (window as unknown as { claude?: { use(n: string): Promise<unknown> } }).claude;
-  if (rt?.use) {
-    try { sample = (await rt.use('sample')) as SampleFn | null; } catch { sample = null; }
-  }
-  refreshProvider();
+  const rt = (typeof window !== 'undefined' ? (window as unknown as { claude?: { use(n: string): Promise<unknown> } }).claude : undefined);
+  if (!rt?.use) return;
+  try { sample = ((await rt.use('sample')) as SampleFn | null) ?? null; } catch { sample = null; }
+  setProvider(sample ? 'claude' : 'none');
 }
 
 export const getProvider = () => provider;
@@ -55,19 +36,16 @@ export class AIError extends Error {
   constructor(public code: string, message: string) { super(message); }
 }
 
+/** Errors after which Claude can't be used for the rest of this visit: switch to built-in mode */
+const PERMANENT = new Set(['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed', 'session_expired']);
+export const isPermanent = (e: unknown) => PERMANENT.has((e as { code?: string })?.code ?? '');
+
 const friendly: Record<string, string> = {
-  not_granted: 'Claude was not allowed for this page. Reload and choose Allow to use the tutor.',
-  rate_limited: 'Too many requests just now. Wait a minute and try again.',
-  sampling_disabled: 'Claude is not available on this account.',
-  session_expired: 'Your Claude session has expired. Sign in again.',
-  auth: 'That API key was not accepted. Check it in Settings.',
-  network: 'Could not reach Claude. Check your internet connection.',
-  none: 'The AI tutor is not set up yet.',
+  rate_limited: 'Claude is busy or your Claude usage limit has been reached. Try again in a little while.',
+  refused: 'Claude could not help with that. Try asking in a different way.',
+  none: 'Using the built-in tutor.',
 };
-export const aiErrorText = (e: unknown) => {
-  const code = (e as { code?: string })?.code ?? 'error';
-  return friendly[code] ?? 'Something went wrong asking Claude. Try again in a moment.';
-};
+export const aiErrorText = (e: unknown) => friendly[(e as { code?: string })?.code ?? ''] ?? 'Something went wrong asking Claude. Try again in a moment.';
 
 interface AskOpts {
   system: string;
@@ -80,67 +58,28 @@ interface AskOpts {
 
 /** Ask Claude; resolves with the full reply text. Streams through onText when given. */
 export async function ask({ system, turns, onText, signal, purpose = 'chat' }: AskOpts): Promise<string> {
-  if (provider === 'claude' && sample) {
-    try {
-      const { text } = await sample([{ role: 'user', content: system }, ...turns], {
-        cache: false,
-        signal,
-        modelTier: purpose === 'mark' ? 'complex' : 'default',
-        onText: onText ? ({ text: t }: { text: string }) => onText(t) : undefined,
-      });
-      return text;
-    } catch (e) {
-      throw new AIError((e as { code?: string }).code ?? 'error', (e as { message?: string }).message ?? 'error');
-    }
+  if (provider !== 'claude' || !sample) throw new AIError('none', 'not available');
+  try {
+    const { text } = await sample([{ role: 'user', content: system }, ...turns], {
+      cache: false,
+      signal,
+      modelTier: purpose === 'mark' ? 'complex' : 'default',
+      onText: onText ? ({ text: t }: { text: string }) => onText(t) : undefined,
+    });
+    return text;
+  } catch (e) {
+    const err = new AIError((e as { code?: string })?.code ?? 'error', (e as { message?: string })?.message ?? 'error');
+    if (isPermanent(err)) { sample = null; setProvider('none'); }
+    throw err;
   }
-  if (provider === 'key') {
-    const { default: Anthropic } = await import('@anthropic-ai/sdk');
-    const client = new Anthropic({ apiKey: getApiKey(), dangerouslyAllowBrowser: true });
-    try {
-      const stream = client.beta.messages.stream({
-        model: MODEL,
-        max_tokens: purpose === 'mark' ? 8000 : 4000,
-        system,
-        messages: turns,
-        output_config: { effort: purpose === 'mark' ? 'medium' : 'low' },
-        betas: ['server-side-fallback-2026-07-01'],
-        // If a safety classifier declines, the API re-runs the request on its recommended fallback model.
-        fallbacks: 'default',
-      }, { signal });
-      let text = '';
-      for await (const ev of stream) {
-        if (ev.type === 'content_block_delta' && ev.delta.type === 'text_delta') {
-          text += ev.delta.text;
-          onText?.(text);
-        }
-      }
-      const final = await stream.finalMessage();
-      if (final.stop_reason === 'refusal') throw new AIError('refused', 'Claude could not help with that request.');
-      return text;
-    } catch (e) {
-      if (e instanceof AIError) throw e;
-      if (e instanceof Anthropic.AuthenticationError || e instanceof Anthropic.PermissionDeniedError) throw new AIError('auth', 'bad key');
-      if (e instanceof Anthropic.RateLimitError) throw new AIError('rate_limited', 'rate limited');
-      if (e instanceof Anthropic.APIConnectionError) throw new AIError('network', 'network');
-      if ((e as { name?: string }).name === 'AbortError' || signal?.aborted) throw new AIError('cancelled', 'cancelled');
-      throw new AIError('error', String((e as Error).message ?? e));
-    }
-  }
-  throw new AIError('none', 'not set up');
 }
 
 /** Ask for JSON back; tolerant of a sentence around the JSON */
 export async function askJSON<T>(opts: AskOpts): Promise<T> {
   const text = await ask({ ...opts, onText: undefined });
   const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-  const raw = fence ? fence[1] : text.slice(Math.max(0, text.search(/[[{]/)), text.lastIndexOf(text.trim().startsWith('[') ? ']' : '}') + 1);
+  const start = text.search(/[[{]/);
+  const end = Math.max(text.lastIndexOf('}'), text.lastIndexOf(']'));
+  const raw = fence ? fence[1] : start >= 0 && end > start ? text.slice(start, end + 1) : text;
   try { return JSON.parse(raw) as T; } catch { throw new AIError('invalid_json', text); }
-}
-
-/** Cheap check that a pasted key works */
-export async function testKey(): Promise<string> {
-  try {
-    const t = await ask({ system: 'Reply with exactly: OK', turns: [{ role: 'user', content: 'Test' }] });
-    return t.trim() ? 'Key works. The tutor is ready.' : 'No reply.';
-  } catch (e) { return aiErrorText(e); }
 }

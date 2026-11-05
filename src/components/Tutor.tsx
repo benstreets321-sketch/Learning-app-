@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { ask, aiErrorText, useAIProvider, type Turn } from '../lib/ai';
-import { offlineReply, quickActions, systemFor, useTutorContext } from '../lib/tutor';
-import { href } from '../lib/router';
+import { ask, aiErrorText, isPermanent, useAIProvider, type Turn } from '../lib/ai';
+import { quickActions, systemFor, useTutorContext } from '../lib/tutor';
+import { offlineReply } from '../lib/offline-tutor';
 import { Markdown } from './Markdown';
 import { Icon } from './Icon';
 
@@ -52,7 +52,12 @@ export function Tutor() {
       const withReply: Turn[] = [...next, { role: 'assistant', content: reply }];
       setTurns(withReply); history.set(key, withReply);
     } catch (e) {
-      if ((e as { code?: string }).code !== 'cancelled') setErr(aiErrorText(e));
+      if (isPermanent(e) || (e as { code?: string }).code === 'none') {
+        // Claude isn't available for this visit: answer with the built-in tutor instead
+        const reply = offlineReply(c, msg, offlineHints.current++);
+        const withReply: Turn[] = [...next, { role: 'assistant', content: reply }];
+        setTurns(withReply); history.set(key, withReply);
+      } else if ((e as { code?: string }).code !== 'cancelled') setErr(aiErrorText(e));
     } finally {
       setBusy(false); setStreaming('');
     }
@@ -65,11 +70,8 @@ export function Tutor() {
         <span className="muted small">Talking about {label}{c.kind === 'question' && !c.answered ? ' – no spoilers until you answer' : ''}</span>
         {turns.length > 0 && <button className="btn link small" onClick={() => { setTurns([]); history.delete(key); }}>Clear</button>}
       </div>
-      {provider === 'none' && (
-        <div className="callout callout-tip small">
-          <div className="callout-title">Basic mode</div>
-          Answers come from the app's own hints and notes. For a full AI tutor that can answer anything, add a Claude API key in <a href={href('/setup')}>Settings</a> (ask a parent or teacher), or open the app inside Claude.
-        </div>
+      {provider === 'none' && turns.length === 0 && (
+        <p className="muted small tutor-note">Built-in tutor: answers come from this app's hints, worked steps, notes and mark schemes. Free, private and works offline.</p>
       )}
       <div className="tutor-log" aria-live="polite">
         {turns.length === 0 && <p className="muted small">Pick a prompt below or type your own question.</p>}
@@ -97,7 +99,7 @@ export function Tutor() {
           <button type="submit" className="btn primary" disabled={!draft.trim()} aria-label="Send"><Icon name="arrow" size={18} /></button>
         )}
       </form>
-      <p className="muted tiny">AI can make mistakes. Check important facts against your notes or teacher.</p>
+      {provider === 'claude' && <p className="muted tiny">AI can make mistakes. Check important facts against your notes or teacher.</p>}
     </div>
   );
 }

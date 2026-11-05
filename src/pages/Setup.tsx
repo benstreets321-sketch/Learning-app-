@@ -1,6 +1,6 @@
 import { canCalendar, canNotify, disableReminders, downloadCalendar, enableReminders, permission, reminderText, showReminder } from '../lib/reminders';
 import { SaveStatus } from '../components/SaveStatus';
-import { getApiKey, setApiKey, testKey, useAIProvider } from '../lib/ai';
+import { useAIProvider } from '../lib/ai';
 import { SubjectMark } from '../components/SubjectMark';
 import { useRef, useState } from 'react';
 import { SUBJECTS } from '../content/registry';
@@ -162,9 +162,22 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
       </Section>
 
       {firstRun ? (
-        <div className="row end">
-          <button className="btn primary big" onClick={() => { updateProfile({ onboarded: true }); go('/'); }}>Start revising →</button>
-        </div>
+        <>
+          <div className="row end">
+            <button className="btn primary big" onClick={() => { updateProfile({ onboarded: true }); go('/'); }}>Start revising →</button>
+          </div>
+          <Section title="Already used the app on another device?">
+            <p className="muted small">Restore your progress from a backup file you exported in Settings.</p>
+            <button className="btn" onClick={() => fileRef.current?.click()}>Restore from a backup</button>
+            <input ref={fileRef} type="file" accept="application/json,.json" hidden onChange={async (e) => {
+              const f = e.target.files?.[0];
+              if (!f) return;
+              if (importData(await f.text())) { updateProfile({ onboarded: true }); go('/'); }
+              else setMsg('That file is not a valid backup.');
+            }} />
+            {msg && <p className="small">{msg}</p>}
+          </Section>
+        </>
       ) : (
         <Section title="Your data">
           <SaveStatus detail />
@@ -238,36 +251,13 @@ function Reminders() {
 
 function AITutorSettings() {
   const provider = useAIProvider();
-  const [key, setKey] = useState('');
-  const [msg, setMsg] = useState('');
-  const [busy, setBusy] = useState(false);
-  const has = !!getApiKey();
   return (
-    <Section title="AI tutor">
+    <Section title="Tutor">
       {provider === 'claude' ? (
-        <p className="small"><strong>Connected through Claude.</strong> The tutor and exam marking use your own Claude account while you use the app inside Claude. Nothing to set up.</p>
+        <p className="small"><strong>Full AI tutor is on.</strong> You're using the app inside Claude, so the tutor and exam marking use your Claude plan. There is no API key and nothing extra to pay.</p>
       ) : (
-        <>
-          <p className="muted small">The tutor gives clues, explanations and feedback on every question, and marks written exam answers against the mark scheme. Without a key it uses the app's own hints and notes. With a Claude API key it can answer any question. Ask a parent, carer or teacher to create a key at console.anthropic.com – usage is charged to that account.</p>
-          {has ? (
-            <div className="row gap wrap">
-              <span className="pill pill-good">API key saved on this device</span>
-              <button className="btn small" disabled={busy} onClick={async () => { setBusy(true); setMsg(await testKey()); setBusy(false); }}>{busy ? 'Testing…' : 'Test it'}</button>
-              <button className="btn small danger" onClick={() => { setApiKey(''); setMsg('Key removed.'); }}>Remove key</button>
-            </div>
-          ) : (
-            <form className="row gap wrap" onSubmit={async (e) => { e.preventDefault(); if (!key.trim()) return; setApiKey(key); setKey(''); setBusy(true); setMsg(await testKey()); setBusy(false); }}>
-              <label className="field inline grow">
-                <span>API key</span>
-                <input type="password" autoComplete="off" spellCheck={false} placeholder="sk-ant-…" value={key} onChange={(e) => setKey(e.target.value)} />
-              </label>
-              <button className="btn primary" type="submit" disabled={!key.trim() || busy}>{busy ? 'Checking…' : 'Save key'}</button>
-            </form>
-          )}
-          <p className="muted small">The key is stored only in this browser and is sent only to Anthropic (api.anthropic.com). It is not included in backups.</p>
-        </>
+        <p className="small"><strong>Built-in tutor is on.</strong> It answers from the app's own hints, worked steps, notes and mark schemes, and works offline. For a tutor that can answer any question, open the app inside Claude – it uses your Claude plan, with no API key and nothing extra to pay.</p>
       )}
-      {msg && <p className="small">{msg}</p>}
     </Section>
   );
 }
