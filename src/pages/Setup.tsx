@@ -2,7 +2,8 @@ import { canCalendar, canNotify, disableReminders, downloadCalendar, enableRemin
 import { SaveStatus } from '../components/SaveStatus';
 import { useAIProvider } from '../lib/ai';
 import { SubjectMark } from '../components/SubjectMark';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { canSaveFiles, saveFile } from '../lib/files';
 import { SUBJECTS } from '../content/registry';
 import { go } from '../lib/router';
 import { exportData, importData, resetAll, updateProfile, useProfile } from '../lib/store';
@@ -14,6 +15,8 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
   const profile = useProfile();
   const [msg, setMsg] = useState('');
   const [confirmReset, setConfirmReset] = useState(false);
+  const [canExport, setCanExport] = useState(import.meta.env.MODE !== 'single');
+  useEffect(() => { let on = true; void canSaveFiles().then((ok) => { if (on) setCanExport(ok); }); return () => { on = false; }; }, []);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const toggleSubject = (id: string) => {
@@ -183,13 +186,9 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
           <SaveStatus detail />
           <p className="muted small">Every answer, flashcard, note and exam draft is saved automatically as you go, and again the moment the app is closed. A second copy is kept in case anything goes wrong. To move to another device, export a backup and import it there.</p>
           <div className="row gap wrap">
-            {import.meta.env.MODE !== 'single' && <button className="btn" onClick={() => {
-              const blob = new Blob([exportData()], { type: 'application/json' });
-              const a = document.createElement('a');
-              a.href = URL.createObjectURL(blob);
-              a.download = `gcse-revision-backup-${new Date().toISOString().slice(0, 10)}.json`;
-              a.click();
-              URL.revokeObjectURL(a.href);
+            {canExport && <button className="btn" onClick={async () => {
+              const r = await saveFile(`gcse-revision-backup-${new Date().toISOString().slice(0, 10)}.json`, exportData(), 'application/json');
+              setMsg(r === 'saved' ? 'Backup saved. Keep it somewhere safe – you can import it on any device.' : r === 'declined' ? 'Backup not saved.' : 'Saving files isn\'t available here. Your progress still saves automatically.');
             }}>Export backup</button>}
             <button className="btn" onClick={() => fileRef.current?.click()}>Import backup</button>
             <input ref={fileRef} type="file" accept="application/json" hidden onChange={async (e) => {

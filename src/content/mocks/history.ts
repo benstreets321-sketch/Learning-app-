@@ -235,7 +235,7 @@ const ED3: EdP3[] = [
     view: 'how far young people supported the Hitler Youth',
     diffInd: 'Interpretation 1 argues that the Hitler Youth was popular and joined willingly ("exciting", "joined willingly"); Interpretation 2 argues that support faded and many only conformed because membership was compulsory ("no choice"), with some open opposition.',
     whyInd: 'They focus on different periods (Interpretation 1 on the early years and the appeal of activities; Interpretation 2 on the later, compulsory, militarised years); they may use different evidence (memories of former members vs reports of opposition such as the Edelweiss Pirates or SPD reports, like Sources B and C).',
-    agreeInd: 'Agree: compulsory membership (1936, 1939 laws); military drill and preparing for war; falling attendance; the Edelweiss Pirates and Swing Youth; Source C. Disagree: membership rose to about 7 million by 1939 (most young people); the appeal of activities, sport, trips; many former members remembered it positively; Interpretation 1; Source B shows the attractive image. Judgement: how far the view applies to different periods and groups.',
+    agreeInd: 'Agree: compulsory membership (1936, 1939 laws); military drill and preparing for war; falling attendance; the Edelweiss Pirates and Swing Youth; Source C. Disagree: membership rose to over 7 million by 1939 (most young people); the appeal of activities, sport, trips; many former members remembered it positively; Interpretation 1; Source B shows the attractive image. Judgement: how far the view applies to different periods and groups.',
     topics: { infer: 'ed-ger-weimar', why: 'ed-ger-weimar', s: 'ed-ger-life' },
   },
   {
@@ -267,7 +267,7 @@ const ED3: EdP3[] = [
     view: 'whether German workers were better off under the Nazis',
     diffInd: 'Interpretation 1 argues workers were better off - work, security and popular schemes; Interpretation 2 argues they were worse off - loss of rights, longer hours and stagnant wages, with KdF a distraction.',
     whyInd: 'Different emphasis: Interpretation 1 compares with the Depression and focuses on jobs and leisure; Interpretation 2 focuses on rights, hours and wages. They may draw on different evidence - workers\' memories and KdF participation vs wage and hours statistics and SPD reports.',
-    agreeInd: 'Agree (Interpretation 2): DAF replaced trade unions (May 1933); strikes banned; longer hours (about 60 a week in some industries by 1939); real wages barely above 1928 levels; Volkswagen savers never received cars; Source C\'s grievances. Disagree: unemployment fell dramatically; KdF holidays and Beauty of Labour; stability; Source C\'s "at least there is work"; Interpretation 1. Judgement.',
+    agreeInd: 'Agree (Interpretation 2): DAF replaced trade unions (May 1933); strikes banned; longer hours (the average working week rose from about 43 to about 47 hours between 1933 and 1939); real wages barely above 1928 levels; Volkswagen savers never received cars; Source C\'s grievances. Disagree: unemployment fell dramatically; KdF holidays and Beauty of Labour; stability; Source C\'s "at least there is work"; Interpretation 1. Judgement.',
     topics: { infer: 'ed-ger-control', why: 'ed-ger-weimar', s: 'ed-ger-life' },
   },
 ];

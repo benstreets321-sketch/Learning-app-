@@ -2,6 +2,7 @@
 // 1) While the app is open: a timer fires a notification at the chosen time if you haven't studied yet.
 // 2) Installed app on Chrome/Edge/Android: periodic background sync lets the service worker remind you even when closed.
 // 3) Everywhere (including iPhone): add a repeating event to your calendar.
+import { saveFile } from './files';
 import { getProfile, getProgress, updateProfile } from './store';
 import { todayKey } from './util';
 
@@ -135,11 +136,7 @@ export function calendarFile(time: string): string {
   ].filter(Boolean).join('\r\n');
 }
 
+/** Calendar files (.ics) are offered only in the normal app (canCalendar), where a plain download works */
 export function downloadCalendar(time: string) {
-  const blob = new Blob([calendarFile(time)], { type: 'text/calendar' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'gcse-revision-reminder.ics';
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  void saveFile('gcse-revision-reminder.ics', calendarFile(time), 'text/calendar');
 }
