@@ -1,4 +1,5 @@
-import { Suspense, lazy } from 'react';
+import { Suspense } from 'react';
+import { lazyNamed } from '../lib/lazy';
 import { activeSubjects, totalCounts } from '../content/registry';
 import { href } from '../lib/router';
 import { streak, useProfile, useProgress } from '../lib/store';
@@ -11,7 +12,7 @@ import { InstallCard } from '../components/Install';
 import { STRATEGY_TIPS } from '../content/strategies';
 import { specCoverage, uncovered } from '../lib/coverage';
 
-const HomeMocks = lazy(() => import('../components/MockCards').then((m) => ({ default: m.HomeMocks })));
+const HomeMocks = lazyNamed(() => import('../components/MockCards'), (m) => m.HomeMocks);
 
 export function Home() {
   const profile = useProfile();

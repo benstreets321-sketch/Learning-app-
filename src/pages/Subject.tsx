@@ -1,4 +1,5 @@
-import { Suspense, lazy } from 'react';
+import { Suspense } from 'react';
+import { lazyNamed } from '../lib/lazy';
 import { SubjectMark } from '../components/SubjectMark';
 import { getSubject, visibleUnits } from '../content/registry';
 import { go, href } from '../lib/router';
@@ -12,7 +13,7 @@ import { specCoverage } from '../lib/coverage';
 
 type Tab = 'overview' | 'topics' | 'spec' | 'practice' | 'exam' | 'tools' | 'revise' | 'stuck';
 
-const SubjectMocks = lazy(() => import('../components/MockCards').then((m) => ({ default: m.SubjectMocks })));
+const SubjectMocks = lazyNamed(() => import('../components/MockCards'), (m) => m.SubjectMocks);
 
 export function SubjectPage({ id, tab }: { id: string; tab: string }) {
   const subject = getSubject(id);

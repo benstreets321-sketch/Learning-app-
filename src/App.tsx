@@ -1,4 +1,5 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
+import { lazyNamed, preloadAll } from './lib/lazy';
 import { useRoute, href, go } from './lib/router';
 import { useProfile, useProgress } from './lib/store';
 import { Home } from './pages/Home';
@@ -21,32 +22,33 @@ const loaders = {
   fix: () => import('./pages/Mistakes'), progress: () => import('./pages/Progress'), plan: () => import('./pages/Planner'),
   how: () => import('./pages/Strategies'), tools: () => import('./pages/Tools'), help: () => import('./pages/Help'),
   rescue: () => import('./pages/Rescue'), session: () => import('./pages/Session'), mocks: () => import('./pages/Mocks'),
-  sprint: () => import('./pages/Sprint'), search: () => import('./pages/Search'), mockCards: () => import('./components/MockCards'),
+  sprint: () => import('./pages/Sprint'), search: () => import('./pages/Search'),
 };
-const Setup = lazy(() => loaders.setup().then((m) => ({ default: m.Setup })));
-const FlashcardsPage = lazy(() => loaders.cards().then((m) => ({ default: m.FlashcardsPage })));
-const ExamPage = lazy(() => loaders.exam().then((m) => ({ default: m.ExamPage })));
-const MistakesPage = lazy(() => loaders.fix().then((m) => ({ default: m.MistakesPage })));
-const ProgressPage = lazy(() => loaders.progress().then((m) => ({ default: m.ProgressPage })));
-const PlannerPage = lazy(() => loaders.plan().then((m) => ({ default: m.PlannerPage })));
-const StrategiesPage = lazy(() => loaders.how().then((m) => ({ default: m.StrategiesPage })));
-const ToolsPage = lazy(() => loaders.tools().then((m) => ({ default: m.ToolsPage })));
-const HelpPage = lazy(() => loaders.help().then((m) => ({ default: m.HelpPage })));
-const RescuePage = lazy(() => loaders.rescue().then((m) => ({ default: m.RescuePage })));
-const SessionPage = lazy(() => loaders.session().then((m) => ({ default: m.SessionPage })));
-const MocksPage = lazy(() => loaders.mocks().then((m) => ({ default: m.MocksPage })));
-const MockPaperPage = lazy(() => loaders.mocks().then((m) => ({ default: m.MockPaperPage })));
-const MockTakePage = lazy(() => loaders.mocks().then((m) => ({ default: m.MockTakePage })));
-const MockReviewPage = lazy(() => loaders.mocks().then((m) => ({ default: m.MockReviewPage })));
-const SprintPage = lazy(() => loaders.sprint().then((m) => ({ default: m.SprintPage })));
-const SearchPage = lazy(() => loaders.search().then((m) => ({ default: m.SearchPage })));
+const Setup = lazyNamed(loaders.setup, (m) => m.Setup);
+const FlashcardsPage = lazyNamed(loaders.cards, (m) => m.FlashcardsPage);
+const ExamPage = lazyNamed(loaders.exam, (m) => m.ExamPage);
+const MistakesPage = lazyNamed(loaders.fix, (m) => m.MistakesPage);
+const ProgressPage = lazyNamed(loaders.progress, (m) => m.ProgressPage);
+const PlannerPage = lazyNamed(loaders.plan, (m) => m.PlannerPage);
+const StrategiesPage = lazyNamed(loaders.how, (m) => m.StrategiesPage);
+const ToolsPage = lazyNamed(loaders.tools, (m) => m.ToolsPage);
+const HelpPage = lazyNamed(loaders.help, (m) => m.HelpPage);
+const RescuePage = lazyNamed(loaders.rescue, (m) => m.RescuePage);
+const SessionPage = lazyNamed(loaders.session, (m) => m.SessionPage);
+const MocksPage = lazyNamed(loaders.mocks, (m) => m.MocksPage);
+const MockPaperPage = lazyNamed(loaders.mocks, (m) => m.MockPaperPage);
+const MockTakePage = lazyNamed(loaders.mocks, (m) => m.MockTakePage);
+const MockReviewPage = lazyNamed(loaders.mocks, (m) => m.MockReviewPage);
+const SprintPage = lazyNamed(loaders.sprint, (m) => m.SprintPage);
+const SearchPage = lazyNamed(loaders.search, (m) => m.SearchPage);
 let prefetched = false;
 function prefetchPages() {
   if (prefetched) return;
   prefetched = true;
-  const run = () => Object.values(loaders).forEach((l) => void l().catch(() => undefined));
+  const run = () => void preloadAll();
   const w = window as unknown as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => void };
-  if (w.requestIdleCallback) w.requestIdleCallback(run, { timeout: 2500 }); else setTimeout(run, 1200);
+  // shortly after the first screen is up, when the browser is idle (at most ~1.2 s later)
+  setTimeout(() => (w.requestIdleCallback ? w.requestIdleCallback(run, { timeout: 800 }) : run()), 400);
 }
 /** Shown for the moment a page's code is still arriving */
 function PageLoading() {
