@@ -53,7 +53,28 @@ export function HelpPage() {
       <div className="faq">
         <details>
           <summary>What should I do each day?</summary>
-          <p>Follow <strong>Today's plan</strong> on the home page: flashcards (5 min), smart practice (15 min), then fix your mistakes (10 min). It adjusts to the daily goal you set in Settings.</p>
+          <p>Press <strong>Start session</strong> at the top of any screen, choose how long you have, and the app decides what to practise. Or follow <strong>Today's plan</strong> on the home page: flashcards (5 min), smart practice (15 min), then fix your mistakes (10 min). It adjusts to the daily goal you set in Settings.</p>
+        </details>
+        <details>
+          <summary>How does Start session choose my questions?</summary>
+          <ul>
+            <li><strong>Fix a mistake</strong>: questions you got wrong come back first, until you have got each one right twice, at least 6 hours apart, without hints.</li>
+            <li><strong>Retry</strong>: a question you get wrong comes back again about three questions later in the same session, and a similar question follows a few questions after that.</li>
+            <li><strong>Keep it fresh</strong>: questions you got right return on a spaced schedule, and topics you know well get a <em>similar</em> (not identical) question so you remember the idea, not just the answer.</li>
+            <li><strong>Weak spot</strong> and <strong>new</strong>: your weakest topics, and parts of the specification you haven't practised yet.</li>
+            <li>The summary at the end shows what you got right and wrong, which mistakes are cleared, and what to revise next.</li>
+          </ul>
+        </details>
+        <details>
+          <summary>How do the mock exams work?</summary>
+          <ul>
+            <li>Every paper you sit has <strong>three practice tests</strong>. Each is the real length, worth the real number of marks and in the board's format, with your chosen texts and options.</li>
+            <li>You only get the equipment allowed in the real exam – for example, no calculator on a non-calculator paper, a periodic table for Chemistry, the equations sheet for Physics, and no hints or tutor until you submit.</li>
+            <li>The timer keeps running while the test is open. Use <em>Save &amp; exit</em> to stop and resume later with the time you had left. When time runs out, the paper is submitted for you.</li>
+            <li>Multiple-choice, number and matching answers are marked instantly, with partial credit where the board gives it. For written answers, choose the level or tick the points in the mark scheme. Inside Claude, <em>Mark with AI</em> can mark them for you.</li>
+            <li>The review highlights lost marks, explains the correct answer, shows model answers and the mark scheme, gives advice on what to do next, and offers the tutor for any question. Every answer feeds into your Fix-it list and revision priorities.</li>
+            <li>You can look back at old attempts and retry the same test at any time.</li>
+          </ul>
         </details>
         <details>
           <summary>How does it adapt to me?</summary>
@@ -75,7 +96,7 @@ export function HelpPage() {
         </details>
         <details>
           <summary>What is the Fix-it list?</summary>
-          <p>Every question you get wrong goes on your <a href="#/fix">Fix-it list</a> and keeps coming back until you get it right without help.</p>
+          <p>Every question you get wrong goes on your <a href="#/fix">Fix-it list</a> and keeps coming back until you have got it right <strong>twice without help, at least 6 hours apart</strong> – getting it right once straight after a mistake isn't enough to remember it. A new version of a generated question also counts.</p>
         </details>
         <details>
           <summary>How do exam questions work?</summary>
@@ -87,7 +108,7 @@ export function HelpPage() {
         </details>
         <details>
           <summary>Can it predict what will come up?</summary>
-          <p>No one can – exam boards never reveal it, and any topic on the specification can be examined. The app shows what has appeared in past papers so you can be ready for everything.</p>
+          <p>No one can be sure – exam boards never reveal it, and any topic on the specification can be examined. The mock exams follow the real paper structures and lean towards topics, characters and themes that haven't been asked for a while (based on past papers), but they cover the whole specification so you are ready for anything.</p>
         </details>
       </div>
 

@@ -9,6 +9,7 @@ import { Icon } from '../components/Icon';
 import { InstallCard } from '../components/Install';
 import { STRATEGY_TIPS } from '../content/strategies';
 import { specCoverage, uncovered } from '../lib/coverage';
+import { papersFor, getTest } from '../content/mocks';
 
 export function Home() {
   const profile = useProfile();
@@ -166,6 +167,46 @@ export function Home() {
           ))}
         </div>
       </Section>
+
+      {(() => {
+        // mock exams: resume an unfinished paper, else suggest the paper you have practised least
+        const papers = papersFor(profile);
+        if (!papers.length) return null;
+        const all = Object.values(progress.mocks ?? {}).flat();
+        const open = all.filter((a) => a.status === 'in-progress').sort((a, b) => b.started - a.started)[0];
+        const openTest = open ? getTest(open.testId) : undefined;
+        const tried = (id: string) => all.filter((a) => a.testId.startsWith(`${id}-t`) && a.status !== 'in-progress').length;
+        const next = [...papers].sort((a, b) => tried(a.id) - tried(b.id))[0];
+        const last = all.filter((a) => a.status !== 'in-progress').sort((a, b) => (b.finished ?? 0) - (a.finished ?? 0))[0];
+        const lastTest = last ? getTest(last.testId) : undefined;
+        return (
+          <Section title="Mock exams" right={<a className="small" href="#/mocks">All papers</a>}>
+            <div className="list">
+              {openTest && open && (
+                <a className="list-row" href={href(`/mock/${open.testId}`, { a: open.id })}>
+                  <Icon name="clock" size={18} />
+                  <span className="grow"><strong className="small">Resume: {openTest.paper.title}</strong><span className="muted small"> · {openTest.test.title}</span></span>
+                  <span className="btn small primary">Resume</span>
+                </a>
+              )}
+              {lastTest && last && (
+                <a className="list-row" href={href(`/mock/${last.testId}`, { review: last.id })}>
+                  <Icon name="check" size={18} />
+                  <span className="grow small">Last result: {lastTest.paper.title} – <span className="mono">{last.score ?? 0}/{last.max}</span>{last.status === 'submitted' ? ' · finish marking your written answers' : ''}</span>
+                  <span className="small">Review</span>
+                </a>
+              )}
+              {next && (
+                <a className="list-row" href={href(`/mocks/${next.id}`)}>
+                  <Icon name="target" size={18} />
+                  <span className="grow"><strong className="small">{next.title}</strong><span className="muted small mono"> · {next.mins} min · {next.marks} marks</span></span>
+                  <span className="btn small">Try test</span>
+                </a>
+              )}
+            </div>
+          </Section>
+        );
+      })()}
 
       {(() => {
         const gaps = uncovered(subjects, profile, progress, 3);

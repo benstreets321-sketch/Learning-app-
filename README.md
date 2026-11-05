@@ -17,6 +17,9 @@ It runs entirely in the browser - no account, no server. Progress is saved on th
 
 ## What it does
 
+- **Start session**: one button at the top of every screen. Choose a length (10-60 minutes) and optionally subjects, and the app picks what to practise, interleaving *fix a mistake*, *spaced review*, *a similar question to keep it fresh*, *weak spot* and *not yet practised*. Wrong answers come back again three questions later, followed by a similar question, and the summary shows what to revise next.
+- **Mock exams for every paper**: three practice tests per paper (105 tests across English Language and Literature, Maths, the three sciences, Creative iMedia, Business, BTEC Enterprise, History and Statistics), each the real length and total, in the board's format, with only the equipment allowed in that exam (no calculator on Maths Paper 1, periodic table for Chemistry, equations sheet for Physics, no tutor until you submit). Timed with resume and auto-submit; auto-marked with exam-board partial credit; written answers marked by level (best fit, middle of the band) or by points; review with explanations, model answers, advice and the tutor; attempt history and retry. Literature extracts are quoted exactly from public-domain editions; all other sources and case studies were written for the app. Question focuses lean towards characters, themes and topics not asked recently.
+- **Mistakes stick until they're really fixed**: a mistake leaves the Fix-it list only after two unaided correct answers at least 6 hours apart, and every topic also has its own spaced schedule, so even topics you answer correctly get a similar question again later.
 - **Personalised to your exams**: choose your exam year, tiers, exam boards and your school's set texts/options. You only see what can come up in your exams.
 - **Lessons** for ~300 topics with must-know checklists, common misconceptions and "explain it another way".
 - **Adaptive quizzes**: a per-topic ability estimate (IRT/Elo style) picks questions you have about a 70% chance of getting right. Two misses in a row triggers a quick re-teach and easier questions; three in a row steps up the challenge.
@@ -75,7 +78,8 @@ It then opens full-screen from the home screen and works without internet. Progr
 
 ```
 src/
-  lib/            engine.ts (spaced repetition + adaptive ability), store.ts (localStorage), answer.ts (marking), router.ts
+  lib/            engine.ts (spaced repetition + adaptive ability), session.ts (timed Start session), store.ts (localStorage),
+                  answer.ts + grade.ts (marking, mock partial credit and level marking), router.ts
   content/
     types.ts      content model
     dsl.ts        compact authoring helpers (mc, num, txt, cloze, ord, match, examQ...)
@@ -83,9 +87,10 @@ src/
     subjects/     one folder per subject (units → topics)
     registry.ts   indexes everything; derives quote and timeline drills automatically
     reference.ts  reference sheets
+    mocks/        mock exam papers: paper specs, assembler, written papers (English, History, Business) and extra questions
   components/     QuestionCard, StuckPanel, Markdown, UI bits
-  pages/          Home, Setup, Subject, Topic, Quiz, Flashcards, Exam, Fix-it, Progress, Planner, Strategies, Tools
-tests/            engine + generators + content integrity
+  pages/          Home, Setup, Subject, Topic, Quiz, Session, Mocks, Flashcards, Exam, Fix-it, Progress, Planner, Strategies, Tools
+tests/            engine + generators + content integrity + mock papers (totals, durations, tools, no repeats, marking)
 ```
 
 ### Adding content
@@ -102,4 +107,4 @@ topic({
 ```
 
 ## Copyright
-Practice sources in English Language are original texts written for the app. Quotations from set texts are short extracts for study and criticism; modern poems are not reproduced - students should use their printed anthology.
+Practice sources in English Language, the unseen poems, the History sources and interpretations (except those labelled as adapted from the original) and all Business case studies are original texts written for the app. Mock-exam extracts from Shakespeare, Dickens, Stevenson, Byron, Tennyson, Mew and Shelley are public domain. Quotations from set texts are short extracts for study and criticism; modern poems are not reproduced - students should use their printed anthology.

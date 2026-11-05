@@ -40,12 +40,41 @@ describe('saving progress', () => {
     expect(p.calib?.sure).toEqual([2, 1]);
   });
 
-  it('a fixed mistake is removed and counted', async () => {
+  it('a mistake needs two correct answers on separate occasions to clear', async () => {
     const s = await freshStore();
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2027-01-10T09:00:00'));
     s.recordAnswer({ id: 'q9', topicId: 't1', subjectId: 'maths', d: 2, correct: false, hints: 0 });
     s.recordAnswer({ id: 'q9', topicId: 't1', subjectId: 'maths', d: 2, correct: true, conf: 'sure', hints: 0 });
+    expect(s.getProgress().mistakes.q9.wins).toBe(1);
+    s.recordAnswer({ id: 'q9', topicId: 't1', subjectId: 'maths', d: 2, correct: true, conf: 'sure', hints: 0 });
+    expect(s.getProgress().mistakes.q9, 'same sitting does not clear it').toBeTruthy();
+    s.recordAnswer({ id: 'q9', topicId: 't1', subjectId: 'maths', d: 2, correct: true, conf: 'sure', hints: 1 });
+    vi.setSystemTime(new Date('2027-01-10T16:00:00'));
+    s.recordAnswer({ id: 'q9', topicId: 't1', subjectId: 'maths', d: 2, correct: true, conf: 'guess', hints: 0 });
+    expect(s.getProgress().mistakes.q9, 'a guess does not count').toBeTruthy();
+    s.recordAnswer({ id: 'q9', topicId: 't1', subjectId: 'maths', d: 2, correct: true, conf: 'sure', hints: 0 });
     expect(s.getProgress().mistakes.q9).toBeUndefined();
-    expect(Object.values(s.getProgress().days)[0].fixed).toBe(1);
+    expect(Object.values(s.getProgress().days).reduce((a, d) => a + (d.fixed ?? 0), 0)).toBe(1);
+    vi.useRealTimers();
+  });
+
+  it('a wrong answer resets progress towards clearing a mistake', async () => {
+    const s = await freshStore();
+    s.recordAnswer({ id: 'q8', topicId: 't1', subjectId: 'maths', d: 2, correct: false, hints: 0 });
+    s.recordAnswer({ id: 'q8', topicId: 't1', subjectId: 'maths', d: 2, correct: true, conf: 'sure', hints: 0 });
+    s.recordAnswer({ id: 'q8', topicId: 't1', subjectId: 'maths', d: 2, correct: false, hints: 0 });
+    expect(s.getProgress().mistakes.q8.wins).toBe(0);
+    expect(s.getProgress().mistakes.q8.count).toBe(2);
+  });
+
+  it('every answer schedules a topic review, so a similar question returns even after a correct answer', async () => {
+    const s = await freshStore();
+    s.recordAnswer({ id: 'q7', topicId: 't7', subjectId: 'maths', d: 2, correct: true, conf: 'sure', hints: 0 });
+    const t = s.getProgress().topicSrs?.t7;
+    expect(t).toBeTruthy();
+    expect(t!.due).toBeGreaterThan(Date.now());
+    expect(t!.right).toBe(1);
   });
 
   it('recovers from a corrupted save using the backup copy and repairs it', async () => {
@@ -83,5 +112,23 @@ describe('saving progress', () => {
     s.recordAnswer({ id: 'q2', topicId: 't1', subjectId: 'maths', d: 2, correct: true, hints: 0 });
     s.saveNow();
     expect(s.getSaveState().status).toBe('saved');
+  });
+
+  it('schedules a topic for review from written mock answers, sooner when the answer was weak', async () => {
+    const s = await freshStore();
+    s.recordExam('t-weak', 'mock:x:1', 2, 20, 'answer');
+    s.recordExam('t-strong', 'mock:x:2', 19, 20, 'answer');
+    const p = s.getProgress();
+    expect(p.topicSrs?.['t-weak']).toBeTruthy();
+    expect(p.topicSrs!['t-weak'].due).toBeLessThan(p.topicSrs!['t-strong'].due);
+  });
+
+  it('never turns a finished mock attempt back into an unfinished one', async () => {
+    const s = await freshStore();
+    const a = { id: 'a1', testId: 'maths-p1-h-t1', started: 1, remaining: 100, status: 'in-progress' as const, answers: {}, marks: {}, ticks: {}, max: 80 };
+    s.saveMockAttempt(a);
+    s.saveMockAttempt({ ...a, status: 'submitted', score: 10 });
+    s.saveMockAttempt({ ...a, remaining: 90 }); // a late save from the exam screen
+    expect(s.getProgress().mocks?.['maths-p1-h-t1'][0].status).toBe('submitted');
   });
 });

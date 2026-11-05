@@ -830,3 +830,72 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 0.05rem 0.35rem; bo
 }
 
 .tutor-note { padding: 0 1rem; margin: 0.2rem 0 0; }
+
+/* ---------- start session ---------- */
+.top-actions { display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem; margin: -0.8rem 0 0.6rem; }
+.start-session { position: relative; }
+.start-btn { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); }
+.start-btn.compact { min-height: 36px; padding: 0.35rem 0.7rem; font-size: 0.88rem; }
+.start-panel {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: min(420px, calc(100vw - 2rem)); background: var(--surface);
+  border: 1px solid var(--line-strong); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 1rem 1.05rem;
+}
+.start-row { margin-bottom: 0.8rem; }
+.start-row .chips { margin: 0.4rem 0 0; }
+.start-preview { margin: 0.2rem 0 0.8rem; }
+.start-go { width: 100%; }
+.top-tools { gap: 0.25rem; }
+.source-line { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.6rem; }
+.src-fix, .src-retry { background: var(--bad-bg); color: var(--bad); border-color: transparent; }
+.src-review, .src-similar, .src-follow { background: var(--info-bg); color: var(--info); border-color: transparent; }
+.src-weak { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
+.src-new { background: var(--good-bg); color: var(--good); border-color: transparent; }
+@media (max-width: 900px) {
+  .top-actions { display: none; }
+  .topbar .brand-text { display: none; }
+  .start-panel { position: fixed; left: 1rem; right: 1rem; top: calc(56px + env(safe-area-inset-top)); width: auto; }
+}
+
+/* ---------- Mock exams ---------- */
+.paper-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem; margin: 1.1rem 0 0.6rem; }
+.paper-facts > div { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.7rem 0.85rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.paper-facts strong { font-size: 0.98rem; }
+.paper-info { margin: 0.4rem 0 1.2rem; padding-left: 1.2rem; color: var(--muted); }
+.paper-info li { margin: 0.2rem 0; }
+.test-card { margin-top: 0.9rem; }
+.test-card .attempts { margin-top: 0.8rem; }
+.attempts .list-row { gap: 0.8rem; }
+.exam-cover { margin-top: 1rem; }
+.exam-cover ul { padding-left: 1.2rem; }
+.exam-cover li { margin: 0.35rem 0; }
+.mock-page { padding-top: 0; }
+.mock-bar {
+  position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem;
+  margin: 0 -1rem 0.8rem; padding: 0.6rem 1rem; background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.mock-timer { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700; font-size: 1.05rem; margin-left: auto; padding: 0.15rem 0.55rem; border-radius: var(--radius-sm); background: var(--surface-2); }
+.mock-timer.low { color: var(--bad); background: var(--bad-bg); }
+.mock-section { margin: 1.6rem 0; }
+.mock-section > h2 { font-size: 1.15rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--subj); }
+.mock-q { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.9rem 1rem; margin: 0.8rem 0; }
+.mock-q-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.3rem; }
+.mock-n { display: inline-grid; place-items: center; min-width: 2.2rem; height: 1.8rem; padding: 0 0.45rem; border-radius: var(--radius-sm); background: var(--surface-3); font-weight: 700; font-size: 0.88rem; }
+.review-q { border-left-width: 4px; }
+.review-q.full { border-left-color: var(--good); }
+.review-q.part { border-left-color: var(--warn); }
+.review-q.none { border-left-color: var(--bad); }
+.tick.band { background: var(--surface-2); padding: 0.5rem 0.6rem; border-radius: var(--radius-sm); border-bottom: 0; margin: 0.3rem 0; }
+.tick.band:has(input:checked) { background: var(--accent-tint); outline: 1.5px solid var(--accent); }
+.tick.info { color: var(--muted); font-size: 0.9rem; display: block; }
+.match-left { font-size: 0.94rem; }
+@media (max-width: 900px) {
+  .mock-bar { margin: 0 -16px 0.8rem; padding: 0.55rem 16px; }
+  .mock-timer { margin-left: 0; }
+}
+@media print {
+  .mock-bar, .q-tools, .sidebar, .topbar, .bottomnav { display: none !important; }
+}
+@media (max-width: 900px) {
+  .taking-mock .topbar, .taking-mock .bottomnav { display: none; }
+  .taking-mock .main { padding-bottom: 2rem; }
+}

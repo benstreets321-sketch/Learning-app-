@@ -8,11 +8,17 @@ import { Tutor } from './Tutor';
 
 // ---------- tiny store so any page can open the drawer ----------
 export type ToolId = 'tutor' | 'calc' | 'table' | 'formula' | 'working';
-let state: { open: ToolId | null; subject: string } = { open: null, subject: '' };
+// `allowed` restricts the drawer to a fixed set of tools (mock exams: only what the real exam permits)
+let state: { open: ToolId | null; subject: string; allowed: ToolId[] | null } = { open: null, subject: '', allowed: null };
 const subs = new Set<() => void>();
 const set = (s: typeof state) => { state = s; subs.forEach((f) => f()); };
-export const openTool = (tool: ToolId, subject = state.subject) => set({ open: tool, subject });
+export const openTool = (tool: ToolId, subject = state.subject, allowed: ToolId[] | null | undefined = undefined) => {
+  const nextAllowed = allowed === undefined ? state.allowed : allowed;
+  if (nextAllowed && !nextAllowed.includes(tool)) return;
+  set({ open: tool, subject, allowed: nextAllowed });
+};
 export const closeTools = () => set({ ...state, open: null });
+export const resetTools = () => set({ open: null, subject: '', allowed: null });
 export const useTools = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => state);
 
 /** Which tools make sense for a subject */
@@ -30,11 +36,12 @@ const SHORT: Record<ToolId, string> = { tutor: 'Ask tutor', calc: 'Calculator', 
 const ICON: Record<ToolId, string> = { tutor: 'message', calc: 'calc', table: 'table', formula: 'formula', working: 'pencil' };
 
 /** Row of tool buttons to put above a question */
-export function ToolBar({ subjectId, compact = false }: { subjectId: string; compact?: boolean }) {
+export function ToolBar({ subjectId, compact = false, tools }: { subjectId: string; compact?: boolean; tools?: ToolId[] }) {
+  const list = tools ?? toolsFor(subjectId);
   return (
     <div className="toolbar" role="toolbar" aria-label="Tools">
-      {toolsFor(subjectId).map((t) => (
-        <button key={t} className={`tool-btn ${t === 'tutor' ? 'tutor-btn' : ''}`} onClick={() => openTool(t, subjectId)} title={LABEL[t]}>
+      {list.map((t) => (
+        <button key={t} className={`tool-btn ${t === 'tutor' ? 'tutor-btn' : ''}`} onClick={() => openTool(t, subjectId, tools ?? null)} title={LABEL[t]}>
           <Icon name={ICON[t]} size={18} />
           {!compact && <span>{SHORT[t]}</span>}
         </button>
@@ -52,8 +59,7 @@ export function ToolDrawer() {
     return () => window.removeEventListener('keydown', onKey);
   }, [s.open]);
   if (!s.open) return null;
-  const tools = toolsFor(s.subject);
-  const available: ToolId[] = Array.from(new Set<ToolId>([...tools, s.open]));
+  const available: ToolId[] = s.allowed ?? Array.from(new Set<ToolId>([...toolsFor(s.subject), s.open]));
   return (
     <aside className={`drawer ${s.open === 'table' ? 'wide' : ''} ${s.open === 'tutor' ? 'is-tutor' : ''}`} role="dialog" aria-label={LABEL[s.open]}>
       <div className="drawer-head">

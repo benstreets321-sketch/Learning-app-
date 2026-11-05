@@ -15,6 +15,9 @@ import { StrategiesPage } from './pages/Strategies';
 import { ToolsPage } from './pages/Tools';
 import { HelpPage } from './pages/Help';
 import { RescuePage } from './pages/Rescue';
+import { SessionPage } from './pages/Session';
+import { MocksPage, MockPaperPage, MockTakePage, MockReviewPage } from './pages/Mocks';
+import { StartSession } from './components/StartSession';
 import { SprintPage } from './pages/Sprint';
 import { SearchPage } from './pages/Search';
 import { Icon } from './components/Icon';
@@ -28,7 +31,7 @@ import { schedule as scheduleReminder, syncReminderState } from './lib/reminders
 const NAV = [
   { path: '/', label: 'Today', icon: 'home' },
   { path: '/fix', label: 'Fix-it', icon: 'fix' },
-  { path: '/plan', label: 'Plan', icon: 'plan' },
+  { path: '/mocks', label: 'Mock exams', icon: 'formula' },
   { path: '/progress', label: 'Progress', icon: 'progress' },
   { path: '/help', label: 'Help', icon: 'life' },
 ];
@@ -87,6 +90,9 @@ export function App() {
       case 'exam': page = <ExamPage key={route.raw} query={route.query} />; break;
       case 'search': page = <SearchPage key={route.raw} query={route.query} />; break;
       case 'sprint': page = <SprintPage key={route.raw} query={route.query} />; break;
+      case 'session': page = <SessionPage key={route.raw} query={route.query} />; break;
+      case 'mocks': page = second ? <MockPaperPage key={route.raw} paperId={second} /> : <MocksPage />; break;
+      case 'mock': page = route.query.get('review') ? <MockReviewPage key={route.raw} testId={second} attemptId={route.query.get('review')!} /> : <MockTakePage key={route.raw} testId={second} attemptId={route.query.get('a') ?? undefined} />; break;
       case 'rescue': page = <RescuePage key={route.raw} query={route.query} />; break;
       case 'fix': page = <MistakesPage />; break;
       case 'progress': page = <ProgressPage />; break;
@@ -98,12 +104,13 @@ export function App() {
     }
   }
 
-  const inSession = first === 'quiz' || first === 'cards' || first === 'exam' || first === 'sprint' || (first === 'rescue' && !!route.query.get('topic'));
-  const isActive = (p: string) => (p === '/' ? !first : '/' + (first ?? '') === p);
+  const takingMock = first === 'mock' && !route.query.get('review');
+  const inSession = first === 'quiz' || first === 'cards' || first === 'exam' || first === 'sprint' || first === 'session' || takingMock || (first === 'rescue' && !!route.query.get('topic'));
+  const isActive = (p: string) => (p === '/' ? !first : '/' + (first ?? '') === p || (p === '/mocks' && first === 'mock'));
   const subjects = profile.onboarded ? activeSubjects(profile) : [];
 
   return (
-    <div className={`app ${inSession ? 'in-session' : ''} ${profile.onboarded ? '' : 'no-nav'} ${tools.open ? `drawer-open${tools.open === 'table' ? ' drawer-wide' : ''}` : ''}`}>
+    <div className={`app ${inSession ? 'in-session' : ''} ${takingMock ? 'taking-mock' : ''} ${profile.onboarded ? '' : 'no-nav'} ${tools.open ? `drawer-open${tools.open === 'table' ? ' drawer-wide' : ''}` : ''}`}>
       <aside className="sidebar" aria-label="Main">
         <a className="brand" href={href('/')}>
           <span className="logo" aria-hidden="true">G</span>
@@ -119,6 +126,7 @@ export function App() {
               {n.path === '/fix' && mistakes > 0 && <span className="count mono">{mistakes}</span>}
             </a>
           ))}
+          <a href={href('/plan')} className={`side-link ${isActive('/plan') ? 'active' : ''}`}><Icon name="plan" size={18} /> <span>Plan</span></a>
           <a href={href('/how')} className={`side-link ${isActive('/how') ? 'active' : ''}`}><Icon name="learn" size={18} /> <span>How to revise</span></a>
         </nav>
         {subjects.length > 0 && (
@@ -143,19 +151,29 @@ export function App() {
           <span className="logo" aria-hidden="true">G</span>
           <span className="brand-text">GCSE Revision Hub</span>
         </a>
-        <span className="row">
+        <span className="row top-tools">
+          {!inSession && profile.onboarded && <StartSession compact />}
           <a href={href('/search')} className="icon-btn" aria-label="Search"><Icon name="search" /></a>
           <a href={href('/setup')} className="icon-btn" aria-label="Settings"><Icon name="settings" /></a>
         </span>
       </header>
 
-      <main className="main"><SaveWarning />{page}</main>
+      <main className="main">
+        {!inSession && profile.onboarded && (
+          <div className="top-actions">
+            <a className="btn ghost small" href={href('/mocks')}><Icon name="formula" size={16} /> Mock exams</a>
+            <StartSession />
+          </div>
+        )}
+        <SaveWarning />
+        {page}
+      </main>
 
       <nav className="bottomnav" aria-label="Main mobile">
         {NAV.map((n) => (
           <a key={n.path} href={href(n.path)} className={`bnav ${isActive(n.path) ? 'active' : ''}`} aria-current={isActive(n.path) ? 'page' : undefined}>
             <Icon name={n.icon} size={22} />
-            <span>{n.label}</span>
+            <span>{n.label === 'Mock exams' ? 'Tests' : n.label}</span>
             {n.path === '/fix' && mistakes > 0 && <span className="count mono">{mistakes}</span>}
           </a>
         ))}

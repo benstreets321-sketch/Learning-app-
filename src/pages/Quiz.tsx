@@ -233,7 +233,7 @@ function snapFromId(item: QItem): GenSnapshot {
   return { g, s: Number(s), l: item.d, t: item.topicId };
 }
 
-function Reteach({ topicId, onContinue }: { topicId: string; onContinue: () => void }) {
+export function Reteach({ topicId, onContinue }: { topicId: string; onContinue: () => void }) {
   const ref = getTopic(topicId);
   if (!ref) return <div className="row end"><button className="btn primary" onClick={onContinue}>Carry on</button></div>;
   const { topic } = ref;

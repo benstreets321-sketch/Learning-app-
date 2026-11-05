@@ -8,6 +8,7 @@ import { Empty, LevelBadge, ProgressBar, Section, Tabs } from '../components/ui'
 import { Markdown } from '../components/Markdown';
 import { TOOL_INFO } from './Tools';
 import { specCoverage } from '../lib/coverage';
+import { papersFor } from '../content/mocks';
 
 type Tab = 'overview' | 'topics' | 'spec' | 'practice' | 'exam' | 'tools' | 'revise' | 'stuck';
 
@@ -91,6 +92,24 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
               ))}
             </div>
           </Section>
+          {papersFor(profile, subject.id).length > 0 && (
+            <Section title="Mock exams" right={<a className="small" href={href('/mocks')}>All mock exams</a>}>
+              <p className="muted small" style={{ marginTop: 0 }}>Three full practice papers for each exam, timed and with only the equipment you are allowed. Marked against the mark scheme when you submit.</p>
+              <div className="list">
+                {papersFor(profile, subject.id).map((p) => {
+                  const done = p.tests().flatMap((t) => (progress.mocks?.[t.id] ?? []).filter((a) => a.status !== 'in-progress'));
+                  const best = done.reduce((m, a) => Math.max(m, (a.score ?? 0) / Math.max(1, a.max)), -1);
+                  return (
+                    <a key={p.id} className="list-row" href={href(`/mocks/${p.id}`)}>
+                      <span className="grow"><strong className="small">{p.title}</strong><span className="muted small mono"> · {p.mins} min · {p.marks} marks</span></span>
+                      {best >= 0 && <span className="mono small">best {Math.round(best * 100)}%</span>}
+                      <span className="btn small primary">Try test</span>
+                    </a>
+                  );
+                })}
+              </div>
+            </Section>
+          )}
           <Section title="Mastery map">
             <div className="heat">
               {stats.topics.map((tp) => (

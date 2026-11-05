@@ -26,6 +26,9 @@ export interface Profile {
   /** reading comfort */
   textSize?: 'normal' | 'large' | 'xlarge';
   readable?: boolean;
+  /** last choices in the Start session panel */
+  sessionMins?: number;
+  sessionSubjects?: string[];
 }
 
 export interface MistakeEntry {
@@ -37,6 +40,31 @@ export interface MistakeEntry {
   confidentWrong: boolean;
   /** snapshot for generated questions so they can be replayed */
   snapshot?: string;
+  /** correct, unaided answers since the last mistake. Two, on separate occasions, are needed to clear it. */
+  wins?: number;
+  /** when the first of those correct answers happened */
+  firstWin?: number;
+}
+
+/** A mistake only leaves the Fix-it list after a second correct answer at least this long after the first */
+export const FIX_GAP_MS = 6 * 60 * 60 * 1000;
+
+export interface MockAttempt {
+  id: string;
+  testId: string;
+  started: number;
+  /** seconds left when last saved (for resuming) */
+  remaining: number;
+  status: 'in-progress' | 'submitted' | 'marked';
+  finished?: number;
+  /** answers keyed by question number */
+  answers: Record<string, unknown>;
+  /** marks awarded keyed by question number (auto-marked or self/AI-marked) */
+  marks: Record<string, number>;
+  /** ticked mark-scheme points for written answers */
+  ticks: Record<string, number[]>;
+  score?: number;
+  max: number;
 }
 
 export interface DayLog {
@@ -63,6 +91,10 @@ export interface Progress {
   calib?: Partial<Record<Confidence, [number, number]>>;
   /** best sprint scores by subject id ('all' for mixed) */
   sprints?: Record<string, number>;
+  /** topic-level review schedule: even after a correct answer, a similar question on the topic comes back */
+  topicSrs?: Record<string, SrsState>;
+  /** mock exam attempts keyed by test id */
+  mocks?: Record<string, MockAttempt[]>;
 }
 
 export interface PlanWeek {
@@ -269,6 +301,9 @@ export function recordAnswer(r: AnswerRecord) {
       const prev = p.calib?.[r.conf] ?? [0, 0];
       p.calib = { ...p.calib, [r.conf]: [prev[0] + 1, prev[1] + (r.correct ? 1 : 0)] };
     }
+    // topic-level spacing: a similar question on this topic is scheduled whatever the outcome
+    p.topicSrs = { ...p.topicSrs, [r.topicId]: schedule(p.topicSrs?.[r.topicId], grade, now) };
+    const unaided = r.hints === 0 && r.conf !== 'guess';
     if (!r.correct) {
       const prev = p.mistakes[r.id];
       p.mistakes[r.id] = {
@@ -276,10 +311,27 @@ export function recordAnswer(r: AnswerRecord) {
         count: (prev?.count ?? 0) + 1,
         confidentWrong: r.conf === 'sure' || (prev?.confidentWrong ?? false),
         snapshot: r.snapshot ?? prev?.snapshot,
+        wins: 0,
       };
-    } else if (p.mistakes[r.id]) {
-      // fixed a mistake: remove once it has been answered right unaided
-      if (r.hints === 0 && r.conf !== 'guess') { delete p.mistakes[r.id]; day.fixed = (day.fixed ?? 0) + 1; }
+    } else if (unaided) {
+      // successive relearning: right once, then right again on a later occasion, before it leaves the Fix-it list
+      const settle = (id: string) => {
+        const m = p.mistakes[id];
+        if (!m) return;
+        if (!m.wins || !m.firstWin) p.mistakes[id] = { ...m, wins: 1, firstWin: now };
+        else if (now - m.firstWin >= FIX_GAP_MS) { delete p.mistakes[id]; day.fixed = (day.fixed ?? 0) + 1; }
+      };
+      settle(r.id);
+      // a fresh-number version of a generated question counts as the confirming "similar question"
+      if (r.generated) {
+        const gen = r.id.split(':')[1];
+        for (const m of Object.values(p.mistakes)) {
+          if (m.id !== r.id && m.id.startsWith(`gen:${gen}:`) && (m.wins ?? 0) >= 1 && m.firstWin && now - m.firstWin >= FIX_GAP_MS) {
+            delete p.mistakes[m.id];
+            day.fixed = (day.fixed ?? 0) + 1;
+          }
+        }
+      }
     }
     p.xp += r.correct ? 10 + r.d * 2 - r.hints * 3 : 2;
   });
@@ -326,6 +378,10 @@ export function recordExam(topicId: string, examId: string, score: number, max: 
       n: Math.max(t.n, 1),
     };
     p.essays[examId] = { text, at: Date.now(), score, max };
+    // written answers also set when this topic comes back: weak answers return soon, strong ones later
+    const ratio = max > 0 ? score / max : 0;
+    const grade: Grade = ratio >= 0.85 ? 3 : ratio >= 0.65 ? 2 : ratio >= 0.4 ? 1 : 0;
+    p.topicSrs = { ...p.topicSrs, [topicId]: schedule(p.topicSrs?.[topicId], grade, Date.now()) };
     p.xp += 10 + score * 2;
   });
 }
@@ -394,4 +450,21 @@ export function recordSprint(key: string, score: number): boolean {
     if (score > prev) { best = prev > 0; p.sprints = { ...p.sprints, [key]: score }; }
   });
   return best;
+}
+
+// ---------- mock exams ----------
+export function saveMockAttempt(a: MockAttempt) {
+  mutate((p) => {
+    const list = [...(p.mocks?.[a.testId] ?? [])];
+    const i = list.findIndex((x) => x.id === a.id);
+    // a finished attempt is never turned back into an unfinished one (e.g. by a late save from the exam screen)
+    if (i >= 0 && list[i].status !== 'in-progress' && a.status === 'in-progress') return;
+    if (i >= 0) list[i] = a; else list.push(a);
+    p.mocks = { ...p.mocks, [a.testId]: list.slice(-20) };
+  });
+}
+export function deleteMockAttempt(testId: string, id: string) {
+  mutate((p) => {
+    p.mocks = { ...p.mocks, [testId]: (p.mocks?.[testId] ?? []).filter((x) => x.id !== id) };
+  });
 }
