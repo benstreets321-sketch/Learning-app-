@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { skillOf } from '../lib/skills';
 import type { QItem } from '../content/types';
 import { getTopic } from '../content/registry';
-import { SessionEngine, SOURCE_HELP, SOURCE_LABEL, type Source } from '../lib/session';
+import { SessionEngine, SOURCE_HELP, SOURCE_LABEL, sessionPreview, type Source } from '../lib/session';
 import { addStudyTime, getProgress, recordAnswer, useProgress } from '../lib/store';
 import { mastery, type Confidence } from '../lib/engine';
 import { href, refresh } from '../lib/router';
@@ -14,6 +14,7 @@ import { Icon } from '../components/Icon';
 import { SubjectMark } from '../components/SubjectMark';
 import { Reteach } from './Quiz';
 import { CardBurst, type BurstCard } from '../components/CardBurst';
+import { TodayExtras } from '../components/Coach';
 import type { Topic } from '../content/types';
 
 interface Answered { item: QItem; source: Source; correct: boolean; conf?: Confidence; hints: number }
@@ -40,6 +41,7 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
   const [burst, setBurst] = useState<BurstCard[] | null>(() => { const c = engine.dueCards(6); return c.length >= 3 ? c : null; });
   const [lessonFor, setLessonFor] = useState<string | null>(() => (pick?.lesson ? pick.item.topicId : null));
   const lastBurstAt = useRef(0);
+  const plan = useMemo(() => sessionPreview(subjectIds), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [answers, setAnswers] = useState<Answered[]>([]);
   const [reteach, setReteach] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
@@ -101,6 +103,11 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
         <span className="muted small">{burst ? 'Cards due for review – a quick burst of recall between questions.' : lessonFor ? 'A brand-new topic: the key idea first, then a question on it.' : <>{SOURCE_HELP[pick.source]}{pick.note ? <> <strong>{pick.note}.</strong></> : null}</>}</span>
         <span className="muted small mono push">{answers.length} done · {answers.filter((a) => a.correct).length} correct</span>
       </div>
+      {answers.length === 0 && !burst && (() => {
+        const pv = plan;
+        const bits = [pv.fix ? `${pv.fix} to fix` : '', pv.due ? `${pv.due} topic review${pv.due === 1 ? '' : 's'} due` : '', pv.weak ? `${pv.weak} weak spot${pv.weak === 1 ? '' : 's'}` : '', pv.fresh ? 'some new material' : ''].filter(Boolean);
+        return <p className="small muted session-plan"><strong>Today's plan:</strong> {bits.length ? bits.join(' · ') : 'mixed practice'}, plus the topics worth the most marks towards your target. The engine adapts after every answer.</p>;
+      })()}
       {timeUp && (
         <div className="banner support row gap wrap">
           <span>Time's up – well done. Finish this question to see your summary, or keep going.</span>
@@ -224,6 +231,8 @@ function Summary({ answers, mins, fixedBefore, startMastery, subjectIds }: { ans
           ))}
         </section>
       )}
+
+      <TodayExtras ids={subjectIds ?? undefined} />
 
       <div className="row gap wrap">
         <a className="btn primary" href={href('/session', { mins: 10, subjects: subjectIds?.join(',') || undefined, _: Date.now() })}>Keep going: 10 more minutes</a>

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { canSaveFiles, saveFile } from '../lib/files';
 import { SUBJECTS } from '../content/registry';
 import { go, useRoute } from '../lib/router';
+import { ExamTimetableEditor } from '../components/Coach';
 import { DEFAULT_WEEK, WEEK_DAYS, effectiveWeek, myGroups } from '../lib/week';
 import { exportData, importData, resetAll, updateProfile, useProfile } from '../lib/store';
 import { Section } from '../components/ui';
@@ -21,7 +22,12 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const route = useRoute();
   const weekRef = useRef<HTMLDivElement>(null);
-  useEffect(() => { if (route.query.get('tab') === 'week') weekRef.current?.scrollIntoView({ block: 'start' }); }, [route.query]);
+  const examsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const tab = route.query.get('tab');
+    if (tab === 'week') weekRef.current?.scrollIntoView({ block: 'start' });
+    if (tab === 'exams') examsRef.current?.scrollIntoView({ block: 'start' });
+  }, [route.query]);
   const week = effectiveWeek(profile);
   const groups = myGroups(profile);
   const setDay = (n: number, id: string) => { const w = [...week]; w[n] = id; updateProfile({ week: w }); };
@@ -113,6 +119,15 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
           ))}
         </div>
       </Section>
+
+      {!firstRun && (
+        <div ref={examsRef} id="exams">
+          <Section title="My exam timetable" right={profile.examDates && Object.keys(profile.examDates).length ? <button className="btn small ghost" onClick={() => updateProfile({ examDates: {} })}>Use estimates</button> : undefined}>
+            <p className="muted small">Until the exam boards publish the real timetable (about a year before), each paper has an <strong>estimated</strong> date from the usual pattern of the summer series. Enter your school's dates as soon as you have them: the countdown, the order of subjects in exam season and the night-before reviews all follow these dates.</p>
+            <ExamTimetableEditor />
+          </Section>
+        </div>
+      )}
 
       <div ref={weekRef} id="week">
         <Section title="My week" right={<button className="btn small ghost" onClick={() => updateProfile({ week: [...DEFAULT_WEEK] })}>Reset</button>}>

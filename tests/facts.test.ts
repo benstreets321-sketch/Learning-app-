@@ -14,7 +14,7 @@ describe('fact-table and per-topic generators', () => {
     expect(ids.filter((i) => i.startsWith('tl-')).length).toBeGreaterThan(30);
     expect(ids.filter((i) => i.startsWith('qt-')).length).toBeGreaterThan(30);
     for (const [id, g] of Object.entries(GENERATORS)) {
-      if (!/^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-|vz-|al-|pl-|vb-)/.test(id)) continue;
+      if (!/^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-|vz-|al-|pl-|vb-|dp-|nt-)/.test(id)) continue;
       for (let seed = 1; seed <= 120; seed++) {
         const lvl = (seed % 5) + 1;
         const q = g.make(mulberry32(seed * 104729 + id.length), lvl);
@@ -54,7 +54,7 @@ describe('fact-table and per-topic generators', () => {
         if (q.diagram) expect(JSON.stringify(q.diagram), ctx).not.toMatch(/NaN|null|undefined|Infinity/);
       }
     }
-  });
+  }, 60_000);
 
   it('attaches generators to real topics, so nearly every knowledge topic now has fresh questions', () => {
     const topicIds = new Set(SUBJECTS.flatMap((s) => s.units.flatMap((u) => u.topics.map((t) => t.id))));
@@ -75,7 +75,7 @@ describe('fact-table and per-topic generators', () => {
 
   it('generated questions rebuild exactly from their snapshot (so mistakes on them can come back)', () => {
     for (const s of SUBJECTS) for (const u of s.units) for (const t of u.topics) {
-      for (const g of (t.generators ?? []).filter((x) => /^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-|vz-|al-|pl-|vb-)/.test(x)).slice(0, 2)) {
+      for (const g of (t.generators ?? []).filter((x) => /^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-|vz-|al-|pl-|vb-|dp-|nt-)/.test(x)).slice(0, 2)) {
         const a = makeGenerated({ g, s: 12345, l: 3, t: t.id });
         const b = makeGenerated({ g, s: 12345, l: 3, t: t.id });
         expect(a, `${t.id} ${g}`).toBeTruthy();
@@ -123,7 +123,7 @@ describe('generated multiple choice cannot be guessed from the length of the opt
       // poem, text and event titles are fixed real names, so a little more variation is unavoidable there
       if (n) expect(cued / n, id).toBeLessThanOrEqual(/^(pm|qt|tl|lo)-/.test(id) ? 0.06 : 0.02);
     }
-  });
+  }, 60_000);
 });
 
 describe('answer options cannot be guessed from their look', () => {

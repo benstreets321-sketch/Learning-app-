@@ -39,6 +39,8 @@ export interface Profile {
   appKeyboard?: 'auto' | 'on' | 'off';
   /** target grade per subject id ('7', 'L2 Merit', ...) for the gap analysis */
   targets?: Record<string, string>;
+  /** the student's own exam dates (yyyy-mm-dd) by paper key, overriding the estimates */
+  examDates?: Record<string, string>;
 }
 
 export interface MistakeEntry {
@@ -109,6 +111,8 @@ export interface Progress {
   skills?: Record<string, { n: number; c: number; at: number }>;
   /** "explain why" follow-ups: how many were tried and how many hit the key idea */
   explains?: { n: number; good: number };
+  /** predicted percentage per subject, one entry per day: [day number, percentage] */
+  predHist?: Record<string, [number, number][]>;
 }
 
 export interface PlanWeek {
@@ -300,6 +304,11 @@ export interface AnswerRecord {
   generated?: boolean;
   /** kind of question (see skillOf), for the per-subject skill stats */
   skill?: string;
+}
+
+/** Store the daily snapshot of predicted percentages */
+export function savePredHist(hist: Record<string, [number, number][]>) {
+  mutate((p) => { p.predHist = hist; });
 }
 
 /** Record a "why" explanation attempt */

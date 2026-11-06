@@ -8,10 +8,12 @@ import { specCoverage } from '../lib/coverage';
 import { todayKey } from '../lib/util';
 import { ProgressBar, Section } from '../components/ui';
 import { GradePredictor } from '../components/GradePredictor';
+import { CoursePace, PhaseCard, WeeklyReview, usePredictionSnapshot } from '../components/Coach';
 
 export function ProgressPage() {
   const profile = useProfile();
   const progress = useProgress();
+  usePredictionSnapshot();
   const now = Date.now();
   const stats = activeSubjects(profile).map((s) => subjectStats(s, profile, progress, now));
   const days = Object.values(progress.days);
@@ -31,21 +33,6 @@ export function ProgressPage() {
   const exams = Object.entries(progress.essays).filter(([, e]) => e.score !== undefined);
   const examPct = exams.length ? exams.reduce((a, [, e]) => a + (e.score ?? 0) / (e.max ?? 1), 0) / exams.length : 0;
 
-  // this week vs last week
-  const weekSum = (offset: number) => {
-    let q = 0, c = 0, secs = 0, cards = 0, active = 0;
-    for (let i = 0; i < 7; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i - offset * 7);
-      const log = progress.days[todayKey(d)];
-      if (!log) continue;
-      q += log.q; c += log.c; secs += log.secs; cards += log.cards;
-      if (log.q + log.cards > 0 || log.secs >= 60) active++;
-    }
-    return { q, c, mins: Math.round(secs / 60), cards, active };
-  };
-  const tw = weekSum(0), lw = weekSum(1);
-  const delta = (a: number, b: number) => (b === 0 ? '' :`${a >= b ? '+' : ''}${Math.round(((a - b) / b) * 100)}%`);
   const calib = (['sure', 'unsure', 'guess'] as const).map((k) => {
     const [n, c] = progress.calib?.[k] ?? [0, 0];
     return { k, n, pct: n ? c / n : 0 };
@@ -61,17 +48,18 @@ export function ProgressPage() {
     <div className="page">
       <h1>Your progress</h1>
 
-      <Section title="Predicted grades and targets">
-        <div className="card pad"><GradePredictor /></div>
+      <PhaseCard />
+
+      <Section title="This week in review">
+        <div className="card pad"><WeeklyReview /></div>
       </Section>
 
-      <Section title="This week">
-        <div className="week-grid">
-          <div className="week-cell"><span className="muted small">Days active</span><span className="mono big-n">{tw.active}<span className="muted">/7</span></span><span className="muted small">last week {lw.active}</span></div>
-          <div className="week-cell"><span className="muted small">Minutes</span><span className="mono big-n">{tw.mins}</span><span className="muted small">{delta(tw.mins, lw.mins) ? `${delta(tw.mins, lw.mins)} vs last week` : 'nothing last week'}</span></div>
-          <div className="week-cell"><span className="muted small">Questions</span><span className="mono big-n">{tw.q}</span><span className="muted small">{delta(tw.q, lw.q) ? `${delta(tw.q, lw.q)} vs last week` : 'nothing last week'}</span></div>
-          <div className="week-cell"><span className="muted small">Accuracy</span><span className="mono big-n">{tw.q ? Math.round((tw.c / tw.q) * 100) : 0}%</span><span className="muted small">last week {lw.q ? Math.round((lw.c / lw.q) * 100) : 0}%</span></div>
-        </div>
+      <Section title="Course pace">
+        <div className="card pad"><CoursePace /></div>
+      </Section>
+
+      <Section title="Predicted grades and targets">
+        <div className="card pad"><GradePredictor /></div>
       </Section>
 
       <Section title="Exam coverage">

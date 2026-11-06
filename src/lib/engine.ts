@@ -74,6 +74,8 @@ export interface TopicState {
   blurt?: number[]; // blurting self-check percentages
   exam?: { id: string; score: number; max: number; at: number }[];
   recent?: number[]; // last few outcomes 0..1 for trend
+  /** when the topic was first practised (for course pace) */
+  first?: number;
 }
 
 export const newTopicState = (): TopicState => ({ theta: -0.5, n: 0, last: 0 });
@@ -101,6 +103,7 @@ export function updateAbility(prev: TopicState | undefined, d: number, score: nu
   const p = pCorrect(effectiveTheta(t, now), d);
   const k = Math.max(0.25, 0.9 / Math.sqrt(1 + t.n / 4));
   t.theta = clamp(effectiveTheta(t, now) + k * (score - p), -3.5, 3.5);
+  if (!t.n) t.first = now;
   t.n += 1;
   t.last = now;
   t.recent = [...(t.recent ?? []), score].slice(-10);

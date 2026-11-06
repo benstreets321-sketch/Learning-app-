@@ -71,12 +71,31 @@ export function HelpPage() {
           </ul>
         </details>
         <details>
+          <summary>How does the app change as the exams get closer?</summary>
+          <ul>
+            <li><strong>Learning the course</strong> (most of the year): Learn teaches one new topic a day, and your session keeps everything you have learned fresh. The Progress page shows your course pace and when you'll finish at that pace – aim for about four months before the exams.</li>
+            <li><strong>Consolidate</strong> (about four months to go, or once the course is covered): fewer new topics per session, Learn re-teaches weak ones, and you should do the exam question of the day and a timed mock paper every two to three weeks.</li>
+            <li><strong>Exam season</strong> (six weeks before the first paper): each day follows your next exams instead of the weekly timetable, Learn re-teaches the topic worth the most marks, and sessions focus on mistakes, weak spots and exam-style questions.</li>
+            <li><strong>The night before a paper</strong>: a short session on that subject only, then sleep. <strong>Exam day</strong>: a light look at key facts – and good luck.</li>
+            <li>Exam dates are estimates until the boards publish the real timetable. Enter your school's dates in <a href={href('/setup', { tab: 'exams' })}>Settings → My exam timetable</a> and everything follows them.</li>
+          </ul>
+        </details>
+        <details>
+          <summary>Will I run out of questions?</summary>
+          <ul>
+            <li>No. Besides about 2,800 written questions, nearly 850 kinds of question generator make fresh questions every time: new numbers for calculations, diagrams and graphs; about 920 extra key terms, examples and processes across the sciences, Creative iMedia, Business and English; and questions built from every lesson's own notes and tables.</li>
+            <li>For writing practice, almost 2,000 exam-style prompts with mark schemes – essays on every character and theme, History explain and "how far" questions, Business evaluate questions, English Language writing tasks and science 6-markers. There's an <strong>exam question of the day</strong> on the Today page.</li>
+            <li>Some repetition is deliberate: a question you get wrong comes back until you've got it right twice, and spaced reviews return just before you'd forget.</li>
+          </ul>
+        </details>
+        <details>
           <summary>How is my grade predicted?</summary>
           <ul>
             <li>The prediction answers "if you sat the exam today": it combines how well you know every topic on the course (topics you haven't started count low) with any marked mock papers, which count most.</li>
             <li>It uses approximate grade boundaries from recent years for that kind of paper – Higher or Foundation, and Level 1/Level 2 grades for Creative iMedia and BTEC Enterprise. Real boundaries change every year, so treat it as a guide.</li>
             <li>It shows a range that narrows as you answer more and take more mocks, and appears after about 20 answers in a subject.</li>
             <li>Set a <strong>target grade</strong> on the Progress page to see how far you have to go and <em>where the marks are</em> – the topics worth the most. Learn and your sessions then lean towards them.</li>
+            <li>Your prediction is saved each day, so the Progress page shows the trend and – after a week or two – where it leads by your first paper if the trend continues, plus a weekly review with what to focus on next.</li>
           </ul>
         </details>
         <details>

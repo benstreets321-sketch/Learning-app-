@@ -6,6 +6,8 @@ import { getTopic } from '../content/registry';
 import { lessonChunks, lessonQuestions, pickLearnTopic, practiceQuestion } from '../lib/learn';
 import { addStudyTime, getProfile, getProgress, markNotesRead, recordAnswer } from '../lib/store';
 import { focusFor } from '../lib/week';
+import { phaseFor } from '../lib/exams';
+import { courseCoverage } from '../lib/daily';
 import { cardId } from '../lib/insights';
 import { skillOf, weakSkills } from '../lib/skills';
 import { href, go } from '../lib/router';
@@ -34,7 +36,8 @@ export function LearnPage({ query }: { query: URLSearchParams }) {
     const ref = id ? getTopic(id) : undefined;
     if (ref) return { ...ref, reason: 'The topic you chose.' };
     const subjects = query.get('subjects')?.split(',').filter(Boolean) ?? focusFor(profile).ids ?? null;
-    return pickLearnTopic(profile, getProgress(), subjects);
+    const ph = phaseFor(profile, courseCoverage(profile, getProgress()).frac);
+    return pickLearnTopic(profile, getProgress(), subjects, [], Date.now(), ph.phase === 'exam-season' || ph.phase === 'exam-eve');
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!choice) return <div className="page narrow"><Empty title="Nothing to learn here yet">Choose your subjects in Settings first.</Empty></div>;

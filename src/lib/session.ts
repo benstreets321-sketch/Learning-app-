@@ -19,6 +19,7 @@ import { effectiveTheta, isStale, level, mastery, newTopicState, pCorrect, pickN
 import { getProfile, getProgress, type Profile, type Progress } from './store';
 import { uncovered } from './coverage';
 import { gapTopics } from './predict';
+import { phaseFor } from './exams';
 import { SKILL_NAME, skillOf, weakSkills, type Skill } from './skills';
 import { cardId } from './insights';
 import type { Flashcard } from '../content/types';
@@ -56,8 +57,8 @@ const ROTATION: Source[] = ['fix', 'review', 'target', 'similar', 'weak', 'skill
 // skills worth steering towards: the formats with their own exam technique
 const STEERABLE: Skill[] = ['diagram', 'algebra', 'plot', 'calc', 'recall', 'spot', 'sort'];
 const MIN = 60_000;
-/** brand-new topics introduced in one session, at most */
-const MAX_NEW = 3;
+/** brand-new topics introduced in one session, at most (fewer as the exams get closer) */
+const MAX_NEW_BY_PHASE: Record<string, number> = { learn: 3, consolidate: 2, 'exam-season': 1, 'exam-eve': 0, 'exam-day': 0, finished: 2 };
 
 function asItem(id: string, snapshot?: string): QItem | undefined {
   if (snapshot) { try { return makeGenerated(JSON.parse(snapshot) as GenSnapshot); } catch { return undefined; } }
@@ -81,6 +82,10 @@ export class SessionEngine {
   /** this subject's question kinds, weakest first, below 65% accuracy */
   private weakKinds: Skill[];
   private recent: boolean[] = [];
+  private maxNew = 3;
+  private sourceOf = new Map<string, Source>();
+  private followed = new Set<string>();
+  private reinforced = 0;
 
   constructor(subjectIds: string[] | null) {
     this.profile = getProfile();
@@ -91,6 +96,8 @@ export class SessionEngine {
     this.pool = questionPool(this.topicIds, this.profile).filter((q) => !q.ctx || q.subjectId === 'english-language');
     const progress = getProgress();
     this.targetTopics = this.subjects.flatMap((s) => gapTopics(s, this.profile, progress, 6).map((g) => g.topic.id));
+    const started = this.topicIds.filter((t) => (progress.topics[t]?.n ?? 0) > 0).length / Math.max(1, this.topicIds.length);
+    this.maxNew = MAX_NEW_BY_PHASE[phaseFor(this.profile, started).phase] ?? 3;
     this.weakKinds = weakSkills(progress.skills, this.subjects.map((s) => s.id)).filter((w) => w.acc < 0.65 && STEERABLE.includes(w.skill)).map((w) => w.skill);
   }
 
@@ -114,9 +121,15 @@ export class SessionEngine {
     this.turn += 1;
     this.recent = [...this.recent.slice(-5), correct];
     if (correct) return;
-    if (!this.queue.some((q) => q.item.id === item.id && q.source === 'retry')) this.queue.push({ at: this.turn + 3, item, source: 'retry' });
-    const similar = this.similarTo(item);
-    if (similar) this.queue.push({ at: this.turn + 7, item: similar, source: 'follow' });
+    // reinforcement is capped so a session is never mostly re-asks: a missed question comes back once (not a retry
+    // of a retry), one similar follow-up per topic, and re-asks stay under about a third of the session
+    const src = this.sourceOf.get(item.id);
+    const budget = this.reinforced < Math.max(3, this.turn * 0.32);
+    if (src !== 'retry' && budget && !this.queue.some((q) => q.item.id === item.id && q.source === 'retry')) this.queue.push({ at: this.turn + 3, item, source: 'retry' });
+    if (src !== 'follow' && src !== 'retry' && budget && !this.followed.has(item.topicId)) {
+      const similar = this.similarTo(item);
+      if (similar) { this.queue.push({ at: this.turn + 7, item: similar, source: 'follow' }); this.followed.add(item.topicId); }
+    }
   }
 
   next(): Pick | undefined {
@@ -141,6 +154,8 @@ export class SessionEngine {
 
   private take(item: QItem, source: Source, progress: Progress): Pick {
     this.asked.add(item.id);
+    this.sourceOf.set(item.id, source);
+    if (source === 'retry' || source === 'follow') this.reinforced++;
     this.askedTopicsTurn = [...this.askedTopicsTurn.slice(-2), item.topicId];
     const ts = progress.topics[item.topicId];
     // a short lesson before the first question on a topic never studied (once per topic per session)
@@ -230,7 +245,7 @@ export class SessionEngine {
           .sort((a, b) => mastery(progress.topics[a], now) - mastery(progress.topics[b], now));
         for (const t of weak.slice(0, 3)) {
           const cands = this.pool.filter((q) => q.topicId === t && !this.asked.has(q.id));
-          const pick = getTopic(t)?.topic.generators?.length && Math.random() < 0.4 ? this.generatedFor(t) : this.best(cands, progress, now);
+          const pick = getTopic(t)?.topic.generators?.length && Math.random() < 0.6 ? this.generatedFor(t) : this.best(cands, progress, now);
           if (pick) return pick;
         }
         return undefined;
@@ -240,9 +255,9 @@ export class SessionEngine {
           if (!inScope(t) || this.recentTopic(t)) continue;
           const lv = level(progress.topics[t], now);
           // at most three brand-new topics in one session (the Learn button is for new material)
-          if (lv === 'new' && !this.lessons.has(t) && this.lessons.size >= MAX_NEW) continue;
+          if (lv === 'new' && !this.lessons.has(t) && this.lessons.size >= this.maxNew) continue;
           const cands = this.pool.filter((q) => q.topicId === t && !this.asked.has(q.id) && (lv !== 'new' || q.d <= 2));
-          const pick = getTopic(t)?.topic.generators?.length && Math.random() < 0.35 ? this.generatedFor(t) : this.best(cands, progress, now) ?? this.generatedFor(t);
+          const pick = getTopic(t)?.topic.generators?.length && Math.random() < 0.55 ? this.generatedFor(t) : this.best(cands, progress, now) ?? this.generatedFor(t);
           if (pick) return pick;
         }
         return undefined;
@@ -269,7 +284,7 @@ export class SessionEngine {
         const gaps = uncovered(this.subjects, this.profile, progress, 6);
         for (const g of gaps) {
           if (!inScope(g.topicId) || this.recentTopic(g.topicId)) continue;
-          if (!this.lessons.has(g.topicId) && this.lessons.size >= MAX_NEW) continue;
+          if (!this.lessons.has(g.topicId) && this.lessons.size >= this.maxNew) continue;
           const easy = this.pool.filter((q) => q.topicId === g.topicId && q.d <= 2 && !this.asked.has(q.id));
           const pick = easy[Math.floor(Math.random() * easy.length)] ?? this.generatedFor(g.topicId);
           if (pick) return pick;

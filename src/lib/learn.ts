@@ -16,7 +16,7 @@ import type { Profile, Progress } from './store';
 
 export interface LearnChoice { subject: Subject; unit: Unit; topic: Topic; reason: string }
 
-export function pickLearnTopic(profile: Profile, progress: Progress, subjectIds?: string[] | null, skip: string[] = [], now = Date.now()): LearnChoice | undefined {
+export function pickLearnTopic(profile: Profile, progress: Progress, subjectIds?: string[] | null, skip: string[] = [], now = Date.now(), relearnFirst = false): LearnChoice | undefined {
   const subjects = activeSubjects(profile).filter((s) => !subjectIds?.length || subjectIds.includes(s.id));
   const ordered: { subject: Subject; unit: Unit; topic: Topic; idx: number }[] = [];
   for (const subject of subjects) {
@@ -27,6 +27,13 @@ export function pickLearnTopic(profile: Profile, progress: Progress, subjectIds?
     }
   }
   if (!ordered.length) return undefined;
+  // 0) exam season: re-teach the topic worth the most marks among those already started
+  if (relearnFirst) {
+    const started = ordered.filter(({ topic }) => (progress.topics[topic.id]?.n ?? 0) > 0);
+    const gains = new Map(subjects.flatMap((s) => gapTopics(s, profile, progress, 30, now).map((g) => [g.topic.id, g.gain] as const)));
+    const best = started.filter((c) => gains.has(c.topic.id)).sort((a, b) => (gains.get(b.topic.id) ?? 0) - (gains.get(a.topic.id) ?? 0))[0];
+    if (best) return { ...best, reason: 'Exams are close, so Learn re-teaches the topic that would add the most marks.' };
+  }
   // 1) struggled with, never properly taught
   const relearn = ordered
     .filter(({ topic }) => { const ts = progress.topics[topic.id]; return ts && ts.n >= 2 && !ts.notesRead && level(ts, now) === 'weak'; })

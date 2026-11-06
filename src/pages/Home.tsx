@@ -17,6 +17,9 @@ import { pickLearnTopic } from '../lib/learn';
 import { sessionPreview } from '../lib/session';
 import { predictSubject, rangeText, shortGrade } from '../lib/predict';
 import { launchSession } from '../components/StartSession';
+import { PhaseCard, TodayExtras, WeeklyReview, usePredictionSnapshot } from '../components/Coach';
+import { phaseFor } from '../lib/exams';
+import { courseCoverage } from '../lib/daily';
 
 const HomeMocks = lazyNamed(() => import('../components/MockCards'), (m) => m.HomeMocks);
 
@@ -42,7 +45,9 @@ export function Home() {
   const goal = profile.dailyGoal;
 
   // Two buttons, no options: Learn (the next topic, taught) and the session (everything else, chosen by the engine)
-  const learnNext = pickLearnTopic(profile, progress, focus.ids);
+  const phase = phaseFor(profile, courseCoverage(profile, progress).frac);
+  const learnNext = pickLearnTopic(profile, progress, focus.ids, [], Date.now(), phase.phase === 'exam-season' || phase.phase === 'exam-eve');
+  usePredictionSnapshot();
   const preview = sessionPreview(focus.ids ?? null);
   const goalDone = mins >= goal;
   const preds = (focus.ids ? subjects.filter((x) => focus.ids!.includes(x.id)) : []).map((x) => predictSubject(x, profile, progress));
@@ -60,7 +65,7 @@ export function Home() {
           <p className="eyebrow">{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
           <h1>{profile.name ? `Hi ${profile.name}` : 'Welcome back'}</h1>
           <p className="muted">
-            {days > 0 ? <><span className="mono">{days}</span> days until your first GCSE exam ({profile.examYear})</> : 'Exam season has started.'}
+            {days > 0 ? <><span className="mono">{days}</span> day{days === 1 ? '' : 's'} until your first GCSE exam ({profile.examYear})</> : 'Exam season has started.'}
           </p>
         </div>
         <div className="head-stats">
@@ -77,6 +82,8 @@ export function Home() {
         </div>
       )}
 
+      <PhaseCard compact />
+
       <section className="today card">
         <div className="today-head">
           <div>
@@ -84,7 +91,9 @@ export function Home() {
             <p className="muted small">
               {goalDone
                 ? 'Done for today – you can keep going as long as you like, and it all still counts.'
-                : focus.group
+                : focus.exam
+                  ? `Exam season: today follows your next exam, ${focus.group!.short}, instead of the weekly timetable. Learn re-teaches the topic worth the most marks; the session focuses on mistakes, weak spots and exam-style questions.`
+                  : focus.group
                   ? `${focus.dayName} is ${focus.group.short} day. Learn something new, then do your ${goal}-minute session – the app chooses everything in it from your mistakes, reviews, weak spots and target grade.`
                   : `Learn something new, then do your ${goal}-minute session – the app chooses everything in it.`}
             </p>
@@ -111,6 +120,7 @@ export function Home() {
             <Icon name="arrow" size={18} className="push" />
           </button>
         </div>
+        <TodayExtras ids={focus.ids} />
         {preds.length > 0 && (
           <div className="today-grades">
             {preds.map((p) => (
@@ -143,6 +153,12 @@ export function Home() {
           </div>
         )}
       </section>
+
+      {[0, 1].includes(new Date().getDay()) && Object.keys(progress.days).length > 2 && (
+        <Section title="Your week in review" right={<a className="small" href="#/progress">Progress</a>}>
+          <div className="card pad"><WeeklyReview /></div>
+        </Section>
+      )}
 
       <div className="split three">
         <a className="card link-card" href={href('/rescue')}>

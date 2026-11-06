@@ -5,6 +5,7 @@
 import type { Subject } from '../content/types';
 import { activeSubjects } from '../content/registry';
 import type { Profile } from './store';
+import { examFocusSubjects } from './exams';
 
 export interface SubjectGroup { id: string; name: string; short: string; subjects: string[] }
 
@@ -64,12 +65,18 @@ export interface DayFocus {
   ids: string[] | undefined;
   dayName: string;
   label: string;
+  /** exam season: today follows the next exam instead of the weekly timetable */
+  exam?: boolean;
 }
 
 export function focusFor(profile: Profile, date = new Date()): DayFocus {
   const n = date.getDay();
   const dayName = WEEK_DAYS.find((d) => d.n === n)!.name;
   const all = activeSubjects(profile);
+  // in exam season the next paper's subject takes over the day
+  const ex = examFocusSubjects(profile, 0, date);
+  const exSubjects = ex ? all.filter((s) => ex.ids.includes(s.id)) : [];
+  if (ex && exSubjects.length) return { group: { id: exSubjects[0].id, name: ex.label, short: ex.label, subjects: ex.ids }, subjects: exSubjects, ids: exSubjects.map((s) => s.id), dayName, label: ex.label, exam: true };
   const g = groupById(effectiveWeek(profile)[n]);
   const subjects = g ? all.filter((s) => g.subjects.includes(s.id)) : all;
   if (!g || !subjects.length) return { group: null, subjects: all, ids: undefined, dayName, label: 'All my subjects' };

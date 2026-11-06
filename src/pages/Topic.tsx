@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { SpellingNotes } from '../components/SpellingNotes';
 import { answerProps, useAppKeyboard } from '../components/AppKeyboard';
+import { practicePrompts } from '../content/prompts';
 import { getTopic, topicQuestions } from '../content/registry';
 import { go, href } from '../lib/router';
 import { markNotesRead, recordBlurt, saveNote, useProgress } from '../lib/store';
@@ -26,7 +27,7 @@ export function TopicPage({ id, tab }: { id: string; tab: string }) {
     { id: 'practice', label: 'Practise' },
   ];
   if (topic.workedExamples?.length) tabs.push({ id: 'examples', label: 'Worked examples' });
-  if (topic.examQuestions?.length) tabs.push({ id: 'exam', label: 'Exam questions' });
+  if (topic.examQuestions?.length || practicePrompts(topic.id).length) tabs.push({ id: 'exam', label: 'Exam questions' });
   if (topic.quotes?.length) tabs.push({ id: 'quotes', label: 'Key quotes' });
   if (topic.timeline?.length) tabs.push({ id: 'timeline', label: 'Timeline' });
   if (topic.pastQuestions?.length) tabs.push({ id: 'past', label: 'Past questions' });
@@ -130,9 +131,15 @@ export function TopicPage({ id, tab }: { id: string; tab: string }) {
         <div>{topic.workedExamples.map((ex, i) => <Example key={i} ex={ex} />)}</div>
       )}
 
-      {t === 'exam' && topic.examQuestions && (
+      {t === 'exam' && (topic.examQuestions || practicePrompts(id).length > 0) && (
         <div className="exam-list">
-          {topic.examQuestions.map((q, i) => {
+          {practicePrompts(id).length > 0 && (
+            <a className="exam-item more" href={href('/exam', { topic: id, p: Math.floor(Math.random() * practicePrompts(id).length) })}>
+              <span className="exam-marks">∞</span>
+              <span className="exam-q"><strong>Practice prompts</strong><span className="muted small"> · {practicePrompts(id).length} more exam-style questions in the board's style, with mark schemes</span></span>
+            </a>
+          )}
+          {(topic.examQuestions ?? []).map((q, i) => {
             const done = progress.essays[`${id}~${i}`];
             return (
               <a key={i} className="exam-item" href={href('/exam', { topic: id, i })}>

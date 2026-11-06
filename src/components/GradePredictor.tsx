@@ -1,7 +1,8 @@
 // Predicted grades with ranges, target grades and the gap analysis ("where the marks are").
 import { useState } from 'react';
 import { activeSubjects } from '../content/registry';
-import { gapTopics, predictSubject, rangeText, shortGrade, type Prediction } from '../lib/predict';
+import { gapTopics, gradeAt, predictSubject, rangeText, shortGrade, type Prediction } from '../lib/predict';
+import { firstPaperDate, forecast } from '../lib/daily';
 import { updateProfile, useProfile, useProgress } from '../lib/store';
 import { href } from '../lib/router';
 import { SubjectMark } from './SubjectMark';
@@ -35,10 +36,40 @@ export function GradePredictor({ only }: { only?: string }) {
           </div>
           {p.ready && <ProgressBar value={p.pct / 100} color={p.subject.color} label={`${p.subject.name} predicted percentage`} />}
           <p className="muted small evidence">{evidence(p)}</p>
+          {p.ready && <Trend p={p} hist={progress.predHist?.[p.subject.id]} exam={firstPaperDate(profile, p.subject.id)} />}
           {open === p.subject.id && <Gaps p={p} />}
         </div>
       ))}
       <p className="muted small">Predictions use your topic mastery and any marked mock papers, with approximate grade boundaries from recent years (real boundaries change every year). The range narrows as you answer more questions and take more mocks. Your target grade steers your sessions and lessons towards the topics that add the most marks.</p>
+    </div>
+  );
+}
+
+/** The predicted percentage over time, the target line, and where the current trend leads by exam day */
+function Trend({ p, hist, exam }: { p: Prediction; hist?: [number, number][]; exam?: string }) {
+  const f = forecast(hist, exam);
+  const pts = (hist ?? []).slice(-90);
+  const ti = p.target ? p.scale.labels.indexOf(p.target) : -1;
+  const targetPct = ti > 0 ? p.scale.mins[ti] : undefined;
+  const W = 220, H = 44;
+  const d0 = pts[0]?.[0] ?? 0, d1 = pts[pts.length - 1]?.[0] ?? 1;
+  const x = (d: number) => (pts.length > 1 ? ((d - d0) / Math.max(1, d1 - d0)) * (W - 4) + 2 : W / 2);
+  const y = (v: number) => H - 3 - (v / 100) * (H - 6);
+  const examDay = exam ? new Date(`${exam}T09:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+  return (
+    <div className="trend">
+      {pts.length > 1 && (
+        <svg viewBox={`0 0 ${W} ${H}`} className="trend-svg" role="img" aria-label={`Predicted percentage over the last ${pts.length} days, from ${Math.round(pts[0][1])}% to ${Math.round(pts[pts.length - 1][1])}%`}>
+          {targetPct !== undefined && <line x1={0} x2={W} y1={y(targetPct)} y2={y(targetPct)} className="trend-target" />}
+          <polyline points={pts.map(([d, v]) => `${x(d)},${y(v)}`).join(' ')} className="trend-line" style={{ stroke: p.subject.color }} />
+          <circle cx={x(d1)} cy={y(pts[pts.length - 1][1])} r={2.8} style={{ fill: p.subject.color }} />
+        </svg>
+      )}
+      <span className="small muted">
+        {f
+          ? <>Trend: {f.perWeek >= 0 ? '+' : ''}{f.perWeek.toFixed(1)}% a week. If it continues: about <strong>{shortGrade(gradeAt(p.scale, f.pct))}</strong> by your first paper{examDay ? ` (${examDay})` : ''}{targetPct !== undefined ? (f.pct >= targetPct ? ' – on course for your target.' : ' – not yet enough for your target; the session is steering towards the gap.') : '.'}</>
+          : pts.length > 1 ? 'A forecast appears after a week or two of practice.' : 'Your trend starts from today.'}
+      </span>
     </div>
   );
 }

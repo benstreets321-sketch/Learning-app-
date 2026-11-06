@@ -4,6 +4,7 @@ import { activeSubjects, topicQuestions, visibleTopics, getTopic } from '../cont
 import { level, mastery, type Level } from './engine';
 import type { Profile, Progress } from './store';
 import { hash } from './util';
+import { examTimetable } from './exams';
 
 export const cardId = (topicId: string, front: string) => `${topicId}#${hash(front)}`;
 
@@ -126,6 +127,8 @@ export function topicTitle(id: string): string {
 }
 
 export function daysToExam(profile: Profile): number {
-  const d = new Date(profile.firstExam + 'T09:00:00');
+  // the earliest paper on the student's timetable (their own dates if entered, otherwise the estimates)
+  const first = examTimetable(profile)[0]?.date ?? profile.firstExam;
+  const d = new Date(first + 'T09:00:00');
   return Math.max(0, Math.ceil((d.getTime() - Date.now()) / 86_400_000));
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { SpellingNotes } from '../components/SpellingNotes';
 import { answerProps, useAppKeyboard } from '../components/AppKeyboard';
 import { getTopic } from '../content/registry';
+import { practicePrompt, practicePrompts } from '../content/prompts';
 import { recordExam, saveDraft, getProgress, addStudyTime } from '../lib/store';
 import { href } from '../lib/router';
 import { Markdown } from '../components/Markdown';
@@ -18,9 +19,12 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
   const appKb = useAppKeyboard();
   const topicId = query.get('topic') ?? '';
   const i = Number(query.get('i') ?? 0);
+  // ?p=N is one of the topic's endless practice prompts; ?i=N is one of its written exam questions
+  const p = query.get('p');
+  const pn = p === null ? null : Number(p);
   const ref = getTopic(topicId);
-  const eq = ref?.topic.examQuestions?.[i];
-  const examId = `${topicId}~${i}`;
+  const eq = pn !== null ? practicePrompt(topicId, pn) : ref?.topic.examQuestions?.[i];
+  const examId = pn !== null ? `${topicId}~p${((pn % Math.max(1, practicePrompts(topicId).length)) + practicePrompts(topicId).length) % Math.max(1, practicePrompts(topicId).length)}` : `${topicId}~${i}`;
   const [text, setText] = useState(() => getProgress().essays[examId]?.text ?? '');
   const [phase, setPhase] = useState<'write' | 'mark' | 'saved'>('write');
   const [ticks, setTicks] = useState<Set<number>>(new Set());
@@ -193,7 +197,11 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
               <p><strong>Next step:</strong> rewrite your weakest paragraph or point using the mark scheme and model – improving an answer teaches more than writing a new one.</p>
               <div className="row gap wrap">
                 <button className="btn" onClick={() => { setPhase('write'); setTicks(new Set()); setScore(null); setSecs(0); }}>Improve my answer</button>
-                {(ref.topic.examQuestions?.length ?? 0) > i + 1 && <a className="btn primary" href={href('/exam', { topic: topicId, i: i + 1 })}>Next exam question</a>}
+                {pn !== null
+                  ? <a className="btn primary" href={href('/exam', { topic: topicId, p: pn + 1 })}>Another practice question</a>
+                  : (ref.topic.examQuestions?.length ?? 0) > i + 1
+                    ? <a className="btn primary" href={href('/exam', { topic: topicId, i: i + 1 })}>Next exam question</a>
+                    : practicePrompts(topicId).length > 0 && <a className="btn primary" href={href('/exam', { topic: topicId, p: 0 })}>More practice questions</a>}
                 <a className="btn ghost" href={href(`/t/${topicId}`)}>Back to topic</a>
               </div>
             </div>

@@ -5,6 +5,7 @@ import { hash, mulberry32 } from '../lib/util';
 import { askedDp } from '../lib/answer';
 import { GENERATORS, FACT_TOPICS } from './generators';
 import { plotGenerator, quoteGenerator, timelineGenerator, type UnitEvent, type UnitQuote } from './generators/topic-facts';
+import { keyTerms, notesGenerator } from './generators/notes-gen';
 import { EXTRA } from './extra';
 import { EXTRA_LIT } from './extra-lit';
 import { finishCluster } from './subjects/english-literature/poetry-helpers';
@@ -186,8 +187,12 @@ for (const subject of SUBJECTS) {
     const unitEvents: UnitEvent[] = unit.topics.flatMap((t) => (t.timeline ?? []).map((e, idx) => ({ ...e, topicId: t.id, idx })));
     const unitQuotes: UnitQuote[] = unit.topics.flatMap((t) => (t.quotes ?? []).map((q) => ({ ...q, topicId: t.id })));
     const poetry = /^(pc|lr|wl)$/.test(unit.id);
+    const unitTerms = [...new Set(unit.topics.flatMap((t) => keyTerms(t.notes)))];
     for (const t of unit.topics) {
       const add = [...(FACT_TOPICS[t.id] ?? [])];
+      // questions on exactly what this topic's lesson teaches (key terms in context and the lesson's tables)
+      const ng = notesGenerator(t, unitTerms);
+      if (ng) { GENERATORS[ng.id] = ng; add.push(ng.id); }
       const own = unitEvents.filter((e) => e.topicId === t.id);
       const tl = subject.id === 'history' ? timelineGenerator(`tl-${t.id}`, `Dates and order: ${t.title}`, own, unitEvents)
         : subject.id === 'english-literature' ? plotGenerator(`tl-${t.id}`, `Plot order: ${t.title}`, own, unit.title) : null;
