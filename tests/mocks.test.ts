@@ -126,7 +126,12 @@ describe('mock papers', () => {
     const prof = { ...defaultProfile(), subjects: ['maths', 'history', 'business'], tiers: { maths: 'F' as const }, options: { ...defaultProfile().options, 'history-board': 'aqa', 'business-course': 'btec' } };
     const ids = papersFor(prof).map((p) => p.id);
     expect(ids).toEqual(expect.arrayContaining(['maths-p1-f', 'maths-p2-f', 'maths-p3-f', 'history-aqa-p1', 'history-aqa-p2', 'business-btec-c3']));
-    expect(ids.some((i) => i.endsWith('-h') || i.startsWith('history-ed') || i === 'business-p1' || i.startsWith('english'))).toBe(false);
+    // maths offers both tiers (own tier first); other subjects only the student's tier unless they ask for both
+    expect(ids.indexOf('maths-p1-f')).toBeLessThan(ids.indexOf('maths-p1-h'));
+    expect(ids.some((i) => (i.endsWith('-h') && !i.startsWith('maths')) || i.startsWith('history-ed') || i === 'business-p1' || i.startsWith('english'))).toBe(false);
+    const sci = { ...defaultProfile(), subjects: ['biology'], tiers: { biology: 'F' as const } };
+    expect(papersFor(sci).every((p) => p.tier === 'F')).toBe(true);
+    expect(papersFor({ ...sci, mockAllTiers: true }).some((p) => p.tier === 'H')).toBe(true);
     const both = papersFor({ ...prof, options: { ...prof.options, 'business-course': 'both' } }).map((p) => p.id);
     expect(both).toEqual(expect.arrayContaining(['business-p1', 'business-p2', 'business-btec-c3']));
   });

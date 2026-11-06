@@ -9,6 +9,7 @@ import { QuizPage } from './pages/Quiz';
 import { StartSession } from './components/StartSession';
 import { Icon } from './components/Icon';
 import { ToolDrawer, resetTools, useTools } from './components/Tools';
+import { AppKeyboard } from './components/AppKeyboard';
 import { InstallButton } from './components/Install';
 import { SubjectMark } from './components/SubjectMark';
 import { SaveStatus, SaveWarning } from './components/SaveStatus';
@@ -210,6 +211,7 @@ export function App() {
         ))}
       </nav>
       <ToolDrawer />
+      <AppKeyboard />
     </div>
   );
 }

@@ -33,6 +33,10 @@ export interface Profile {
   week?: string[];
   /** false = no timetable, every day mixes all subjects */
   weekOn?: boolean;
+  /** show mock papers for both tiers in every tiered subject */
+  mockAllTiers?: boolean;
+  /** typed answers use the app's own keyboard on touch screens: auto (touch devices), on or off */
+  appKeyboard?: 'auto' | 'on' | 'off';
 }
 
 export interface MistakeEntry {

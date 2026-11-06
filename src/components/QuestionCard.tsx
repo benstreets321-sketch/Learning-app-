@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { answerProps, useAppKeyboard } from './AppKeyboard';
 import type { QItem, Topic } from '../content/types';
 import type { Confidence } from '../lib/engine';
-import { answerWithUnit, checkNumber, checkSelect, checkText, isSpellingQ, parseCloze, parseSelect } from '../lib/answer';
+import { answerWithUnit, checkNumber, checkSelect, checkText, isSpellingQ, levenshtein, normalise, parseCloze, parseSelect } from '../lib/answer';
 import { shuffle } from '../lib/util';
 import { Markdown } from './Markdown';
 import { StuckPanel } from './StuckPanel';
@@ -37,6 +38,7 @@ const CONF: { id: Confidence; label: string; title: string }[] = [
 ];
 
 export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next question', canEasier = false }: Props) {
+  const appKb = useAppKeyboard();
   // Shuffle presentation order once per question
   // only the equipment this question needs (calculator, periodic table, formula sheet...)
   const tools = useMemo(() => equipmentForQuestion(item) as ToolId[], [item]);
@@ -194,7 +196,12 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         const r = checkText(text, item.accept, isSpellingQ(item));
         correct = r.ok;
         close = r.close;
-        if (r.ok && r.close) detail = 'Accepted – but check your spelling: in the exam spelling of key terms matters.';
+        if (r.ok && r.close) {
+          // name the correct spelling now that they've answered (nothing was underlined while typing)
+          const typed = normalise(text).replace(/\s/g, '');
+          const best = [...item.accept].sort((a, b) => levenshtein(typed, normalise(a).replace(/\s/g, '')) - levenshtein(typed, normalise(b).replace(/\s/g, '')))[0];
+          detail = `Accepted – but it's spelt "${best}" (you wrote "${text.trim()}"). Spelling key terms correctly matters in the exam.`;
+        }
         else if (close) detail = 'Close. Check the spelling or the exact term.';
         break;
       }
@@ -291,6 +298,14 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
                     value={blanks[i]}
                     disabled={answered}
                     aria-label={`Gap ${i + 1}`}
+                    {...answerProps('text', appKb, i < cloze!.blanks.length - 1 ? 'next' : 'check')}
+                    onKeyDown={(e) => {
+                      if (e.key !== 'Enter' || answered) return;
+                      e.preventDefault();
+                      const next = (e.currentTarget.closest('.cloze')?.querySelectorAll('input') ?? [])[i + 1] as HTMLInputElement | undefined;
+                      if (next) next.focus();
+                      else if (canCheck()) check();
+                    }}
                     onChange={(e) => setBlanks((b) => b.map((x, j) => (j === i ? e.target.value : x)))}
                     size={Math.max(6, cloze!.blanks[i][0].length + 2)}
                   />
@@ -358,7 +373,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
             className="answer-input"
             value={text}
             disabled={answered}
-            inputMode={item.type === 'num' ? 'decimal' : 'text'}
+            {...answerProps(item.type === 'num' ? 'num' : 'text', appKb)}
             placeholder={item.type === 'num' ? 'Your answer (e.g. 12.5, -3, 3/4)' : 'Type your answer'}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !answered && canCheck()) check(); }}

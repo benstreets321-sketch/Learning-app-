@@ -83,6 +83,15 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
             <input type="number" min={5} max={240} value={profile.dailyGoal} onChange={(e) => updateProfile({ dailyGoal: Math.max(5, Number(e.target.value) || 30) })} />
           </label>
           <label>
+            Typing answers
+            <select value={profile.appKeyboard ?? 'auto'} onChange={(e) => updateProfile({ appKeyboard: e.target.value as 'auto' | 'on' | 'off' })}>
+              <option value="auto">App keyboard on phones and tablets (recommended)</option>
+              <option value="on">Always use the app keyboard</option>
+              <option value="off">Use my device's keyboard</option>
+            </select>
+            <span className="muted small">The app keyboard has no autocorrect or word suggestions, so your spelling is your own – like the real exam. Spelling mistakes are pointed out after you answer.</span>
+          </label>
+          <label>
             Theme
             <select value={profile.theme} onChange={(e) => updateProfile({ theme: e.target.value as 'auto' | 'light' | 'dark' })}>
               <option value="auto">Match my device</option>

@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { SpellingNotes } from '../components/SpellingNotes';
+import { answerProps, useAppKeyboard } from '../components/AppKeyboard';
 import type { QItem } from '../content/types';
 import { getSubject, getTopic } from '../content/registry';
-import { getPaper, getTest, papersFor, testMarks, visibleSections } from '../content/mocks';
+import { getPaper, getTest, hasOtherTier, papersFor, testMarks, visibleSections } from '../content/mocks';
 import type { MockPaper, MockQ, MockTest, MockTool, WrittenQ } from '../content/mocks/types';
 import { seedOf } from '../content/mocks/build';
-import { getProfile, getProgress, recordAnswer, recordExam, saveMockAttempt, deleteMockAttempt, addStudyTime, useProfile, useProgress, type MockAttempt } from '../lib/store';
+import { getProfile, getProgress, recordAnswer, recordExam, saveMockAttempt, deleteMockAttempt, addStudyTime, updateProfile, useProfile, useProgress, type MockAttempt } from '../lib/store';
 import { gradeAuto, isAnswered, isInfoLine, isLevelledScheme, schemeMark, toggleTick, bandOf, type AutoAnswer } from '../lib/grade';
 import { keywordCheck, markWithAI } from '../lib/marking';
 import { ask, aiErrorText, useAIProvider } from '../lib/ai';
@@ -43,6 +45,12 @@ export function MocksPage() {
         <div className="callout-title">About the predictions</div>
         Exam boards never reveal what will come up, and any part of the specification can be examined. These papers follow each board's real structure and are weighted towards themes, characters and topics that haven't been asked recently – a sensible bet, not a guarantee.
       </div>
+      {hasOtherTier(profile) && (
+        <label className="row gap small">
+          <input type="checkbox" checked={!!profile.mockAllTiers} onChange={(e) => updateProfile({ mockAllTiers: e.target.checked })} />
+          Show Foundation and Higher papers for every subject (Maths always shows both)
+        </label>
+      )}
       {[...bySubject.entries()].map(([sid, list]) => {
         const s = getSubject(sid)!;
         return (
@@ -55,7 +63,7 @@ export function MocksPage() {
                 return (
                   <a key={p.id} className="list-row" href={href(`/mocks/${p.id}`)}>
                     <span className="grow">
-                      <span className="block strong">{p.title}</span>
+                      <span className="block strong">{p.title}{p.tier && p.tier !== (profile.tiers[p.subjectId] ?? 'H') && <span className="pill tier-pill">{p.tier === 'F' ? 'Foundation' : 'Higher'} practice</span>}</span>
                       <span className="muted small">{p.board} · {fmtMins(p.mins)} · {p.marks} marks</span>
                     </span>
                     {best >= 0 && <span className="mono small">best {Math.round(best * 100)}%</span>}
@@ -135,6 +143,7 @@ function newAttempt(test: MockTest, paper: MockPaper): MockAttempt {
 }
 
 export function MockTakePage({ testId, attemptId }: { testId: string; attemptId?: string }) {
+  const appKb = useAppKeyboard();
   const found = getTest(testId);
   const profile = getProfile();
   const existing = useMemo(() => (getProgress().mocks?.[testId] ?? []).find((a) => (attemptId ? a.id === attemptId : a.status === 'in-progress')), [testId, attemptId]);
@@ -257,7 +266,7 @@ export function MockTakePage({ testId, attemptId }: { testId: string; attemptId?
                   <div>
                     {q.eq.meta && <p className="muted small">{q.eq.meta}</p>}
                     <Markdown text={q.eq.q} />
-                    <textarea className="essay" rows={Math.min(24, q.lines ?? Math.max(4, q.marks * 2))} value={String(attempt.answers[q.n] ?? '')} onChange={(e) => setAnswer(q.n, e.target.value)} placeholder={paper.subjectId === 'maths' || paper.subjectId === 'statistics' ? 'Show your working and your final answer…' : 'Write your answer…'} aria-label={`Answer to question ${q.n}`} />
+                    <textarea className="essay" {...answerProps('long', appKb)} rows={Math.min(24, q.lines ?? Math.max(4, q.marks * 2))} value={String(attempt.answers[q.n] ?? '')} onChange={(e) => setAnswer(q.n, e.target.value)} placeholder={paper.subjectId === 'maths' || paper.subjectId === 'statistics' ? 'Show your working and your final answer…' : 'Write your answer…'} aria-label={`Answer to question ${q.n}`} />
                     <p className="muted small mono">{String(attempt.answers[q.n] ?? '').trim() ? String(attempt.answers[q.n]).trim().split(/\s+/).length : 0} words</p>
                   </div>
                 )}
@@ -271,6 +280,7 @@ export function MockTakePage({ testId, attemptId }: { testId: string; attemptId?
 }
 
 function MockAutoInput({ item, value, onChange, marks, disabled = false }: { item: QItem; value?: AutoAnswer; onChange: (v: AutoAnswer) => void; marks: number; disabled?: boolean }) {
+  const appKb = useAppKeyboard();
   const rand = useMemo(() => mulberry32(seedOf(item.id)), [item.id]);
   const order = useMemo(() => (item.type === 'mcq' || item.type === 'multi' ? shuffle(item.options.map((_, i) => i), rand) : []), [item, rand]);
   const startOrder = useMemo(() => (item.type === 'order' ? (() => { let s = shuffle(item.items, rand); if (s.every((x, i) => x === item.items[i])) s = s.slice().reverse(); return s; })() : []), [item, rand]);
@@ -310,7 +320,7 @@ function MockAutoInput({ item, value, onChange, marks, disabled = false }: { ite
       )}
       {(item.type === 'num' || item.type === 'text') && (
         <div className="answer-row">
-          <input className="answer-input" value={v.text ?? ''} disabled={disabled} inputMode={item.type === 'num' ? 'decimal' : 'text'} onChange={(e) => onChange({ text: e.target.value })} aria-label="Your answer" placeholder={item.type === 'num' ? 'Answer' : 'Your answer'} />
+          <input className="answer-input" value={v.text ?? ''} disabled={disabled} {...answerProps(item.type === 'num' ? 'num' : 'text', appKb, 'next')} onChange={(e) => onChange({ text: e.target.value })} aria-label="Your answer" placeholder={item.type === 'num' ? 'Answer' : 'Your answer'} />
           {item.type === 'num' && item.unit && <span className="unit">{item.unit}</span>}
         </div>
       )}
@@ -484,6 +494,7 @@ export function MockReviewPage({ testId, attemptId }: { testId: string; attemptI
                 <Markdown text={q.eq.q} />
                 <h4>Your answer</h4>
                 <div className="essay-view">{String(attempt.answers[q.n] ?? '') || <span className="muted">(no answer)</span>}</div>
+                <SpellingNotes text={String(attempt.answers[q.n] ?? '')} quiet />
                 <h4>Mark scheme {levelled(q) ? '– choose the level that best fits your answer' : '– tick each point you made'}</h4>
                 {levelled(q) && <p className="small muted">Read the levels from the top and choose the first one your whole answer matches. You get the middle of that level&apos;s range, then adjust the mark up or down if your answer is a strong or weak fit.{q.eq.markScheme.filter((m) => bandOf(m)).map((m) => bandOf(m)!.comp).filter((c, i, a) => a.indexOf(c) === i).length > 1 ? ' Choose one level for each part.' : ''}</p>}
                 {q.eq.markScheme.map((m, k) => isInfoLine(m) ? (

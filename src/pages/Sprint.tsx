@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { answerProps, useAppKeyboard } from '../components/AppKeyboard';
 import { activeSubjects, getSubject, questionPool, randomGenerated, visibleTopics } from '../content/registry';
 import type { QItem } from '../content/types';
 import { getProfile, getProgress, recordAnswer, recordSprint, addStudyTime } from '../lib/store';
@@ -72,6 +73,7 @@ export function SprintPage({ query }: { query: URLSearchParams }) {
 }
 
 function Run({ deck, sprintKey, best, title }: { deck: QItem[]; sprintKey: string; best: number; title: string }) {
+  const appKb = useAppKeyboard();
   const [i, setI] = useState(0);
   const [left, setLeft] = useState(LENGTH);
   const [score, setScore] = useState(0);
@@ -183,7 +185,7 @@ function Run({ deck, sprintKey, best, title }: { deck: QItem[]; sprintKey: strin
         )}
         {q.type === 'num' && (
           <form className="answer-row" onSubmit={(e) => { e.preventDefault(); if (text.trim()) answer(checkNumber(text, q.answer, q.tol).ok, text); }}>
-            <input className="answer-input" autoFocus value={text} onChange={(e) => setText(e.target.value)} inputMode="decimal" aria-label="Your answer" disabled={!!flash} />
+            <input className="answer-input" autoFocus value={text} onChange={(e) => setText(e.target.value)} {...answerProps('num', appKb)} aria-label="Your answer" disabled={!!flash} />
             {q.unit && <span className="unit">{q.unit}</span>}
             <button className="btn primary" type="submit"><Icon name="arrow" size={18} /></button>
           </form>

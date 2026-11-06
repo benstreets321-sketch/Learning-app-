@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { SpellingNotes } from '../components/SpellingNotes';
+import { answerProps, useAppKeyboard } from '../components/AppKeyboard';
 import { getTopic } from '../content/registry';
 import { recordExam, saveDraft, getProgress, addStudyTime } from '../lib/store';
 import { href } from '../lib/router';
@@ -13,6 +15,7 @@ import { openTool } from '../components/Tools';
 import { Icon } from '../components/Icon';
 
 export function ExamPage({ query }: { query: URLSearchParams }) {
+  const appKb = useAppKeyboard();
   const topicId = query.get('topic') ?? '';
   const i = Number(query.get('i') ?? 0);
   const ref = getTopic(topicId);
@@ -104,7 +107,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
             <span className={`timer ${secs > suggested * 60 ? 'over' : ''}`}>{Math.floor(secs / 60)}:{String(secs % 60).padStart(2, '0')}</span>
             <span className="muted small">{words} words</span>
           </div>
-          <textarea className="essay" rows={eq.marks >= 12 ? 18 : eq.marks >= 6 ? 10 : 5} value={text} onChange={(e) => setText(e.target.value)} placeholder="Write your answer as you would in the exam. It saves automatically." />
+          <textarea className="essay" {...answerProps('long', appKb)} rows={eq.marks >= 12 ? 18 : eq.marks >= 6 ? 10 : 5} value={text} onChange={(e) => setText(e.target.value)} placeholder="Write your answer as you would in the exam. It saves automatically." />
           <div className="row gap end">
             <button className="btn primary" disabled={!text.trim()} onClick={() => { setRunning(false); addStudyTime(secs); setPhase('mark'); }}>I'm done – mark it</button>
           </div>
@@ -113,6 +116,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
 
       {phase !== 'write' && (
         <div className="marking">
+          <SpellingNotes text={text} />
           <div className="ai-mark card pad">
             {!ai && !kw ? (
               <div className="row gap wrap">

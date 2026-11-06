@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { answerProps, useAppKeyboard } from '../components/AppKeyboard';
 import { getSubject, getTopic, visibleTopics } from '../content/registry';
 import { REFERENCE } from '../content/reference';
 import { useProfile, useProgress, saveNote } from '../lib/store';
@@ -101,6 +102,7 @@ function stageText(text: string, stage: number): string {
 }
 
 function QuoteTrainer({ subjectId, topicId }: { subjectId: string; topicId: string }) {
+  const appKb = useAppKeyboard();
   const profile = useProfile();
   const topics = useMemo(() => {
     if (topicId) {
@@ -130,7 +132,7 @@ function QuoteTrainer({ subjectId, topicId }: { subjectId: string; topicId: stri
         <div className="muted small">{q.topic}{q.who ? ` · ${q.who}` : ''}{q.where ? ` · ${q.where}` : ''} · {idx % quotes.length + 1}/{quotes.length}</div>
         {stage < 4 ? <p className="qt big">“{stageText(q.text, stage)}”</p> : (
           <>
-            <textarea className="essay" rows={3} value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Type the quote from memory" />
+            <textarea className="essay" {...answerProps('long', appKb)} rows={3} value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Type the quote from memory" />
             {checked === null ? <button className="btn primary" onClick={score} disabled={!typed.trim()}>Check</button> : (
               <div className={`feedback ${checked >= 90 ? 'good' : 'bad'}`}>
                 <strong>{checked}% match.</strong> {checked >= 90 ? 'You know it.' : 'Nearly – look again and retry.'}

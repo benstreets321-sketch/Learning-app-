@@ -21,6 +21,12 @@ const FOCUS = [
   'A final full mock: different questions again, including the trickier applications.',
 ];
 
+const FOCUS_MATHS_F = [
+  'The whole Foundation paper (grades 1-5): number, money, algebra, ratio, shape, probability and statistics, building up from quick questions to problem solving.',
+  'Different questions on the same content, with more multi-step problems and reasoning ("show that", "give a reason").',
+  'A final full Foundation mock: new questions again, ending with the grade 4-5 crossover questions that also appear on Higher papers.',
+];
+
 // ---------------- Maths (Edexcel 1MA1 structure; AQA 8300 and OCR J560 papers are equivalent) ----------------
 const MATHS_UNITS = ['m-number', 'm-algebra', 'm-ratio', 'm-geometry', 'm-probstats'];
 function mathsPaper(n: 1 | 2 | 3, tier: 'F' | 'H'): MockPaper {
@@ -43,8 +49,8 @@ function mathsPaper(n: 1 | 2 | 3, tier: 'F' | 'H'): MockPaper {
       const pools = newPools();
       const topics = unitTopics('maths', MATHS_UNITS);
       return ([1, 2, 3] as const).map((t) => ({
-        id: `${id}-t${t}`, paperId: id, n: t, title: `Practice paper ${t}`, focus: FOCUS[t - 1],
-        sections: [assemble({ key: `${id}-t${t}`, topics, marks: 80, tier, nonCalc, writtenShare: 0.22, genShare: 0.5, maxWritten: 6, numbering: 'plain', pools, types: ['num', 'text', 'mcq', 'multi'] })],
+        id: `${id}-t${t}`, paperId: id, n: t, title: `Practice paper ${t}`, focus: (tier === 'F' ? FOCUS_MATHS_F : FOCUS)[t - 1],
+        sections: [assemble({ key: `${id}-t${t}`, topics, marks: 80, tier, nonCalc, writtenShare: 0.22, genShare: 0.5, maxWritten: 6, numbering: 'plain', pools, types: ['num', 'text', 'mcq', 'multi'], maxMcqMarks: 8 })],
       }));
     }),
   };
@@ -150,14 +156,22 @@ export function getTest(testId: string): { paper: MockPaper; test: MockTest } | 
   return paper && test ? { paper, test } : undefined;
 }
 
-/** Papers relevant to this student: their subjects, tier and course options */
+/** Subjects whose Foundation and Higher papers are always both offered (warm up on Foundation, stretch to Higher) */
+const BOTH_TIERS = new Set(['maths']);
+
+/** Papers relevant to this student: their subjects, tier and course options - their own tier listed first */
 export function papersFor(profile: Profile, subjectId?: string, allTiers = false): MockPaper[] {
-  return MOCK_PAPERS.filter((p) =>
+  const own = (p: MockPaper) => (profile.tiers[p.subjectId] ?? 'H');
+  const list = MOCK_PAPERS.filter((p) =>
     profile.subjects.includes(p.subjectId) &&
     (!subjectId || p.subjectId === subjectId) &&
-    (allTiers || !p.tier || p.tier === (profile.tiers[p.subjectId] ?? 'H')) &&
+    (allTiers || profile.mockAllTiers || BOTH_TIERS.has(p.subjectId) || !p.tier || p.tier === own(p)) &&
     (!p.option || profile.options[p.option.group] === p.option.value || profile.options[p.option.group] === 'both' || profile.showAllOptions));
+  return list.sort((a, b) => (a.subjectId === b.subjectId ? Number(!!a.tier && a.tier !== own(a)) - Number(!!b.tier && b.tier !== own(b)) : 0));
 }
+
+/** true if this subject has papers for a tier the student isn't currently shown */
+export const hasOtherTier = (profile: Profile) => MOCK_PAPERS.some((p) => p.tier && profile.subjects.includes(p.subjectId) && p.tier !== (profile.tiers[p.subjectId] ?? 'H') && !BOTH_TIERS.has(p.subjectId));
 
 /** The sections a student answers: option-specific sections follow their chosen texts */
 export function visibleSections(test: MockTest, profile: Profile) {

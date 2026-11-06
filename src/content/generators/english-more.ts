@@ -41,7 +41,7 @@ const HOMOPHONES: [string, string, string[], string][] = [
 ];
 
 // [correct spelling, common misspellings]
-const SPELLINGS: [string, string[]][] = [
+export const SPELLINGS: [string, string[]][] = [
   ['definitely', ['definately', 'definitly', 'defiantly']],
   ['separate', ['seperate', 'separete', 'seprate']],
   ['necessary', ['neccessary', 'necesary', 'neccesary']],

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { SpellingNotes } from '../components/SpellingNotes';
+import { answerProps, useAppKeyboard } from '../components/AppKeyboard';
 import { getTopic, topicQuestions } from '../content/registry';
 import { go, href } from '../lib/router';
 import { markNotesRead, recordBlurt, saveNote, useProgress } from '../lib/store';
@@ -228,6 +230,7 @@ function Example({ ex }: { ex: WorkedExample }) {
 }
 
 function Blurt({ topicId, points }: { topicId: string; points: string[] }) {
+  const appKb = useAppKeyboard();
   const [text, setText] = useState('');
   const [phase, setPhase] = useState<'write' | 'check' | 'done'>('write');
   const [ticks, setTicks] = useState<Set<number>>(new Set());
@@ -255,7 +258,7 @@ function Blurt({ topicId, points }: { topicId: string; points: string[] }) {
             <button className="btn small" onClick={start}>Start 5-minute timer</button>
             <span className={`timer ${secs === 0 ? 'done' : ''}`}>{Math.floor(secs / 60)}:{String(secs % 60).padStart(2, '0')}</span>
           </div>
-          <textarea className="essay" rows={12} value={text} onChange={(e) => setText(e.target.value)} placeholder="Everything I remember about this topic..." />
+          <textarea className="essay" {...answerProps('long', appKb)} rows={12} value={text} onChange={(e) => setText(e.target.value)} placeholder="Everything I remember about this topic..." />
           <button className="btn primary" disabled={!text.trim()} onClick={() => { clearInterval(timer.current); setPhase('check'); }}>Check against the checklist</button>
         </>
       )}
@@ -265,6 +268,7 @@ function Blurt({ topicId, points }: { topicId: string; points: string[] }) {
             <div>
               <h4>What you wrote</h4>
               <div className="essay-view">{text}</div>
+              <SpellingNotes text={text} quiet />
             </div>
             <div>
               <h4>Tick each point you covered</h4>
@@ -295,6 +299,7 @@ function Blurt({ topicId, points }: { topicId: string; points: string[] }) {
 }
 
 function MyNotes({ topicId }: { topicId: string }) {
+  const appKb = useAppKeyboard();
   const progress = useProgress();
   const [text, setText] = useState(progress.notes[topicId] ?? '');
   useEffect(() => {
@@ -303,7 +308,7 @@ function MyNotes({ topicId }: { topicId: string }) {
   return (
     <div>
       <p className="muted small">Your own notes, mnemonics and things your teacher said. Saved automatically on this device.</p>
-      <textarea className="essay" rows={14} value={text} onChange={(e) => setText(e.target.value)} placeholder="Write it in your own words – explaining something yourself is one of the best ways to learn it." />
+      <textarea className="essay" {...answerProps('long', appKb)} rows={14} value={text} onChange={(e) => setText(e.target.value)} placeholder="Write it in your own words – explaining something yourself is one of the best ways to learn it." />
     </div>
   );
 }

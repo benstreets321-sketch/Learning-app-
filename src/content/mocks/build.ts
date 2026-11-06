@@ -10,16 +10,21 @@ import type { AutoQ, MockQ, MockSection, WrittenQ } from './types';
 
 export const seedOf = (s: string) => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0; return h; };
 
-/** Generators whose questions need a calculator */
-const CALC_ONLY = new Set(['m-compound', 'm-trig', 'm-sine-cosine', 'm-quad-formula', 'm-arc-sector', 'm-circle', 'm-volume']);
+/** Generators whose questions need a calculator (iterated percentages, π, trig values, roots that aren't exact) */
+const CALC_ONLY = new Set([
+  'm-compound', 'm-trig', 'm-sine-cosine', 'm-quad-formula', 'm-arc-sector', 'm-circle', 'm-volume', 'm-pythag',
+  'mm-years', 'mm-simple-interest', 'mm-iteration', 'mm-sine-rule', 'mm-trig', 'mm-pythag-apps', 'mm-volume', 'mm-compound-area', 'mm-avg-reverse',
+]);
+/** the "shape" of a question (its wording with the numbers taken out), so a paper's three tests don't repeat a question type */
+const shapeOf = (q: QItem) => (('q' in q && q.q) || (q.type === 'cloze' ? q.text : q.id)).replace(/[\d.,−-]+/g, '#').replace(/\s+/g, ' ').slice(0, 80);
 const isLevelled = (eq: ExamQuestion) => eq.markScheme.some((m) => /\bLevel \d/i.test(m));
 const decimals = (n: number) => { const s = String(n); return s.includes('.') ? s.split('.')[1].length : 0; };
 const ncFriendly = (q: QItem) => q.type !== 'num' || (Number.isFinite(q.answer) && decimals(q.answer) <= 2 && Math.abs(q.answer) < 1e7);
 
 /** used questions across the three tests of a paper; written questions are keyed by wording so duplicates in the bank never repeat */
-export interface Pools { items: Set<string>; written: Set<string>; gens: Map<string, number> }
+export interface Pools { items: Set<string>; written: Set<string>; gens: Map<string, number>; shapes: Set<string> }
 const wkey = (eq: ExamQuestion) => eq.q.replace(/\s+/g, ' ').trim().toLowerCase();
-export const newPools = (): Pools => ({ items: new Set(), written: new Set(), gens: new Map() });
+export const newPools = (): Pools => ({ items: new Set(), written: new Set(), gens: new Map(), shapes: new Set() });
 
 export interface AssembleOpts {
   key: string;
@@ -36,6 +41,8 @@ export interface AssembleOpts {
   numbering: 'aqa' | 'plain';
   extraWritten?: Record<string, ExamQuestion[]>;
   types?: QItem['type'][];
+  /** most marks that may come from multiple-choice questions (real maths papers have only a few) */
+  maxMcqMarks?: number;
   pools: Pools;
 }
 
@@ -45,6 +52,7 @@ export function assemble(o: AssembleOpts): MockSection {
   const rand = mulberry32(seedOf(o.key));
   const picks: Pick[] = [];
   let total = 0;
+  const mcqMarks = () => picks.reduce((a, p) => a + (p.q.kind === 'auto' && p.q.item.type === 'mcq' ? p.q.marks : 0), 0);
   const room = () => o.marks - total;
   const topicOrder = (t: string) => o.topics.indexOf(t);
   const F = o.tier === 'F';
@@ -89,9 +97,13 @@ export function assemble(o: AssembleOpts): MockSection {
     const l = levels[Math.floor(rand() * levels.length)];
     const item = makeGenerated({ g, s: Math.floor(rand() * 2 ** 31), l, t });
     if (!item || (o.nonCalc && !ncFriendly(item))) continue;
+    // a question type already used in this paper's tests comes back only if nothing else is left
+    if (o.pools.shapes.has(shapeOf(item)) && guard < 320) continue;
+    if (item.type === 'mcq' && o.maxMcqMarks !== undefined && mcqMarks() + 1 > o.maxMcqMarks) continue;
     const marks = defaultMarks(item);
     if (marks > room()) continue;
     o.pools.gens.set(g, uses + 1);
+    o.pools.shapes.add(shapeOf(item));
     const method = 'steps' in item && item.steps ? item.steps.slice(0, -1).slice(0, Math.max(0, marks - 1)).map((s) => `M1 ${s}`) : undefined;
     picks.push({ q: { kind: 'auto', n: '', marks, item, method } as AutoQ, topicId: t, order: l * 10 + marks });
     total += marks;
@@ -110,6 +122,7 @@ export function assemble(o: AssembleOpts): MockSection {
     for (const q of list) {
       if (room() <= 0) break;
       if (picks.some((p) => p.q.kind === 'auto' && p.q.item.id === q.id)) continue;
+      if (q.type === 'mcq' && o.maxMcqMarks !== undefined && mcqMarks() + 1 > o.maxMcqMarks) continue;
       const marks = Math.min(defaultMarks(q), room());
       if ((perTopic.get(q.topicId) ?? 0) >= cap && list === fresh) continue;
       perTopic.set(q.topicId, (perTopic.get(q.topicId) ?? 0) + marks);
@@ -124,6 +137,9 @@ export function assemble(o: AssembleOpts): MockSection {
     const { g, t } = gens[Math.floor(rand() * gens.length)];
     const item = makeGenerated({ g, s: Math.floor(rand() * 2 ** 31), l: levels[Math.floor(rand() * levels.length)], t });
     if (!item || (o.nonCalc && !ncFriendly(item))) continue;
+    if (o.pools.shapes.has(shapeOf(item)) && tries < 150) continue;
+    if (item.type === 'mcq' && o.maxMcqMarks !== undefined && mcqMarks() + 1 > o.maxMcqMarks && tries < 150) continue;
+    o.pools.shapes.add(shapeOf(item));
     const marks = Math.min(defaultMarks(item), room());
     picks.push({ q: { kind: 'auto', n: '', marks, item } as AutoQ, topicId: t, order: 50 + marks });
     total += marks;
