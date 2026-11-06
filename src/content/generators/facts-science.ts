@@ -208,7 +208,8 @@ function saltsQ(rand: () => number): GeneratedQuestion {
     const err = anion === 'chloride' ? `${r.metal} chlorine` : anion === 'sulfate' ? `${r.metal} sulfide` : `${r.metal} nitride`;
     return mcq(rand, `Which salt is made when **${r.name}** reacts with **${acidName}**?`, salt, [err, ...other], why, 2);
   }
-  const wrong = Object.entries(prods).filter(([k]) => k !== r.type).map(([, v]) => v).concat([`${salt} + oxygen`]);
+  // two- and three-product wrong answers, so the carbonate answer can't be spotted as "the long one"
+  const wrong = Object.entries(prods).filter(([k]) => k !== r.type).map(([, v]) => v).concat([`${salt} + oxygen`, `${salt} + hydrogen + carbon dioxide`, `${salt} + water + oxygen`, `${salt} + hydrogen + water`]);
   return mcq(rand, `What are the products when **${r.name}** reacts with **${acidName}**?`, prods[r.type], wrong, why, 2);
 }
 
@@ -320,10 +321,10 @@ const ENZ: [string, string, string, string][] = [ // enzyme, substrate, products
   ['lipase', 'lipids (fats and oils)', 'fatty acids and glycerol', 'the pancreas and small intestine'],
 ];
 const FOODTEST: [string, string, string][] = [ // nutrient, reagent, positive result
-  ['starch', 'iodine solution', 'orange-brown turns blue-black'],
-  ['reducing sugars (e.g. glucose)', 'Benedict\'s solution, heated in a water bath', 'blue turns brick-red'],
-  ['protein', 'Biuret reagent', 'blue turns purple'],
-  ['lipids (fats and oils)', 'Sudan III stain', 'a red-stained oily layer forms on top'],
+  ['starch', 'iodine solution, added a few drops at a time', 'the orange-brown solution turns blue-black'],
+  ['reducing sugars (e.g. glucose)', 'Benedict\'s solution, heated in a water bath', 'the blue solution turns brick-red'],
+  ['protein', 'Biuret reagent, added and then shaken', 'the blue solution turns purple'],
+  ['lipids (fats and oils)', 'Sudan III stain, added and then shaken', 'a red-stained oily layer forms on top'],
 ];
 function digestionQ(rand: () => number): GeneratedQuestion {
   const t = rand();
@@ -337,9 +338,9 @@ function digestionQ(rand: () => number): GeneratedQuestion {
   if (t < 0.55) return mcq(rand, 'What does **bile** do?', 'emulsifies fats and neutralises stomach acid', ['digests fats into fatty acids and glycerol', 'digests proteins in the stomach', 'kills bacteria in food', 'absorbs water in the large intestine'], ['Bile is made in the liver and stored in the gall bladder. It is alkaline (neutralises acid) and emulsifies fats into droplets, giving lipase a larger surface area. It is not an enzyme.'], 2);
   const f = pick(rand, FOODTEST);
   const k = rand();
-  if (k < 0.34) return mcq(rand, `Which reagent is used to test for **${f[0]}**?`, f[1], FOODTEST.filter((x) => x !== f).map((x) => x[1]).concat(['limewater']), [`${cap(f[0])}: ${f[1]} – positive result: ${f[2]}.`], 1);
-  if (k < 0.67) return mcq(rand, `What is the positive result of the test for **${f[0]}**?`, f[2], FOODTEST.filter((x) => x !== f).map((x) => x[2]).concat(['blue turns colourless']), [`${cap(f[1])}: ${f[2]}.`], 2);
-  return mcq(rand, `A food sample is tested with **${f[1]}** and **${f[2]}**. What does the food contain?`, f[0], FOODTEST.filter((x) => x !== f).map((x) => x[0]).concat(['vitamin C']), [`${cap(f[1])} tests for ${f[0]}.`], 1);
+  if (k < 0.34) return mcq(rand, `Which reagent is used to test for **${f[0]}**?`, f[1], FOODTEST.filter((x) => x !== f).map((x) => x[1]).concat(['limewater, added and then shaken']), [`${cap(f[0])}: ${f[1]} – positive result: ${f[2]}.`], 1);
+  if (k < 0.67) return mcq(rand, `What is the positive result of the test for **${f[0]}**?`, f[2], FOODTEST.filter((x) => x !== f).map((x) => x[2]).concat(['the blue solution turns colourless']), [`${cap(f[1])}: ${f[2]}.`], 2);
+  return mcq(rand, `A food sample is tested with **${f[1]}**: **${f[2]}**. What does the food contain?`, f[0], FOODTEST.filter((x) => x !== f).map((x) => x[0]).concat(['vitamin C']), [`${cap(f[1])} tests for ${f[0]}.`], 1);
 }
 
 const DISEASE: { d: string; type: string; spread: string; sign: string; control: string }[] = [
@@ -496,13 +497,17 @@ const UNITS: { q: string; u: string; cls: string; topics: string[] }[] = [
   { q: 'specific heat capacity', u: 'joules per kilogram per degree Celsius (J/kg °C)', cls: 'shc', topics: ['energy', 'particles'] }, { q: 'specific latent heat', u: 'joules per kilogram (J/kg)', cls: 'J/kg', topics: ['particles'] },
   { q: 'magnetic flux density', u: 'tesla (T)', cls: 'T', topics: ['magnetism'] }, { q: 'activity of a radioactive source', u: 'becquerel (Bq)', cls: 'Bq', topics: ['radiation'] },
 ];
+// plausible-looking units that are not the unit of any quantity above (so they are always wrong)
+const UNIT_DECOYS = ['newtons per cubic metre (N/m³)', 'joules per kilogram per second (J/kg s)', 'kilograms per square metre (kg/m²)', 'metres per second per kilogram (m/s per kg)', 'watts per degree Celsius (W/°C)'];
+// long quantity names with known units, used only when their unit differs from the one asked about
+const QTY_DECOYS: [string, string][] = [['gravitational potential energy', 'J'], ['elastic potential energy', 'J'], ['kinetic energy', 'J'], ['electromotive force', 'V'], ['thermal energy transferred', 'J']];
 function unitsQ(rand: () => number, area: string): GeneratedQuestion {
   const inArea = UNITS.filter((u) => u.topics.includes(area));
   const x = pick(rand, inArea.length >= 3 ? inArea : UNITS);
   const others = [...inArea, ...UNITS].filter((u) => u.cls !== x.cls);
   const why = [`${cap(x.q)} is measured in ${x.u}.`];
-  if (rand() < 0.6) return mcq(rand, `What is the unit of **${x.q}**?`, x.u, others.map((u) => u.u), why, 1);
-  return mcq(rand, `Which quantity is measured in **${x.u}**?`, x.q, others.map((u) => u.q), why, 1);
+  if (rand() < 0.6) return mcq(rand, `What is the unit of **${x.q}**?`, x.u, [...others.map((u) => u.u), ...UNIT_DECOYS], why, 1);
+  return mcq(rand, `Which quantity is measured in **${x.u}**?`, x.q, [...others.map((u) => u.q), ...QTY_DECOYS.filter(([, c]) => c !== x.cls).map(([q]) => q)], why, 1);
 }
 
 const EQS: { e: string; words: string; links: string[]; wrong: string[]; area: string; higher?: boolean }[] = [
@@ -536,7 +541,9 @@ function equationQ(rand: () => number, area: string): GeneratedQuestion {
   const SAME: string[][] = [['work done', 'energy transferred'], ['weight', 'resultant force']];
   const twins = SAME.find((g) => g.includes(x.links[0])) ?? [x.links[0]];
   const others = EQS.filter((e) => e !== x && !twins.includes(e.links[0]));
-  return mcq(rand, `Which quantity is calculated by **${x.words.split(' = ')[1]}**?`, x.links[0], [...new Set(others.map((e) => e.links[0]))], why, 2);
+  // longer wrong quantities too, so "gravitational potential energy" can't be spotted as the long one
+  const extra = ['elastic potential energy', 'change in thermal energy', 'specific heat capacity', 'gravitational field strength'].filter((q) => !twins.includes(q) && q !== x.links[0]);
+  return mcq(rand, `Which quantity is calculated by **${x.words.split(' = ')[1]}**?`, x.links[0], [...new Set([...others.map((e) => e.links[0]), ...extra])], why, 2);
 }
 
 const EM = ['radio waves', 'microwaves', 'infrared', 'visible light', 'ultraviolet', 'X-rays', 'gamma rays'];

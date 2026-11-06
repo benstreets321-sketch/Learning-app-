@@ -1,6 +1,6 @@
 // Marking for auto-marked questions in mock exams, with exam-board style partial credit.
 import type { QItem } from '../content/types';
-import { checkNumber, checkText, parseCloze } from './answer';
+import { checkNumber, checkText, isSpellingQ, parseCloze } from './answer';
 
 export interface AutoAnswer {
   choice?: number;
@@ -63,7 +63,7 @@ export function gradeAuto(item: QItem, a: AutoAnswer | undefined, max = defaultM
       return { got: r.ok ? max : 0, max, correct: r.ok, detail: r.ok ? undefined : r.close ? 'Very close – check rounding, units or place value.' : undefined };
     }
     case 'text': {
-      const r = checkText(a.text ?? '', item.accept);
+      const r = checkText(a.text ?? '', item.accept, isSpellingQ(item));
       return { got: r.ok ? max : 0, max, correct: r.ok };
     }
     case 'order': {

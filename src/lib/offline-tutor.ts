@@ -1,7 +1,7 @@
 // Built-in tutor: answers from the app's own content, free and offline. No AI involved.
 import type { ExamQuestion, QItem, Topic } from '../content/types';
 import { getSubject, topicQuestions } from '../content/registry';
-import { checkNumber, checkText } from './answer';
+import { checkNumber, checkText, isSpellingQ } from './answer';
 import { answerText, type TutorContext } from './tutor';
 import { keywordCheck } from './marking';
 
@@ -15,7 +15,8 @@ function chunks(md: string): string[] {
     .map((l) => l.trim())
     .filter((l) => l && !/^\|?\s*:?-{3,}/.test(l) && !/^#{1,6}\s/.test(l) && !/^:::/.test(l))
     .map((l) => (l.startsWith('|') ? l.split('|').map((c) => c.trim()).filter((c) => c && !/^[✓✗x-]$/.test(c)).join(' – ') : l))
-    .flatMap((l) => (l.length > 260 ? l.split(/(?<=[.!?])\s+/) : [l]))
+    // split long lines into sentences (no regex lookbehind: older iPhones can't parse it)
+    .flatMap((l) => (l.length > 260 ? l.replace(/([.!?])\s+/g, '$1\u0000').split('\u0000') : [l]))
     .filter((l) => l.length > 20);
 }
 
@@ -104,7 +105,7 @@ function markPractice(q: QItem, reply: string): string {
     ok = letter ? letter.toUpperCase().charCodeAt(0) - 65 === q.answer : checkText(r, [q.options[q.answer]]).ok;
   } else if (q.type === 'tf') ok = /^(t|true|yes)\b/i.test(r) === q.answer && /^(t|true|yes|f|false|no)\b/i.test(r);
   else if (q.type === 'num') ok = checkNumber(r, q.answer, q.tol).ok;
-  else if (q.type === 'text') ok = checkText(r, q.accept).ok;
+  else if (q.type === 'text') ok = checkText(r, q.accept, isSpellingQ(q)).ok;
   const ans = q.type === 'mcq' ? `${String.fromCharCode(65 + q.answer)}. ${q.options[q.answer]}` : answerText(q);
   return `${ok ? '**Correct.**' : `**Not quite.** The answer is **${ans}**.`}\n\n${q.why}`;
 }

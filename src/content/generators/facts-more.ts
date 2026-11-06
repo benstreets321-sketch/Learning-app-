@@ -95,9 +95,9 @@ function vectorQ(rand: () => number): GeneratedQuestion {
   return mcq(rand, `**a** = ${vec(a)} and **b** = ${vec(b)} (written as (x, y) column vectors). Find ${expr}.`, vec(ans), wrong, [`${k}**a** = ${vec([k * a[0], k * a[1]])}; ${m === 1 ? '' : m}**b** = ${vec([m * b[0], m * b[1]])}.`, `${sub ? 'Subtract' : 'Add'} the top numbers and the bottom numbers separately: ${vec(ans)}.`], 2);
 }
 const TRANSFORM: Row[] = [
-  ['a rotation', 'needs an angle, a direction (clockwise or anticlockwise) and a centre of rotation'],
-  ['a reflection', 'needs the equation of the mirror line'],
-  ['a translation', 'needs a column vector'],
+  ['a rotation', 'needs an angle, a direction and a centre of rotation'],
+  ['a reflection', 'needs the equation of the mirror line, e.g. y = x'],
+  ['a translation', 'needs a column vector showing the movement'],
   ['an enlargement', 'needs a scale factor and a centre of enlargement'],
 ];
 function transformQ(rand: () => number): GeneratedQuestion {
@@ -146,8 +146,8 @@ const CYCLE: Row[] = [
 ];
 const ASEPTIC: Row[] = [
   ['passing the inoculating loop through a Bunsen flame', 'kills microorganisms on the loop'],
-  ['taping the lid on with two strips, not sealing it all round', 'stops contamination but lets oxygen in, so harmful anaerobic bacteria don\'t grow'],
-  ['storing the dish upside down', 'stops condensation dripping onto the culture'],
+  ['taping the lid on with two strips, not sealing it all round', 'lets oxygen in, so harmful anaerobic bacteria don\'t grow'],
+  ['storing the dish upside down', 'stops drops of condensation falling onto the culture'],
   ['incubating at no more than 25 °C in schools', 'reduces the chance of harmful pathogens growing'],
   ['sterilising the Petri dish and agar before use', 'kills any unwanted microorganisms already present'],
 ];
@@ -208,13 +208,13 @@ const PLANTDEF: Row[] = [
   ['thorns and leaves that droop when touched', 'mechanical defences against animals'], ['antibacterial chemicals and poisons', 'chemical defences produced by plants'],
 ];
 const MAB: Row[] = [
-  ['pregnancy tests', 'monoclonal antibodies bind to the hormone HCG found in urine'], ['diagnosing disease', 'antibodies detect specific pathogens or molecules in the blood'],
-  ['locating cancer cells or blood clots', 'antibodies carrying a radioactive or fluorescent marker bind to them'], ['treating some cancers', 'antibodies carry a drug or toxin directly to the cancer cells'],
+  ['pregnancy testing kits', 'monoclonal antibodies bind to the hormone HCG found in urine'], ['diagnosing diseases in the lab', 'antibodies detect specific pathogens or molecules in the blood'],
+  ['locating cancer cells or blood clots', 'antibodies carrying a radioactive or fluorescent marker bind to them'], ['treating some types of cancer', 'antibodies carry a drug or toxin directly to the cancer cells'],
 ];
 const BIODIV: Row[] = [
-  ['peat bog destruction', 'releases carbon dioxide as the peat decays or is burned'], ['deforestation', 'reduces biodiversity and the removal of carbon dioxide by photosynthesis'],
-  ['breeding programmes', 'help protect endangered species'], ['replanting hedgerows and field margins', 'provides habitats so more species can live on farmland'],
-  ['recycling', 'reduces the amount of waste sent to landfill'], ['global warming', 'can change the distribution of species as habitats shift'],
+  ['destroying peat bogs for compost', 'releases carbon dioxide as the peat decays or is burned'], ['large-scale deforestation', 'reduces biodiversity and the removal of carbon dioxide by photosynthesis'],
+  ['captive breeding programmes', 'help protect endangered species from extinction'], ['replanting hedgerows and field margins', 'provides habitats so more species can live on farmland'],
+  ['recycling more household waste', 'reduces the amount of waste sent to landfill'], ['global warming and climate change', 'can change the distribution of species as habitats shift'],
 ];
 
 // =========================== CHEMISTRY ===========================
@@ -319,10 +319,10 @@ const QC: Row[] = [
 
 // =========================== CREATIVE iMEDIA ===========================
 const PLATFORMS: Row[] = [
-  ['a website', 'can be updated instantly and reached by anyone with internet access'], ['a mobile app', 'can use device features such as GPS and notifications'],
-  ['social media', 'lets audiences share and comment on content quickly'], ['a kiosk', 'an interactive screen in a public place that needs no personal device'],
-  ['print (magazines and leaflets)', 'a physical product that needs no screen or power'], ['broadcast TV', 'reaches a mass audience at a scheduled time'],
-  ['a DVD or Blu-ray', 'a physical disc that can be used without internet access'], ['streaming services', 'on-demand video or audio delivered over the internet'],
+  ['a website (in any browser)', 'can be updated instantly and reached by anyone with internet access'], ['a mobile app (phone or tablet)', 'can use device features such as GPS and notifications'],
+  ['social media platforms', 'lets audiences share and comment on content quickly'], ['a self-service kiosk', 'an interactive screen in a public place that needs no personal device'],
+  ['print (magazines and leaflets)', 'a physical product that needs no screen or power'], ['broadcast television channels', 'reaches a mass audience at a scheduled time'],
+  ['a DVD or Blu-ray', 'a physical disc that can be used without internet access'], ['online streaming services', 'on-demand video or audio delivered over the internet'],
 ];
 const PURPOSE: Row[] = [
   ['to inform', 'a news website reporting local events'], ['to educate', 'a revision app that teaches times tables'], ['to entertain', 'a comedy podcast'],

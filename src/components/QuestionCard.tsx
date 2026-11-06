@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { QItem, Topic } from '../content/types';
 import type { Confidence } from '../lib/engine';
-import { checkNumber, checkSelect, checkText, formatAnswer, parseCloze, parseSelect } from '../lib/answer';
+import { answerWithUnit, checkNumber, checkSelect, checkText, isSpellingQ, parseCloze, parseSelect } from '../lib/answer';
 import { shuffle } from '../lib/util';
 import { Markdown } from './Markdown';
 import { StuckPanel } from './StuckPanel';
@@ -191,7 +191,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         break;
       }
       case 'text': {
-        const r = checkText(text, item.accept);
+        const r = checkText(text, item.accept, isSpellingQ(item));
         correct = r.ok;
         close = r.close;
         if (r.ok && r.close) detail = 'Accepted – but check your spelling: in the exam spelling of key terms matters.';
@@ -244,7 +244,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       case 'mcq': return item.options[item.answer];
       case 'multi': return item.answers.map((a) => item.options[a]).join('; ');
       case 'tf': return item.answer ? 'True' : 'False';
-      case 'num': return `${formatAnswer(item.answer, item.q)}${item.unit ? ' ' + item.unit : ''}`;
+      case 'num': return answerWithUnit(item.answer, item.q, item.unit);
       case 'text': return item.accept[0];
       case 'order': return item.items.map((s, i) => `${i + 1}. ${s}`).join('  ');
       case 'match': return item.pairs.map(([l, r]) => `${l} → ${r}`).join('; ');

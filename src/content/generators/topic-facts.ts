@@ -39,10 +39,14 @@ export function timelineGenerator(id: string, title: string, own: UnitEvent[], u
       }
       if (t < 0.65) {
         // four events with different years; which came first / last?
+        // events of a similar length, so the answer can't be spotted as the longest one
         const picks: UnitEvent[] = [e];
-        for (const x of shuffle(dated, rand)) {
-          if (picks.length === 4) break;
-          if (picks.every((p) => yearOf(p.date) !== yearOf(x.date))) picks.push(x);
+        const similar = (x: UnitEvent) => x.event.length <= e.event.length * 1.4 + 4 && e.event.length <= x.event.length * 1.4 + 4;
+        for (const pass of [true, false]) {
+          for (const x of shuffle(dated, rand)) {
+            if (picks.length === 4) break;
+            if ((!pass || similar(x)) && !picks.includes(x) && picks.every((p) => yearOf(p.date) !== yearOf(x.date))) picks.push(x);
+          }
         }
         if (picks.length < 3) return mcq(rand, `When did this happen? **${e.event}**`, e.date, [...new Set(others.map((x) => x.date))], [`${e.date}: ${e.event}`], 2);
         const first = rand() < 0.6;
@@ -68,10 +72,16 @@ export function plotGenerator(id: string, title: string, own: UnitEvent[], text:
         const near = places.filter((p) => p !== e.date).sort((a, b) => Math.abs(places.indexOf(a) - i) - Math.abs(places.indexOf(b) - i));
         return mcq(rand, `Where in *${text}* does this happen? **${e.event}**`, e.date, near, [`${e.date}: ${e.event}`], 2);
       }
-      const picks: UnitEvent[] = [];
-      for (const x of shuffle(own, rand)) {
-        if (picks.length === 4) break;
-        if (picks.every((p) => p.date !== x.date)) picks.push(x);
+      // four events from different scenes, of similar length so the answer can't be spotted as the longest
+      const order = shuffle(own, rand);
+      const seed = order[0];
+      const similar = (x: UnitEvent) => x.event.length <= seed.event.length * 1.4 + 4 && seed.event.length <= x.event.length * 1.4 + 4;
+      const picks: UnitEvent[] = [seed];
+      for (const pass of [true, false]) {
+        for (const x of order) {
+          if (picks.length === 4) break;
+          if ((!pass || similar(x)) && !picks.includes(x) && picks.every((p) => p.date !== x.date)) picks.push(x);
+        }
       }
       const sorted = [...picks].sort((a, b) => a.idx - b.idx);
       const first = rand() < 0.6;

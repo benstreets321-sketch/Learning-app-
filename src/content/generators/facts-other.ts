@@ -113,10 +113,10 @@ const ENT_DOCS = [
   ['receipt', 'proof that payment has been made'],
 ] as const;
 const ENT_PAY = [
-  ['cash', 'immediate payment with no fees, but it can be lost or stolen'],
-  ['debit card', 'money is taken straight from the customer\'s bank account'],
-  ['credit card', 'the customer borrows money and pays the card company back later'],
-  ['direct debit', 'regular payments that the business collects from the customer\'s account'],
+  ['cash (notes and coins)', 'immediate payment with no fees, but it can be lost or stolen'],
+  ['debit card payment', 'money is taken straight from the customer\'s bank account'],
+  ['credit card payment', 'the customer borrows money and pays the card company back later'],
+  ['direct debit arrangement', 'regular payments that the business collects from the customer\'s account'],
   ['contactless or mobile payment', 'quick tap-to-pay using a card, phone or watch'],
 ] as const;
 

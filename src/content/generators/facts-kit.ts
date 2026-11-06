@@ -2,20 +2,24 @@
 // answer (other elements, other enzymes, other units...), most confusable first, so options can't be ruled out by
 // their look alone. Higher levels switch to typed recall, which can't be guessed.
 import type { GeneratedQuestion } from '../types';
-import { shuffle } from '../../lib/util';
 
 const norm = (s: string) => s.replace(/[*_`]/g, '').trim().toLowerCase();
 
 /**
- * Multiple choice with the answer first (the app shuffles). `wrong` is ordered most-confusable first: three are
- * taken from the first five (shuffled), so the same question doesn't always show the same distractors.
+ * Multiple choice with the answer first (the app shuffles). `wrong` is ordered most-confusable first; three are
+ * chosen favouring the most confusable ones of a similar length to the answer, with some randomness so the same
+ * question doesn't always show the same distractors.
  */
 export function mcq(rand: () => number, q: string, answer: string, wrong: string[], why: string[], d = 2, hints?: string[]): GeneratedQuestion {
   const pool = [...new Set(wrong.filter((w) => norm(w) !== norm(answer)))];
-  const top = shuffle(pool.slice(0, 5), rand);
-  const rest = shuffle(pool.slice(5), rand);
+  // Most confusable first - but the right answer must not stand out as the longest (or shortest) option, so among the
+  // closest candidates prefer ones of a similar length, with a little randomness so the same set doesn't always appear.
+  const L = Math.max(answer.length, 8);
+  const lenGap = (w: string) => Math.abs(w.length - answer.length) / L;
+  const scored = pool.map((w, i) => ({ w, s: Math.min(i, 8) * 0.3 + lenGap(w) * 6 + rand() * 1.5 }));
+  scored.sort((a, b) => a.s - b.s);
   const opts = [answer];
-  for (const w of [...top, ...rest]) {
+  for (const { w } of scored) {
     if (opts.length >= 4) break;
     if (!opts.some((o) => norm(o) === norm(w))) opts.push(w);
   }

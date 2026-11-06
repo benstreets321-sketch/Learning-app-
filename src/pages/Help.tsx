@@ -85,7 +85,8 @@ export function HelpPage() {
             <li>Three right in a row: it steps up the challenge.</li>
             <li>Each question and flashcard has its own review schedule (spaced repetition), and mastery slowly fades if you leave a topic alone.</li>
             <li>Questions you saw recently are held back. Almost every topic can also make brand-new questions (fresh numbers, other elements, other quotations, other events), so you get far fewer repeats.</li>
-            <li>Wrong options are always the closest mix-ups – other parts of the same topic, other characters from the same text – so you can't pass by guessing.</li>
+            <li>Wrong options are always the closest mix-ups – other parts of the same topic, other characters from the same text, the slips students really make – and about as long as the right answer, so you can't pass by guessing.</li>
+            <li>Typed answers forgive small typos, except when the question is testing your spelling.</li>
           </ul>
         </details>
         <details>

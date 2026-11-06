@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { activeSubjects, getSubject, questionPool, randomGenerated, visibleTopics } from '../content/registry';
 import type { QItem } from '../content/types';
 import { getProfile, getProgress, recordAnswer, recordSprint, addStudyTime } from '../lib/store';
-import { checkNumber, formatAnswer } from '../lib/answer';
+import { answerWithUnit, checkNumber } from '../lib/answer';
 import { recentPenalty } from '../lib/engine';
 import { href, refresh } from '../lib/router';
 import { shuffle } from '../lib/util';
@@ -188,7 +188,7 @@ function Run({ deck, sprintKey, best, title }: { deck: QItem[]; sprintKey: strin
             <button className="btn primary" type="submit"><Icon name="arrow" size={18} /></button>
           </form>
         )}
-        {flash === 'bad' && q.type === 'num' && <p className="small fb-detail">Answer: {formatAnswer(q.answer, q.q)}{q.unit ? ` ${q.unit}` : ''}</p>}
+        {flash === 'bad' && q.type === 'num' && <p className="small fb-detail">Answer: {answerWithUnit(q.answer, q.q, q.unit)}</p>}
       </div>
       <button className="btn ghost small" onClick={() => answer(false, '(skipped)')}>Skip</button>
     </div>

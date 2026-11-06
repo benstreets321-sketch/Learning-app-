@@ -25,3 +25,24 @@ describe('answers are shown to the decimal places the question asks for', () => 
     }
   });
 });
+
+describe('money answers are shown in pounds and pence', () => {
+  it('formats currency before the number with 2 dp when not whole', async () => {
+    const { answerWithUnit } = await import('../src/lib/answer');
+    expect(answerWithUnit(1650, 'How much interest?', '£')).toBe('£1,650');
+    expect(answerWithUnit(546.1, 'How many dollars?', '$')).toBe('$546.10');
+    expect(answerWithUnit(4.5, 'Find the length', 'cm')).toBe('4.5 cm');
+    expect(answerWithUnit(0.8, 'Rf value (2 dp)')).toBe('0.80');
+  });
+});
+
+describe('spelling questions mark the spelling exactly', () => {
+  it('forgives a typo normally but not when spelling is being tested', async () => {
+    const { checkText, isSpellingQ } = await import('../src/lib/answer');
+    expect(checkText('definately', ['definitely']).ok).toBe(true);
+    expect(checkText('definately', ['definitely'], true).ok).toBe(false);
+    expect(checkText('definitely', ['definitely'], true).ok).toBe(true);
+    expect(isSpellingQ({ q: 'Correct the spelling: "definately"' })).toBe(true);
+    expect(isSpellingQ({ q: 'Name the process plants use to make glucose.' })).toBe(false);
+  });
+});

@@ -33,7 +33,10 @@ export function levenshtein(a: string, b: string): number {
 }
 
 /** Text answer check: exact after normalising, or within a small typo budget for longer words */
-export function checkText(input: string, accept: string[]): { ok: boolean; close: boolean } {
+/** Spelling questions mark the spelling itself, so typos can't be forgiven */
+export const isSpellingQ = (q: { q?: string; exact?: boolean }) => !!q.exact || /\b(spell|spelt|spelled|spelling)\b/i.test(q.q ?? '');
+
+export function checkText(input: string, accept: string[], exact = false): { ok: boolean; close: boolean } {
   const a = normalise(input).replace(/\s/g, '');
   if (!a) return { ok: false, close: false };
   let close = false;
@@ -42,7 +45,7 @@ export function checkText(input: string, accept: string[]): { ok: boolean; close
     if (a === b) return { ok: true, close: false };
     // numeric-looking answers must match exactly
     if (/^[-\d.,/]+$/.test(b)) continue;
-    const budget = b.length >= 10 ? 2 : b.length >= 5 ? 1 : 0;
+    const budget = exact ? 0 : b.length >= 10 ? 2 : b.length >= 5 ? 1 : 0;
     const dist = levenshtein(a, b);
     if (dist <= budget) return { ok: true, close: true };
     if (dist <= budget + 2) close = true;
@@ -148,10 +151,20 @@ export function askedDp(q: string): number | null {
   return DP_WORDS[v.toLowerCase()] ?? Number(v);
 }
 
-/** How a numeric answer is shown: with the decimal places the question asked for (0.80, not 0.8) */
-export function formatAnswer(n: number, q = ''): string {
-  const dp = askedDp(q);
+const CURRENCY = new Set(['£', '$', '€']);
+/** How a numeric answer is shown: with the decimal places the question asked for (0.80, not 0.8), and money in pounds and pence */
+export function formatAnswer(n: number, q = '', unit?: string): string {
+  const money = !!unit && CURRENCY.has(unit);
+  const dp = askedDp(q) ?? (money && !Number.isInteger(n) ? 2 : null);
+  if (money && dp !== null && Number.isFinite(n)) return n.toLocaleString('en-GB', { minimumFractionDigits: dp, maximumFractionDigits: dp });
   if (dp !== null && Number.isFinite(n)) return n.toFixed(dp);
   if (Number.isInteger(n)) return n.toLocaleString('en-GB');
   return String(Math.round(n * 1e6) / 1e6);
+}
+
+/** A numeric answer with its unit: "£1,650", "£12.50", "4.5 cm" */
+export function answerWithUnit(n: number, q = '', unit?: string): string {
+  const v = formatAnswer(n, q, unit);
+  if (unit && CURRENCY.has(unit)) return n < 0 ? `−${unit}${v.replace('-', '')}` : `${unit}${v}`;
+  return unit ? `${v} ${unit}` : v;
 }

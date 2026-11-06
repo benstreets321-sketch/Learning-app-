@@ -55,6 +55,8 @@ export interface TextQ extends Hinted {
   q: string;
   /** accepted answers (case/punctuation-insensitive, small typos allowed) */
   accept: string[];
+  /** spelling is being tested, so no typo allowance */
+  exact?: boolean;
   steps?: string[];
 }
 
@@ -257,6 +259,8 @@ export interface GeneratedQuestion {
   answer: number | string;
   /** for text answers */
   accept?: string[];
+  /** text answer must be spelt exactly (spelling questions) */
+  exact?: boolean;
   /** if present, rendered as multiple choice */
   options?: string[];
   tol?: number;

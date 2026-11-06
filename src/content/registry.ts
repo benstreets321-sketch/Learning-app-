@@ -303,7 +303,7 @@ export function generatedToQuestion(raw: GeneratedQuestion): Question {
   if (typeof gq.answer === 'number') {
     return { type: 'num', q: gq.q, answer: gq.answer, tol: gq.tol, unit: gq.unit, steps: gq.steps, why, hints: gq.hints, d: gq.d };
   }
-  return { type: 'text', q: gq.q, accept: gq.accept ?? [String(gq.answer)], steps: gq.steps, why, hints: gq.hints, d: gq.d };
+  return { type: 'text', q: gq.q, accept: gq.accept ?? [String(gq.answer)], exact: gq.exact, steps: gq.steps, why, hints: gq.hints, d: gq.d };
 }
 
 export function makeGenerated(snap: GenSnapshot): QItem | undefined {

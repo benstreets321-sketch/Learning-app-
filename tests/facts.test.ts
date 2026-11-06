@@ -12,7 +12,7 @@ describe('fact-table and per-topic generators', () => {
     expect(ids.filter((i) => i.startsWith('tl-')).length).toBeGreaterThan(30);
     expect(ids.filter((i) => i.startsWith('qt-')).length).toBeGreaterThan(30);
     for (const [id, g] of Object.entries(GENERATORS)) {
-      if (!/^(f-|tl-|qt-|pm-|lo-)/.test(id)) continue;
+      if (!/^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-)/.test(id)) continue;
       for (let seed = 1; seed <= 120; seed++) {
         const lvl = (seed % 5) + 1;
         const q = g.make(mulberry32(seed * 104729 + id.length), lvl);
@@ -26,7 +26,7 @@ describe('fact-table and per-topic generators', () => {
           expect(new Set(q.options.map((o) => o.toLowerCase())).size, ctx).toBe(q.options.length);
           q.options.forEach((o) => expect(o, ctx).not.toMatch(/undefined|\bNaN\b/));
         }
-        if (q.accept) expect(checkText(String(q.answer), q.accept).ok, ctx).toBe(true);
+        if (q.accept) expect(checkText(String(q.answer), q.accept, q.exact).ok, ctx).toBe(true);
         if (typeof q.answer === 'number') expect(checkNumber(String(q.answer), q.answer, q.tol).ok, ctx).toBe(true);
       }
     }
@@ -51,7 +51,7 @@ describe('fact-table and per-topic generators', () => {
 
   it('generated questions rebuild exactly from their snapshot (so mistakes on them can come back)', () => {
     for (const s of SUBJECTS) for (const u of s.units) for (const t of u.topics) {
-      for (const g of (t.generators ?? []).filter((x) => /^(f-|tl-|qt-|pm-|lo-)/.test(x)).slice(0, 2)) {
+      for (const g of (t.generators ?? []).filter((x) => /^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-)/.test(x)).slice(0, 2)) {
         const a = makeGenerated({ g, s: 12345, l: 3, t: t.id });
         const b = makeGenerated({ g, s: 12345, l: 3, t: t.id });
         expect(a, `${t.id} ${g}`).toBeTruthy();
@@ -81,6 +81,23 @@ describe('equipment for each question', () => {
       const eq = equipmentForQuestion(q);
       if (s.id !== 'chemistry') expect(eq, q.id).not.toContain('table');
       if (['english-language', 'english-literature', 'history'].includes(s.id)) expect(eq, q.id).toEqual(['tutor']);
+    }
+  });
+});
+
+describe('generated multiple choice cannot be guessed from the length of the options', () => {
+  it('the right answer is almost never much longer than every wrong option', () => {
+    for (const [id, g] of Object.entries(GENERATORS)) {
+      let n = 0, cued = 0;
+      for (let seed = 1; seed <= 150; seed++) {
+        const q = g.make(mulberry32(seed * 977 + 13), (seed % 5) + 1);
+        if (!q.options) continue;
+        n++;
+        const longest = Math.max(...q.options.slice(1).map((o) => o.length));
+        if (q.options[0].length > 25 && q.options[0].length > 1.5 * longest) cued++;
+      }
+      // poem, text and event titles are fixed real names, so a little more variation is unavoidable there
+      if (n) expect(cued / n, id).toBeLessThanOrEqual(/^(pm|qt|tl|lo)-/.test(id) ? 0.06 : 0.02);
     }
   });
 });
