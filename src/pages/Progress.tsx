@@ -51,15 +51,15 @@ export function ProgressPage() {
       <PhaseCard />
 
       <Section title="This week in review">
-        <div className="card pad"><WeeklyReview /></div>
+        <WeeklyReview />
       </Section>
 
       <Section title="Course pace">
-        <div className="card pad"><CoursePace /></div>
+        <CoursePace />
       </Section>
 
       <Section title="Predicted grades and targets">
-        <div className="card pad"><GradePredictor /></div>
+        <GradePredictor />
       </Section>
 
       <Section title="Exam coverage">

@@ -11,7 +11,7 @@ export function MistakesPage() {
   if (!list.length) {
     return (
       <Empty title="Your Fix-it list is empty">
-        <p className="muted">Every question you get wrong lands here. It leaves the list once you have answered it correctly without help twice, on separate occasions – so it's really learned, not just remembered for a minute.</p>
+        <p className="muted">Every question you get wrong lands here. It leaves the list once you have answered it correctly without help twice, on separate occasions. So it's really learned, not just remembered for a minute.</p>
         <button className="btn primary" onClick={() => launchSession()}>Start a session</button>
       </Empty>
     );

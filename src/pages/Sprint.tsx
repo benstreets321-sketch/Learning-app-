@@ -64,7 +64,7 @@ export function SprintPage({ query }: { query: URLSearchParams }) {
           </ul>
           <p className="muted small">Personal best: <span className="mono">{best || '-'}</span></p>
         </div>
-        {deck.length < 5 ? <p className="muted">Not enough short questions yet – learn a few topics first.</p> : (
+        {deck.length < 5 ? <p className="muted">Not enough short questions yet. Learn a few topics first.</p> : (
           <button className="btn primary big" onClick={() => setStarted(true)}>Start</button>
         )}
       </div>
@@ -130,7 +130,7 @@ function Run({ deck, sprintKey, best, title }: { deck: QItem[]; sprintKey: strin
       <div className="page narrow">
         <p className="eyebrow">Sprint · {title}</p>
         <h1><span className="mono">{score}</span> correct in {LENGTH} seconds</h1>
-        <p className="muted">{newBest ? `New personal best (previous ${best}).` : best ? `Personal best: ${Math.max(best, score)}.` : 'First sprint recorded – try to beat it next time.'}</p>
+        <p className="muted">{newBest ? `New personal best (previous ${best}).` : best ? `Personal best: ${Math.max(best, score)}.` : 'First sprint recorded. Try to beat it next time.'}</p>
         {missed.length > 0 && (
           <section className="section">
             <h2>Missed ({missed.length})</h2>

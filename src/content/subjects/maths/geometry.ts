@@ -226,7 +226,7 @@ Write the theorem in full: "Opposite angles in a cyclic quadrilateral add up to 
       keyPoints: ['Reflection: line; rotation: angle, direction, centre; translation: vector; enlargement: SF, centre', 'Congruence: SSS, SAS, ASA, RHS', 'Similar: lengths × k, area × k², volume × k³'],
       flashcards: cards([['What details describe a rotation?', 'Angle, direction (clockwise/anticlockwise) and centre.'], ['Conditions for congruent triangles?', 'SSS, SAS, ASA, RHS'], ['Length SF 2 → volume SF?', '8']]),
       questions: [
-        mc('Which description of a rotation is complete?', ['90° clockwise about (0, 0)', '90° clockwise', 'Rotation about (0, 0)', 'Turned a quarter'], 'Angle, direction and centre are all needed.', { d: 1 }),
+        mc('Which description of a rotation is complete?', ['90° clockwise about (0, 0)', '90° clockwise', 'Rotation about (0, 0)', 'A quarter turn about (0, 0)'], 'Angle, direction and centre are all needed.', { d: 1 }),
         num('Two similar shapes have lengths in ratio 1 : 3. The smaller has area 5 cm². Find the larger area.', 45, 'Area factor = 3² = 9 → 45.', { d: 3, unit: 'cm²' }),
         num('Two similar solids have volumes 16 cm³ and 128 cm³. What is the length scale factor?', 2, 'Volume factor 8 → ∛8 = 2.', { d: 4, tier: 'H' }),
         tf('AAA (three equal angles) proves two triangles are congruent.', false, 'It proves they are similar, not necessarily the same size.', { d: 3 }),
@@ -275,7 +275,7 @@ Plan = view from above; front and side elevations = views from front and side.
       keyPoints: ['Leave construction arcs', 'Equidistant from 2 points = perpendicular bisector', 'Equidistant from 2 lines = angle bisector', 'Map scale: convert cm to m/km carefully', 'Plan = from above'],
       flashcards: cards([['Locus of points equidistant from two points?', 'The perpendicular bisector of the line joining them.'], ['On a 1 : 25 000 map, 4 cm represents?', '100 000 cm = 1 km'], ['What is a plan view?', 'The view from directly above.']]),
       questions: [
-        mc('Which construction gives points equidistant from two lines?', ['Angle bisector', 'Perpendicular bisector', 'A circle', 'A parallel line'], 'Equidistant from lines → bisect the angle between them.', { d: 2 }),
+        mc('Which construction gives points equidistant from two lines?', ['Angle bisector', 'Perpendicular bisector', 'Perpendicular from a point', 'Arc centred where the lines meet'], 'Equidistant from lines → bisect the angle between them.', { d: 2 }),
         num('A map has scale 1 : 50 000. Two towns are 7 cm apart on the map. How far apart are they in km?', 3.5, '7 × 50 000 = 350 000 cm = 3.5 km.', { d: 3, unit: 'km' }),
       ],
     }),

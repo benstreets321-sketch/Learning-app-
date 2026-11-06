@@ -118,7 +118,7 @@ export function gapTopics(subject: Subject, profile: Profile, progress: Progress
       const gain = Math.max(0, aim - m) * share;
       // quick wins first: started-but-shaky topics need less time per mark than new ones
       const speed = lv === 'weak' ? 1.3 : lv === 'developing' ? 1.5 : lv === 'new' ? 0.9 : 1;
-      const why = lv === 'new' ? 'Not started – learning it opens up new marks' : lv === 'weak' ? 'Started but weak – the quickest marks to win back' : lv === 'developing' ? 'Nearly there – a little practice secures it' : 'Keep it fresh';
+      const why = lv === 'new' ? 'Not started. Learning it opens up new marks' : lv === 'weak' ? 'Started but weak. The quickest marks to win back' : lv === 'developing' ? 'Nearly there. A little practice secures it' : 'Keep it fresh';
       return { topic, mastery: m, gain, why, score: gain * speed };
     })
     .filter((g) => g.gain > 0.05)

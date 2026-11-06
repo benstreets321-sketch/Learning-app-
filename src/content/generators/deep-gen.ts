@@ -9,6 +9,7 @@ import { PHYSICS_DEEP } from '../deep/physics';
 import { IMEDIA_DEEP } from '../deep/imedia';
 import { BUSINESS_DEEP } from '../deep/business';
 import { ENGLISH_DEEP } from '../deep/english';
+import { formOk } from './plausible';
 import { mcq, typed, cap, pick } from './facts-kit';
 import { shuffle } from '../../lib/util';
 
@@ -46,9 +47,17 @@ const why = (f: DeepFact) => [`**${cap(f[0])}**: ${f[1]}.${f[2] ? ` For example:
 
 function factQ(rand: () => number, lvl: number, facts: readonly DeepFact[], others: readonly DeepFact[]): GeneratedQuestion {
   const f = pick(rand, facts);
-  // same-topic options are the most confusable; other topics only top up a topic with too few facts of its own
+  // same-topic options are the most confusable and come first; a wider sample from the subject follows, so when the
+  // topic's own terms differ in kind or form from the answer ("strong acid" against "metal + acid") the shared mcq
+  // helper can find ones that match ("carbonate + acid", "alkali + acid")
   const own = shuffle(facts.filter((o) => fair(f, o)), rand);
-  const pool = own.length >= 4 ? own : [...own, ...shuffle(others.filter((o) => fair(f, o)), rand).slice(0, 6 - own.length)];
+  const wider = shuffle(others.filter((o) => fair(f, o) && !own.includes(o)), rand).slice(0, 24);
+  /** the topic's own options for one field, topped up from the subject only when too few of them match the answer's form */
+  const opts = (field: 0 | 1, answer: string, list = own) => {
+    const mine = list.map((o) => (field === 1 ? cap(o[1]) : o[0]));
+    return mine.filter((o) => formOk(answer, o)).length >= 3 ? mine : [...mine, ...wider.map((o) => (field === 1 ? cap(o[1]) : o[0]))];
+  };
+  const pool = own.length >= 4 ? own : [...own, ...wider.slice(0, 6 - own.length)];
   const form = rand();
   if (lvl >= 4 && short(f[0]) && form < 0.35) {
     const start = f[0].slice(0, Math.min(3, Math.ceil(f[0].length / 3)));
@@ -56,12 +65,12 @@ function factQ(rand: () => number, lvl: number, facts: readonly DeepFact[], othe
   }
   if (f[2] && form < 0.55) {
     const exPool = pool.filter((o) => !o[2] || o[2] !== f[2]);
-    return mcq(rand, `Which key term does this example show?\n\n> ${f[2]}`, f[0], exPool.map((o) => o[0]), why(f), 3);
+    return mcq(rand, `Which key term does this example show?\n\n> ${f[2]}`, f[0], opts(0, f[0], exPool), why(f), 3);
   }
   // a long definition among short ones would give itself away, so ask the other way round instead
   const longEnough = f[1].length <= 25 || pool.filter((o) => o[1].length * 1.45 >= f[1].length).length >= 2;
-  if (form < 0.78 || !longEnough) return mcq(rand, `Which key term matches this description?\n\n> ${cap(f[1])}`, f[0], pool.map((o) => o[0]), why(f), 2);
-  return mcq(rand, `Which description matches **${f[0]}**?`, cap(f[1]), pool.map((o) => cap(o[1])), why(f), 2);
+  if (form < 0.78 || !longEnough) return mcq(rand, `Which key term matches this description?\n\n> ${cap(f[1])}`, f[0], opts(0, f[0], pool), why(f), 2);
+  return mcq(rand, `Which description matches **${f[0]}**?`, cap(f[1]), opts(1, cap(f[1]), pool), why(f), 2);
 }
 
 function stepQ(rand: () => number, proc: { name: string; steps: string[] }): GeneratedQuestion {

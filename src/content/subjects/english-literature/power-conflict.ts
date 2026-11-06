@@ -74,7 +74,7 @@ Not named recently: **The Prelude, Charge of the Light Brigade, Storm on the Isl
         q('The lone and level sands stretch far away', 'Alliteration and endless imagery - nature and time outlast human power.', { who: 'Ozymandias', themes: ['time', 'nature'] }),
       ],
       past: [{ year: 'Jun 2018', focus: 'Compare how poets present ideas about **power**' }],
-      questions: [mc('What is ironic about the inscription on the statue?', ['It boasts of great works but nothing remains', 'It is a love poem written for the queen', 'It praises the sculptor\'s great skill', 'It warns travellers to turn back home'], 'Time has destroyed the "Works" - pride before a fall.', { d: 2 })],
+      questions: [mc('What is ironic about the inscription on the statue?', ['It boasts of great works but nothing remains', 'It praises the sculptor\'s great skill', 'It begs the gods to protect the kingdom', 'It mourns the king\'s early death'], 'Time has destroyed the "Works" - pride before a fall.', { d: 2 })],
     }, C),
     poem({
       id: 'pc-london', title: 'London', poet: 'William Blake', date: '1794 (Songs of Experience)',
@@ -91,7 +91,7 @@ Not named recently: **The Prelude, Charge of the Light Brigade, Storm on the Isl
         q('blasts the new-born Infant\'s tear', 'Even new life is ruined from the start - innocence is destroyed.', { who: 'London', themes: ['suffering'] }),
       ],
       past: [{ year: 'Nov 2021', focus: 'Compare how poets present ideas about **power and control**' }],
-      questions: [mc('What does "mind-forg\'d manacles" suggest?', ['People are mentally imprisoned by oppression', 'Londoners are forced to wear iron chains', 'Many Londoners work as blacksmiths', 'The speaker feels free and full of hope'], 'A metaphor for psychological control.', { d: 2 })],
+      questions: [mc('What does "mind-forg\'d manacles" suggest?', ['People are mentally imprisoned by oppression', 'The government has passed cruel new laws', 'Londoners are physically chained by employers', 'The speaker is trapped in a prison cell'], 'A metaphor for psychological control.', { d: 2 })],
     }, C),
     poem({
       id: 'pc-prelude', title: 'Extract from The Prelude: Stealing the Boat', poet: 'William Wordsworth', date: '1850 (written 1799)',
@@ -123,7 +123,7 @@ Not named recently: **The Prelude, Charge of the Light Brigade, Storm on the Isl
         q('Notice Neptune, though, taming a sea-horse', 'Final image of dominance - reveals his attitude to his next wife.', { who: 'My Last Duchess', themes: ['power', 'gender'] }),
       ],
       past: [{ year: 'Jun 2023', focus: 'Compare how poets present **the effects of power**' }],
-      questions: [mc('Why does Browning use enjambment over the rhyming couplets?', ['To suggest the Duke\'s controlled surface hiding anger and obsession', 'Because Browning found it hard to end lines on a rhyme', 'To make the poem sound like a cheerful, simple song', 'To show the Duchess interrupting the Duke as he speaks'], 'The rhyme (control) is muffled by run-on lines (loss of control).', { d: 3 })],
+      questions: [mc('Why does Browning use enjambment over the rhyming couplets?', ['To suggest the Duke\'s controlled surface hiding anger and obsession', 'To make the Duke sound hesitant and nervous throughout', 'To make the poem sound like a cheerful, simple song', 'To show the Duchess interrupting the Duke as he speaks'], 'The rhyme (control) is muffled by run-on lines (loss of control).', { d: 3 })],
     }, C),
     poem({
       id: 'pc-charge', title: 'The Charge of the Light Brigade', poet: 'Alfred, Lord Tennyson', date: '1854',
@@ -155,7 +155,7 @@ Not named recently: **The Prelude, Charge of the Light Brigade, Storm on the Isl
         q('For love of God seems dying', 'War destroys faith; ambiguity of "dying" love.', { who: 'Exposure', themes: ['religion', 'suffering'] }),
       ],
       past: [{ year: 'Jun 2025', focus: 'Compare how poets present **ideas about conflict**' }],
-      questions: [mc('What is the effect of the repeated line "But nothing happens"?', ['It emphasises futility and endless waiting', 'It shows the battle is over and they won', 'It creates a happy ending', 'It shows the weather improving'], 'Anticlimax shows the real enemy is boredom, cold and despair.', { d: 2 })],
+      questions: [mc('What is the effect of the repeated line "But nothing happens"?', ['It emphasises futility and endless waiting', 'It shows the soldiers are safe from the enemy', 'It builds suspense before a sudden attack', 'It shows the weather is slowly improving'], 'Anticlimax shows the real enemy is boredom, cold and despair.', { d: 2 })],
     }, C),
     poem({
       id: 'pc-storm', title: 'Storm on the Island', poet: 'Seamus Heaney', date: '1966', copyrightNote: true,

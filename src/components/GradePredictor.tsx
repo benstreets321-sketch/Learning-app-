@@ -67,7 +67,7 @@ function Trend({ p, hist, exam }: { p: Prediction; hist?: [number, number][]; ex
       )}
       <span className="small muted">
         {f
-          ? <>Trend: {f.perWeek >= 0 ? '+' : ''}{f.perWeek.toFixed(1)}% a week. If it continues: about <strong>{shortGrade(gradeAt(p.scale, f.pct))}</strong> by your first paper{examDay ? ` (${examDay})` : ''}{targetPct !== undefined ? (f.pct >= targetPct ? ' – on course for your target.' : ' – not yet enough for your target; the session is steering towards the gap.') : '.'}</>
+          ? <>Trend: {f.perWeek >= 0 ? '+' : ''}{f.perWeek.toFixed(1)}% a week. If it continues: about <strong>{shortGrade(gradeAt(p.scale, f.pct))}</strong> by your first paper{examDay ? ` (${examDay})` : ''}{targetPct !== undefined ? (f.pct >= targetPct ? '. That reaches your target.' : '. That is short of your target, so sessions steer towards the topics worth the most marks.') : '.'}</>
           : pts.length > 1 ? 'A forecast appears after a week or two of practice.' : 'Your trend starts from today.'}
       </span>
     </div>
@@ -78,14 +78,14 @@ function evidence(p: Prediction): string {
   const bits = [`${Math.round(p.coverage * 100)}% of topics started`, `${p.answers} answer${p.answers === 1 ? '' : 's'}`];
   if (p.mocks) bits.push(`${p.mocks} marked mock${p.mocks === 1 ? '' : 's'}`);
   if (!p.ready) return `Not enough to go on yet (${bits.join(', ')}). Answer about 20 questions or take a mock and a predicted grade appears here.`;
-  return `If you sat it today: about ${Math.round(p.pct)}% → ${shortGrade(p.grade)}. Based on ${bits.join(', ')}.${p.confidence < 0.35 ? ' Early days – the range narrows as you answer more.' : ''}`;
+  return `If you sat it today: about ${Math.round(p.pct)}% → ${shortGrade(p.grade)}. Based on ${bits.join(', ')}.${p.confidence < 0.35 ? ' Early days. The range narrows as you answer more.' : ''}`;
 }
 
 function Gaps({ p }: { p: Prediction }) {
   const profile = useProfile();
   const progress = useProgress();
   const gaps = gapTopics(p.subject, profile, progress, 5);
-  if (!gaps.length) return <p className="small">Every topic is at the level your target needs – keep them fresh with your sessions.</p>;
+  if (!gaps.length) return <p className="small">Every topic is at the level your target needs. Keep them fresh with your sessions.</p>;
   return (
     <div className="gaps">
       <p className="small"><strong>Where the marks are{p.target ? ` for a ${shortGrade(p.target)}` : ''}:</strong> raising these topics adds the most to your percentage. Your sessions already favour them.</p>

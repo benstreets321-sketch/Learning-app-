@@ -37,7 +37,7 @@ Killed roughly a third to half of England's population. Explained by God, planet
       flashcards: cards([['What were the Four Humours?', 'Blood, phlegm, yellow bile and black bile - illness was caused by imbalance.'], ['What is miasma?', 'The belief that disease is caused by bad air from rotting matter.'], ['Why did the Church slow medical progress?', 'It controlled education and promoted Galen\'s ideas, discouraging challenge.'], ['Name two medieval treatments based on the Four Humours', 'Bloodletting and purging.'], ['When did the Black Death reach England?', '1348.']]),
       questions: [
         mc('Which theory said illness came from an imbalance of bodily fluids?', ['The Four Humours', 'Miasma', 'Germ theory', 'Astrology'], 'Hippocrates and Galen.', { d: 1 }),
-        mc('Why were Galen\'s ideas rarely challenged in medieval England?', ['The Church supported them and controlled education', 'Doctors\' observations kept proving him right', 'There were no universities to teach medicine', 'Galen was still alive to defend his ideas'], 'Religion and tradition limited progress.', { d: 2 }),
+        mc('Why were Galen\'s ideas rarely challenged in medieval England?', ['The Church supported them and controlled education', 'Doctors\' observations kept proving him right', 'There were no universities to teach medicine', 'His books were lost until the Renaissance'], 'Religion and tradition limited progress.', { d: 2 }),
         tf('Medieval hospitals mainly aimed to cure patients with infectious diseases.', false, 'They offered care (food, rest, prayer); many refused infectious patients.', { d: 2 }),
         multi('Which were believed causes of the Black Death?', ['Punishment from God', 'Bad air (miasma)', 'The position of the planets'], ['Bacteria spread by fleas', 'Lack of vitamins'], 'They didn\'t know about germs.', { d: 1 }),
       ],
@@ -70,7 +70,7 @@ Causes: miasma, God, planets. Responses: plague doctors' beaked masks with herbs
       flashcards: cards([['What did Vesalius do?', 'Dissected human bodies and published accurate anatomy (1543), proving Galen wrong in places.'], ['What did Harvey discover?', 'That blood circulates around the body, pumped by the heart (1628).'], ['Why did Harvey\'s discovery have little immediate impact on treatment?', 'Doctors still believed in the Four Humours and it didn\'t lead to new treatments.'], ['What was the Royal Society?', 'A society founded in 1660 to share scientific knowledge and experiments.'], ['How did authorities respond to the Great Plague of 1665?', 'Quarantined houses, banned gatherings, killed cats and dogs, searchers recorded deaths.']]),
       questions: [
         mc('Who proved that blood circulates around the body?', ['William Harvey', 'Andreas Vesalius', 'Thomas Sydenham', 'Edward Jenner'], '1628.', { d: 1 }),
-        mc('Which factor most helped new ideas spread in the Renaissance?', ['The printing press', 'Television', 'The NHS', 'Germ theory'], 'Accurate copies spread knowledge quickly.', { d: 1 }),
+        mc('Which factor most helped new ideas spread in the Renaissance?', ['The printing press', 'The Church', 'Better microscopes', 'The Black Death'], 'Accurate copies spread knowledge quickly.', { d: 1 }),
         tf('By 1700 most doctors had abandoned the Four Humours.', false, 'Continuity was strong - humoral ideas and treatments persisted.', { d: 2 }),
       ],
     }),
@@ -105,7 +105,7 @@ Causes: miasma, God, planets. Responses: plague doctors' beaked masks with herbs
       flashcards: cards([['What did Jenner discover?', 'Vaccination against smallpox using cowpox (1796).'], ['What is germ theory?', 'Pasteur\'s theory (1861) that microorganisms (germs) cause decay and disease.'], ['What did Koch do?', 'Identified the specific bacteria that cause diseases such as TB and cholera.'], ['How did John Snow prove cholera was waterborne?', 'He mapped deaths around the Broad Street pump and removed its handle; deaths fell.'], ['What did the 1875 Public Health Act do?', 'Forced local councils to provide clean water, sewers and drainage.'], ['What did Lister use as an antiseptic?', 'Carbolic acid.']]),
       questions: [
         match('Match the individual to the breakthrough.', [['Jenner', 'Smallpox vaccination'], ['Pasteur', 'Germ theory'], ['Lister', 'Antiseptic surgery'], ['Snow', 'Cholera linked to water']], 'Key individuals.', { d: 1 }),
-        mc('Why was the period after anaesthetics sometimes called the "black period" of surgery?', ['Surgeons did deeper operations, so infection and blood loss deaths rose', 'Operations had to be carried out at night by candlelight', 'Anaesthetics killed most patients before surgery began', 'Surgery was banned by the government for twenty years'], 'Pain was solved but infection was not.', { d: 3 }),
+        mc('Why was the period after anaesthetics sometimes called the "black period" of surgery?', ['Surgeons did deeper operations, so infection and blood loss deaths rose', 'Chloroform made patients bleed more heavily during operations', 'Anaesthetics killed most patients before the surgery began', 'Surgeons stopped washing their hands once patients were asleep'], 'Pain was solved but infection was not.', { d: 3 }),
         tf('Jenner understood how vaccination worked because he knew about germs.', false, 'Germ theory came 65 years later (1861).', { d: 2 }),
       ],
     }),
@@ -146,9 +146,9 @@ Link with smoking proven by **Doll and Hill** (1950s). Treatments: surgery, radi
       ],
       flashcards: cards([['Who discovered penicillin and when?', 'Alexander Fleming, 1928.'], ['Who developed penicillin into a usable drug?', 'Howard Florey and Ernst Chain (1940s).'], ['Why was penicillin mass-produced in the 1940s?', 'WW2 created demand and the US government funded production.'], ['When was the NHS founded?', '1948.'], ['What was Salvarsan 606?', 'The first "magic bullet" - a chemical cure for syphilis (Ehrlich, 1909).'], ['Who linked smoking to lung cancer?', 'Richard Doll and Austin Bradford Hill (1950s).']]),
       questions: [
-        mc('Which factor was most important in the mass production of penicillin?', ['War and government funding', 'The Church', 'The printing press', 'The Four Humours'], 'WW2 demand + US funding.', { d: 2 }),
+        mc('Which factor was most important in the mass production of penicillin?', ['War and government funding', 'Fleming\'s chance discovery', 'Florey and Chain\'s research', 'Better microscopes'], 'WW2 demand + US funding.', { d: 2 }),
         tf('Fleming mass-produced penicillin himself in 1928.', false, 'He couldn\'t purify it; Florey and Chain did, with wartime funding.', { d: 2 }),
-        mc('What did the Beveridge Report (1942) lead to?', ['The NHS and the welfare state', 'The Black Death', 'Germ theory', 'The Public Health Act 1875'], 'Attacked the "five giants" including disease.', { d: 1 }),
+        mc('What did the Beveridge Report (1942) lead to?', ['The NHS and the welfare state', 'The Public Health Act 1875', 'The Liberal reforms of 1906-11', 'The National Insurance Act 1911'], 'Attacked the "five giants" including disease.', { d: 1 }),
       ],
       examQuestions: [essay(board === 'edexcel'
         ? '"The work of individuals was the main reason for progress in medical treatment in the period c1700-present." How far do you agree? Explain your answer. You may use: Fleming; the NHS. You must also use information of your own.'
@@ -184,7 +184,7 @@ Diaries, letters, photographs (censored), official records (RAMC), hospital reco
       ],
       flashcards: cards([['What was the chain of evacuation?', 'Stretcher bearers → Regimental Aid Post → Dressing Stations → Casualty Clearing Station → Base Hospital → Britain.'], ['What did the Thomas splint do?', 'Kept broken legs (femur) still, cutting death rates from about 80% to 20%.'], ['What caused trench fever?', 'Lice.'], ['What was gas gangrene?', 'Infection from soil bacteria in wounds, causing tissue to die and produce gas.'], ['Who pioneered plastic surgery?', 'Harold Gillies.']]),
       questions: [
-        mc('Where were most operations carried out in the chain of evacuation?', ['Casualty Clearing Station', 'Regimental Aid Post', 'In the trench', 'On the train'], 'CCS had surgeons and was out of shell range.', { d: 2 }),
+        mc('Where were most operations carried out in the chain of evacuation?', ['Casualty Clearing Station', 'Regimental Aid Post', 'Dressing Station', 'Field Ambulance'], 'CCS had surgeons and was out of shell range.', { d: 2 }),
         tf('Trench fever was caused by contaminated water.', false, 'It was spread by lice.', { d: 2 }),
       ],
       examQuestions: [

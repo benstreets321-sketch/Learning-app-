@@ -121,7 +121,7 @@ Trolley on a bench pulled by a hanging mass over a pulley; measure acceleration 
           num('A resultant force of 1500 N acts on a 1000 kg car. Find its acceleration.', 1.5, '1500 ÷ 1000 = 1.5 m/s².', { d: 1, unit: 'm/s²' }),
           multi('Which increase THINKING distance?', ['Tiredness', 'Drinking alcohol', 'Using a phone', 'Higher speed'], ['Icy roads', 'Worn brakes'], 'Thinking distance depends on reaction time and speed.', { d: 2 }),
           num('A 2 kg trolley at 3 m/s collides and sticks to a stationary 1 kg trolley. What is their speed afterwards?', 2, 'Momentum before = 6; after: 3v = 6 → v = 2 m/s.', { d: 4, tier: 'H', unit: 'm/s' }),
-          mc('A book rests on a table. The Earth pulls the book down. What is the Newton\'s third law pair?', ['The book pulls the Earth up', 'The table pushes the book up', 'Air pushes down on the book', 'Friction'], 'Same type of force (gravity), acting on the other object.', { d: 4 }),
+          mc('A book rests on a table. The Earth pulls the book down. What is the Newton\'s third law pair?', ['The book pulls the Earth up', 'The table pushes the book up', 'The book pushes down on the table', 'The Earth pushes the table up'], 'Same type of force (gravity), acting on the other object.', { d: 4 }),
         ],
         examQuestions: [examQ('Explain how a car\'s crumple zone reduces the risk of injury in a crash.', 4, ['Crumple zone increases the time taken for the car to stop', 'Same change in momentum (Higher)', 'Rate of change of momentum is smaller', 'So the force on passengers is smaller'], { time: 4 })],
       }),
@@ -179,7 +179,7 @@ Speed of sound in air: echo method or two microphones.
         flashcards: cards([['Wave speed equation?', 'v = fλ'], ['Define frequency', 'Number of waves passing a point per second (Hz).'], ['Example of a longitudinal wave?', 'Sound.'], ['Define amplitude', 'The maximum displacement of a point on a wave from its rest position.'], ['Period equation?', 'T = 1 ÷ f']]),
         questions: [
           num('A wave has frequency 50 Hz and wavelength 4 m. Calculate its speed.', 200, '50 × 4 = 200 m/s.', { d: 1, unit: 'm/s' }),
-          mc('In a longitudinal wave, the oscillations are...', ['Parallel to the direction of energy transfer', 'Perpendicular to the direction of energy transfer', 'Circular', 'Random'], 'Sound waves are longitudinal.', { d: 1 }),
+          mc('In a longitudinal wave, the oscillations are...', ['Parallel to the direction of energy transfer', 'Perpendicular to the direction of energy transfer', 'At 45° to the direction of energy transfer', 'In circles around the direction of energy transfer'], 'Sound waves are longitudinal.', { d: 1 }),
           tf('Water waves carry the water along with them across the sea.', false, 'Waves transfer energy, not the water itself (a floating duck bobs up and down).', { d: 2 }),
           num('Sound travels at 340 m/s. A note has a wavelength of 0.85 m. What is its frequency?', 400, 'f = 340 ÷ 0.85 = 400 Hz.', { d: 3, unit: 'Hz' }),
         ],
@@ -246,7 +246,7 @@ All objects emit and absorb IR. A **perfect black body** absorbs all radiation. 
         flashcards: cards([['Range of human hearing?', '20 Hz to 20 000 Hz.'], ['What is ultrasound?', 'Sound with a frequency above 20 kHz.'], ['Why does a red object look red?', 'It reflects red light and absorbs other colours.'], ['What do S-waves tell us about the Earth?', 'They cannot travel through liquid, so the outer core must be liquid.'], ['What is a perfect black body?', 'An object that absorbs all the radiation incident on it.']]),
         questions: [
           num('An ultrasound pulse returns after 0.0002 s in tissue where sound travels at 1500 m/s. How deep is the boundary?', 0.15, '1500 × 0.0002 ÷ 2 = 0.15 m.', { d: 3, unit: 'm', h: ['The pulse travels there AND back.'] }),
-          mc('Which seismic waves cannot travel through liquids?', ['S-waves', 'P-waves', 'Both', 'Neither'], 'S-waves are transverse.', { d: 2 }),
+          mc('Which seismic waves cannot travel through liquids?', ['S-waves', 'P-waves', 'Surface waves', 'Both S-waves and P-waves'], 'S-waves are transverse.', { d: 2 }),
           tf('A blue filter lets through all colours except blue.', false, 'A blue filter transmits only blue light.', { d: 2 }),
         ],
       }),
@@ -310,7 +310,7 @@ Light from distant galaxies is **red-shifted** (wavelengths stretched) → galax
         flashcards: cards([['What keeps a main sequence star stable?', 'Outward pressure from fusion balances the inward force of gravity.'], ['What will the Sun become?', 'Red giant → white dwarf → black dwarf.'], ['What is red-shift?', 'An increase in the observed wavelength of light from galaxies moving away from us.'], ['Two pieces of evidence for the Big Bang?', 'Red-shift of galaxies and the cosmic microwave background radiation.'], ['Where are elements heavier than iron made?', 'In supernovae.']]),
         questions: [
           ord('Put the life cycle of a Sun-sized star in order.', ['Nebula', 'Protostar', 'Main sequence star', 'Red giant', 'White dwarf'], 'Large stars instead become red supergiants and explode as supernovae.', { d: 2 }),
-          mc('What does red-shift tell us about distant galaxies?', ['They are moving away from us', 'They are moving towards us', 'They are red', 'They are getting hotter'], 'Wavelength stretched → receding.', { d: 1 }),
+          mc('What does red-shift tell us about distant galaxies?', ['They are moving away from us', 'They are moving towards us', 'They are getting cooler', 'They are not rotating'], 'Wavelength stretched → receding.', { d: 1 }),
           tf('More distant galaxies show greater red-shift.', true, 'They are moving away faster - evidence the universe is expanding.', { d: 2 }),
         ],
         examQuestions: [examQ('Describe the life cycle of a star much more massive than the Sun.', 6, SIX(['Dust and gas (nebula) pulled together by gravity → protostar', 'Temperature rises until hydrogen fusion begins', 'Main sequence: fusion pressure balances gravity', 'Hydrogen runs out → expands into a red supergiant', 'Explodes as a supernova (heavy elements made and spread)', 'Leaves a neutron star or a black hole']), { meta: '6-mark describe', time: 7 })],

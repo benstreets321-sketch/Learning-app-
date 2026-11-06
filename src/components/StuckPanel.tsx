@@ -64,7 +64,7 @@ export function StuckPanel({ item, topic, hintsUsed, onHint, onEliminate, elimin
       <div className="stuck-head">
         <strong>{before ? 'Stuck? Start with the smallest nudge.' : 'Help me understand this'}</strong>
         <span className="muted small">
-          {before ? 'Using help is a good strategy – it only reduces the credit a little, and the question comes back later.' : 'Work out why the answer is right – that is what stops the same mistake next time.'}
+          {before ? 'Using help is a good strategy. It only reduces the credit a little, and the question comes back later.' : 'Work out why the answer is right. That is what stops the same mistake next time.'}
         </span>
       </div>
 
@@ -106,7 +106,7 @@ export function StuckPanel({ item, topic, hintsUsed, onHint, onEliminate, elimin
         <div className="stuck-body">
           {before ? (
             <>
-              <p className="muted small">Follow the steps. The last step is yours – finish it and type your answer.</p>
+              <p className="muted small">Follow the steps. The last step is yours. Finish it and type your answer.</p>
               <ol className="steps">{guided.slice(0, guidedShown).map((s, i) => <li key={i}><Markdown text={s} inline /></li>)}</ol>
               {guidedShown < guided.length ? (
                 <button className="btn small" onClick={() => setGuidedShown((n) => n + 1)}>Show the next step</button>
@@ -165,18 +165,18 @@ export function StuckPanel({ item, topic, hintsUsed, onHint, onEliminate, elimin
 
 function genericHint(item: QItem): string {
   switch (item.type) {
-    case 'mcq': return 'Cover the options and answer in your head first. Then rule out any option you know is wrong – which is left?';
+    case 'mcq': return 'Cover the options and answer in your head first. Then rule out any option you know is wrong. Which is left?';
     case 'multi': return 'Treat each option as its own true/false question.';
     case 'tf': return 'Look for the one word that could make the statement wrong (always, never, only, all...).';
     case 'num': return 'Write down what you know, the formula that links it, then substitute. Check units first. The calculator and formula sheet are in the toolbar above the question.';
-    case 'text': return 'Think of the exact key term from your notes – the word an examiner would look for.';
+    case 'text': return 'Think of the exact key term from your notes. The word an examiner would look for.';
     case 'order': return 'Find the very first step or event first, then ask "what must happen next?"';
-    case 'match': return 'Start with the pair you are most sure of – fewer options make the rest easier.';
+    case 'match': return 'Start with the pair you are most sure of. Fewer options make the rest easier.';
     case 'cloze': return 'Read the whole sentence first. The words around each gap are clues.';
     case 'sort': return 'Do the ones you are sure of first. For the rest, ask what the groups have in common.';
     case 'select': return 'Read the instruction again, then read the passage slowly one sentence at a time.';
     case 'spot': return 'Check each line on its own: does it follow correctly from the line before? Redo each calculation.';
-    case 'algebra': return 'Work it out on the working pad first. Check your answer by putting in a number for x on both your answer and the question – they should match. Then check it is in the form asked for.';
+    case 'algebra': return 'Work it out on the working pad first. Check your answer by putting in a number for x on both your answer and the question. They should match. Then check it is in the form asked for.';
     case 'plot': return 'For each point, go across to the x-value first, then up or down to the y-value ("along the corridor, then up the stairs"). For a line, work out y for two or three easy x-values.';
   }
 }

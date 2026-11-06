@@ -47,7 +47,7 @@ const edexcelTechnique = topic({
   keyPoints: ['Describe: two features + details', 'Explain why: 3 developed causes', 'How far: both sides + judgement with criteria', 'Usefulness: content + NOP + own knowledge', 'Interpretations: difference, reason for difference, how far you agree', 'Narrative: events linked in sequence'],
   flashcards: cards([['What does NOP stand for?', 'Nature, Origin, Purpose - used to evaluate a source\'s provenance.'], ['How many marks is an Edexcel "explain why" question?', '12'], ['What must you include in a "how far do you agree" answer?', 'Both sides, knowledge beyond the stimulus points, and a justified judgement.'], ['How do you answer a "follow up" question?', 'Detail I would follow up → question I would ask → type of source → how it would help.']]),
   questions: [
-    mc('How many marks is the Edexcel "how far do you agree" essay on Paper 1?', ['16 + 4 SPaG', '12', '8', '4'], 'Plus 4 marks for SPaG.', { d: 1 }),
+    mc('How many marks is the Edexcel "how far do you agree" essay on Paper 1?', ['16 + 4 SPaG', '12 + 4 SPaG', '20 + 4 SPaG', '8 + 4 SPaG'], 'Plus 4 marks for SPaG.', { d: 1 }),
     match('Match the question to its method.', [['Describe two features', 'Feature + supporting detail × 2'], ['Explain why', 'Three developed causes'], ['How useful', 'Content + provenance + own knowledge'], ['Narrative account', 'Linked sequence of events']], 'Know the technique for each.', { d: 2 }),
     tf('In a 12-mark "explain why", you should only use the two stimulus points given.', false, 'Use them, but add at least one point of your own for the top level.', { d: 2 }),
   ],
@@ -86,7 +86,7 @@ AQA names a different Elizabethan site each year. Your teacher will tell you the
   keyPoints: ['Interpretations: difference, reason, which is more convincing', 'Utility: content + provenance + context', 'Account: analytical narrative', 'Which more important: explain both, justify', 'Essays: 16 marks + 4 SPaG', 'Historic environment site changes yearly'],
   flashcards: cards([['How do you judge which interpretation is more convincing?', 'Test each against your own knowledge of the context, then make a judgement.'], ['How many marks is an AQA 16-mark essay plus SPaG?', '16 + 4 = 20.'], ['What changes every year in AQA Paper 2 Section B?', 'The historic environment site for the Elizabethan England essay.']]),
   questions: [
-    mc('In AQA "which interpretation is more convincing", what should you use to test the interpretations?', ['Your own contextual knowledge', 'Only the author\'s name', 'The length of each interpretation', 'Nothing - just give your opinion'], 'Evidence-based judgement.', { d: 2 }),
+    mc('In AQA "which interpretation is more convincing", what should you use to test the interpretations?', ['Your own contextual knowledge', 'The provenance of each interpretation only', 'How much detail each interpretation includes', 'Whether the two interpretations agree'], 'Evidence-based judgement.', { d: 2 }),
     tf('The AQA historic environment site is the same every year.', false, 'It changes - check with your teacher.', { d: 1 }),
   ],
 });

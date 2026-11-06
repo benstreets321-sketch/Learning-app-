@@ -1,4 +1,5 @@
 import type { Generator, Question, Quote, Topic, PastQuestion, Unit } from '../../types';
+import { relabel } from '../../generators/plausible';
 import { mcq, pick } from '../../generators/facts-kit';
 import { shuffle } from '../../../lib/util';
 import { topic, mc, examQ } from '../../dsl';
@@ -39,6 +40,10 @@ export function finishCluster(unit: Unit): Generator[] {
   const specs = unit.topics.map((t) => SPECS.get(t.id)).filter((x): x is PoemSpec => !!x);
   if (specs.length < 5) return [];
   const yr = (d: string) => Number(/\d{4}/.exec(d)?.[0] ?? 2015);
+  // comparisons name poems informally ("Charge of the Light Brigade"): use each poem's exact title, so a poem can never
+  // appear twice in one question under two names (and be both right and wrong)
+  const canon = (t: string) => t.toLowerCase().replace(/^(the|extract from( the)?)\s+/, '').replace(/[^a-z0-9]/g, '');
+  for (const p of specs) p.compare = p.compare.map(([t, w]) => [specs.find((x) => canon(x.title) === canon(t))?.title ?? t, w]);
   for (const p of specs) {
     const t = unit.topics.find((x) => x.id === p.id)!;
     const poets = [...new Set(specs.filter((x) => x.poet !== p.poet).map((x) => x.poet))]
@@ -78,7 +83,7 @@ function poemGenerator(p: PoemSpec, specs: PoemSpec[]): Generator {
   const near = (x: PoemSpec) => (x.themes.some((t) => p.themes.includes(t)) ? 0 : 1);
   const listed = new Set(p.compare.map((c) => c[0]));
   const onlyPoemByPoet = specs.filter((x) => x.poet === p.poet).length === 1;
-  const datedOthers = [...new Set(others.map((x) => x.date).filter((d) => d !== p.date))];
+  const datedOthers = [...new Set(others.map((x) => x.date).filter((d) => d !== p.date && /\d{4}/.test(d)))];
   return {
     id: `pm-${p.id}`, title: `Know the poem: ${p.title}`,
     make: (rand) => {
@@ -98,7 +103,8 @@ function poemGenerator(p: PoemSpec, specs: PoemSpec[]): Generator {
       if (k === 'date') {
         const y = Number(/\d{4}/.exec(p.date)![0]);
         const nearDates = [...datedOthers].sort((a, b) => Math.abs(yr(a) - y) - Math.abs(yr(b) - y));
-        return mcq(rand, `When was **${p.title}** (${p.poet}) written or published?`, p.date, nearDates, [`${p.title}: ${p.date}.`, 'Knowing the date helps you link the poem to its context (AO3).'], 3);
+        // just the year on every option: a note in brackets on some ("1794 (Songs of Experience)") would mark them out
+        return relabel(mcq(rand, `When was **${p.title}** (${p.poet}) written or published?`, p.date, nearDates, [`${p.title}: ${p.date}.`, 'Knowing the date helps you link the poem to its context (AO3).'], 3), (d) => d.replace(/\s*\(.*\)\s*$/, '').replace(/^\D+(?=\d{4})/, '').replace(/^(\d{4})\s*[–-]\s*\d{2,4}$/, '$1'));
       }
       if (k === 'compare-rev') {
         const [title, reason] = pick(rand, p.compare);

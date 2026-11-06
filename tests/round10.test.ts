@@ -143,7 +143,8 @@ describe('new content', () => {
     for (const id of Object.keys(GENERATORS).filter((g) => g.startsWith('nt-'))) {
       for (let s = 1; s <= 12; s++) {
         const q = GENERATORS[id].make(mulberry32(s * 31), 3);
-        expect(q.options, id).toBeTruthy();
+        // with no convincing set of wrong options, the student types the missing term instead
+        if (!q.options) { expect(q.accept?.length, id).toBeGreaterThan(0); expect(q.q, id).toMatch(/type the missing term/); continue; }
         const lower = q.options!.map((o) => o.toLowerCase());
         expect(new Set(lower).size, id).toBe(lower.length);
         const sentence = q.q.split('\n> ')[1] ?? '';

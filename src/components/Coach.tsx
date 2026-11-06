@@ -9,7 +9,6 @@ import { predictSubject } from '../lib/predict';
 import { savePredHist, updateProfile, useProfile, useProgress, type Profile, type Progress } from '../lib/store';
 import { href } from '../lib/router';
 import { todayKey } from '../lib/util';
-import { Icon } from './Icon';
 
 const fmtDate = (s: string) => new Date(`${s}T09:00:00`).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 const inDays = (n: number) => (n <= 0 ? 'today' : n === 1 ? 'tomorrow' : `in ${n} days`);
@@ -35,19 +34,23 @@ export function PhaseCard({ compact = false }: { compact?: boolean }) {
   const urgent = ph.phase === 'exam-eve' || ph.phase === 'exam-day';
   const anyEstimated = upcoming.some((p) => p.estimated);
   return (
-    <div className={`phase-card ${urgent ? 'urgent' : ''}`}>
-      <span className="phase-ic"><Icon name={urgent ? 'clock' : 'plan'} size={20} /></span>
-      <div className="grow">
+    <section className={`phase-card ${urgent ? 'urgent' : ''} ${compact ? 'compact' : ''}`}>
+      <div className="phase-text">
         <strong>{ph.title}</strong>
         <p className="small muted">{ph.advice}</p>
-        {upcoming.length > 0 && (
-          <div className="next-exams">
-            {upcoming.map((p) => <span key={p.key} className="pill" title={p.name}>{subjectName(p.subjectId)} {p.name.split(':')[0]} · {fmtDate(p.date)} · {inDays(daysBetween(now, new Date(`${p.date}T09:00:00`)))}{p.estimated ? '*' : ''}</span>)}
-          </div>
-        )}
-        {anyEstimated && <p className="small muted" style={{ marginTop: '0.35rem' }}>* Estimated date – <a href={href('/setup', { tab: 'exams' })}>enter your school's exam timetable</a> when you get it.</p>}
       </div>
-    </div>
+      {upcoming.length > 0 && (
+        <ol className="next-exams" aria-label="Your next exams">
+          {upcoming.map((p) => (
+            <li key={p.key} title={p.name}>
+              <span className="ne-name">{subjectName(p.subjectId)} {p.name.split(':')[0]}</span>
+              <span className="ne-when mono">{fmtDate(p.date)} · {inDays(daysBetween(now, new Date(`${p.date}T09:00:00`)))}{p.estimated ? '*' : ''}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+      {anyEstimated && <p className="small muted ne-note">* Estimated. <a href={href('/setup', { tab: 'exams' })}>Add your school's exam timetable</a> when you get it.</p>}
+    </section>
   );
 }
 
@@ -60,26 +63,21 @@ export function TodayExtras({ ids }: { ids?: string[] }) {
   const word = VOCAB[(dayNumber() * 37) % VOCAB.length];
   if (!q && !english) return null;
   return (
-    <div className="today-extras">
+    <>
       {q && (
         <a className="extra-card" href={href('/exam', { topic: q.topic.id, p: q.n })}>
-          <Icon name="formula" size={18} />
-          <span className="grow">
-            <span className="small strong block">Exam question of the day{q.done ? ' ✓' : ''}</span>
-            <span className="small muted clip">{q.subject.short} · {q.eq.marks} marks · {q.eq.q.replace(/[*_#>]/g, '').split('\n')[0]}</span>
-          </span>
+          <span className="ex-kind">Exam Q{q.done ? ' ✓' : ''}</span>
+          <span className="grow clip">{q.eq.q.replace(/[*_#>]/g, '').split('\n')[0]}</span>
+          <span className="mono small muted">[{q.eq.marks}]</span>
         </a>
       )}
       {english && (
         <a className="extra-card" href={href('/vocab')}>
-          <Icon name="learn" size={18} />
-          <span className="grow">
-            <span className="small strong block">Word of the day: {word.w}</span>
-            <span className="small muted clip">{word.def}</span>
-          </span>
+          <span className="ex-kind">Word</span>
+          <span className="grow clip"><strong>{word.w}</strong> <span className="muted">{word.def}</span></span>
         </a>
       )}
-    </div>
+    </>
   );
 }
 
@@ -114,11 +112,11 @@ export function WeeklyReview() {
   const behind = moves.filter((m) => m.nowP.ready && (m.nowP.gap ?? 0) > 0).sort((a, b) => b.nowP.gap! - a.nowP.gap!);
   const mocksThisMonth = Object.values(progress.mocks ?? {}).flat().filter((a) => (a.finished ?? 0) >= Date.now() - 28 * 86_400_000).length;
   const tips: string[] = [];
-  if (w.days < 5) tips.push(`Aim for at least 5 days next week – you studied on ${w.days}. Little and often beats one long session.`);
+  if (w.days < 5) tips.push(`Aim for at least 5 days next week. You studied on ${w.days}. Little and often beats one long session.`);
   if (behind[0]) tips.push(`Biggest gap to target: ${behind[0].s.name} (${Math.ceil(behind[0].nowP.gap!)}% to go). Its sessions already favour the topics worth the most marks.`);
-  if (!mocksThisMonth && Object.keys(progress.topics).length > 20) tips.push('No mock paper in the last four weeks – take one this week under timed conditions.');
+  if (!mocksThisMonth && Object.keys(progress.topics).length > 20) tips.push('No mock paper in the last four weeks. Take one this week under timed conditions.');
   if (w.q && w.c / w.q < 0.6) tips.push('Accuracy was under 60%: use Learn on your weakest topic before more practice.');
-  if (!tips.length) tips.push('Great week – keep the same routine: Learn, then your session, plus the exam question of the day.');
+  if (!tips.length) tips.push('Great week. Keep the same routine: Learn, then your session, plus the exam question of the day.');
   return (
     <div className="weekly-review">
       <div className="review-grid">
@@ -144,10 +142,10 @@ export function CoursePace() {
   const d = (x: Date) => x.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
   return (
     <p className="small">
-      <strong className="mono">{started.length}/{topics.length}</strong> topics started{remaining ? <>, <strong className="mono">{remaining}</strong> to go</> : ' – the whole course'}.{' '}
+      <strong className="mono">{started.length}/{topics.length}</strong> topics started{remaining ? <>, <strong className="mono">{remaining}</strong> to go</> : ', the whole course'}.{' '}
       {remaining > 0 && (pace.onTrack === null
         ? <>Start one new topic a day with <strong>Learn</strong> to finish by {d(pace.aim)}, leaving four months to consolidate.</>
-        : <>At your recent pace of <strong>{pace.perWeek.toFixed(1)}</strong> a week you'll finish around <strong>{d(pace.finish!)}</strong> – {pace.onTrack ? 'on track' : `aim for ${d(pace.aim)}, so try about ${Math.ceil(remaining / Math.max(1, (pace.aim.getTime() - Date.now()) / (7 * 86_400_000)))} a week`}.</>)}
+        : <>At your recent pace of <strong>{pace.perWeek.toFixed(1)}</strong> a week you'll finish around <strong>{d(pace.finish!)}</strong>. {pace.onTrack ? 'That is on track.' : `To finish by ${d(pace.aim)}, aim for about ${Math.ceil(remaining / Math.max(1, (pace.aim.getTime() - Date.now()) / (7 * 86_400_000)))} a week.`}</>)}
     </p>
   );
 }

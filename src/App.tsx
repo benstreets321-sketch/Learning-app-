@@ -74,8 +74,11 @@ export function App() {
 
   useEffect(() => {
     const root = document.documentElement;
-    if (profile.theme === 'auto') root.removeAttribute('data-theme');
-    else root.setAttribute('data-theme', profile.theme);
+    // dark (the desk lamp) is the default; daylight is chosen in Settings or follows a light device
+    if (profile.theme === 'light' || profile.theme === 'device') root.setAttribute('data-theme', profile.theme);
+    else root.removeAttribute('data-theme');
+    const light = profile.theme === 'light' || (profile.theme === 'device' && window.matchMedia?.('(prefers-color-scheme: light)').matches);
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', light ? '#F6F3EC' : '#0F1420'));
   }, [profile.theme]);
 
   useEffect(() => { window.scrollTo(0, 0); }, [route.raw]);
@@ -150,7 +153,7 @@ export function App() {
       <aside className="sidebar" aria-label="Main">
         <a className="brand" href={href('/')}>
           <span className="logo" aria-hidden="true">G</span>
-          <span className="brand-text">GCSE Revision Hub</span>
+          <span className="brand-text"><small>GCSE 2027/28</small>Revision Hub</span>
         </a>
         <a href={href('/search')} className={`side-search ${first === 'search' ? 'active' : ''}`}>
           <Icon name="search" size={16} /> <span>Search</span> <kbd>/</kbd>
@@ -185,7 +188,7 @@ export function App() {
       <header className="topbar">
         <a className="brand" href={href('/')}>
           <span className="logo" aria-hidden="true">G</span>
-          <span className="brand-text">GCSE Revision Hub</span>
+          <span className="brand-text"><small>GCSE 2027/28</small>Revision Hub</span>
         </a>
         <span className="row top-tools">
           {!inSession && profile.onboarded && <LearnButton compact />}

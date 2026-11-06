@@ -38,7 +38,7 @@ export function pickLearnTopic(profile: Profile, progress: Progress, subjectIds?
   const relearn = ordered
     .filter(({ topic }) => { const ts = progress.topics[topic.id]; return ts && ts.n >= 2 && !ts.notesRead && level(ts, now) === 'weak'; })
     .sort((a, b) => mastery(progress.topics[a.topic.id], now) - mastery(progress.topics[b.topic.id], now))[0];
-  if (relearn) return { ...relearn, reason: 'You have found this topic hard – here is the lesson, then practice.' };
+  if (relearn) return { ...relearn, reason: 'You have found this topic hard. Here is the lesson, then practice.' };
   // 2) new topics: course order, nudged towards the target grade
   const fresh = ordered.filter(({ topic }) => !(progress.topics[topic.id]?.n) && !progress.topics[topic.id]?.notesRead);
   if (fresh.length) {
@@ -57,7 +57,7 @@ export function pickLearnTopic(profile: Profile, progress: Progress, subjectIds?
   }
   // 3) everything started: the weakest
   const weakest = [...ordered].sort((a, b) => mastery(progress.topics[a.topic.id], now) - mastery(progress.topics[b.topic.id], now))[0];
-  return { ...weakest, reason: 'Every topic is started – this is your weakest, so it gets a full lesson again.' };
+  return { ...weakest, reason: 'Every topic is started. This is your weakest, so it gets a full lesson again.' };
 }
 
 /** The notes as short lesson chunks: split at headings, joined up so each chunk is a sensible size (2–4 chunks) */

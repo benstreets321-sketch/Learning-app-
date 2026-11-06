@@ -82,7 +82,7 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
           <label>
             Date of my first exam
             <input type="date" value={profile.firstExam} onChange={(e) => updateProfile({ firstExam: e.target.value })} />
-            <span className="muted small">Estimated – update it when your school shares the timetable.</span>
+            <span className="muted small">Estimated. Update it when your school shares the timetable.</span>
           </label>
           <label>
             Daily goal (minutes)
@@ -95,14 +95,14 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
               <option value="on">Always use the app keyboard</option>
               <option value="off">Use my device's keyboard</option>
             </select>
-            <span className="muted small">The app keyboard has no autocorrect or word suggestions, so your spelling is your own – like the real exam. Spelling mistakes are pointed out after you answer.</span>
+            <span className="muted small">The app keyboard has no autocorrect or word suggestions, so your spelling is your own. Like the real exam. Spelling mistakes are pointed out after you answer.</span>
           </label>
           <label>
             Theme
-            <select value={profile.theme} onChange={(e) => updateProfile({ theme: e.target.value as 'auto' | 'light' | 'dark' })}>
-              <option value="auto">Match my device</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
+            <select value={profile.theme === 'dark' ? 'auto' : profile.theme} onChange={(e) => updateProfile({ theme: e.target.value as 'auto' | 'light' | 'device' })}>
+              <option value="auto">Desk lamp (dark)</option>
+              <option value="light">Daylight (light)</option>
+              <option value="device">Match my device</option>
             </select>
           </label>
         </div>
@@ -146,7 +146,7 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
       </div>
 
       <Section title="Tiers">
-        <p className="muted small">Higher tier shows grade 4-9 content including the hardest topics. Foundation hides higher-only topics (grades 1-5). Not sure? Ask your teacher – choose Higher if you're aiming for a 6+.</p>
+        <p className="muted small">Higher tier shows grade 4-9 content including the hardest topics. Foundation hides higher-only topics (grades 1-5). Not sure? Ask your teacher, and choose Higher if you're aiming for a 6+.</p>
         <div className="form-grid">
           {TIERED.filter((id) => profile.subjects.includes(id)).map((id) => (
             <label key={id}>
@@ -235,7 +235,7 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
           <div className="row gap wrap">
             {canExport && <button className="btn" onClick={async () => {
               const r = await saveFile(`gcse-revision-backup-${new Date().toISOString().slice(0, 10)}.json`, exportData(), 'application/json');
-              setMsg(r === 'saved' ? 'Backup saved. Keep it somewhere safe – you can import it on any device.' : r === 'declined' ? 'Backup not saved.' : 'Saving files isn\'t available here. Your progress still saves automatically.');
+              setMsg(r === 'saved' ? 'Backup saved. Keep it somewhere safe. You can import it on any device.' : r === 'declined' ? 'Backup not saved.' : 'Saving files isn\'t available here. Your progress still saves automatically.');
             }}>Export backup</button>}
             <button className="btn" onClick={() => fileRef.current?.click()}>Import backup</button>
             <input ref={fileRef} type="file" accept="application/json" hidden onChange={async (e) => {
@@ -244,8 +244,8 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
               setMsg(importData(await f.text()) ? 'Backup restored.' : 'That file is not a valid backup.');
             }} />
             <button className="btn" onClick={async () => {
-              try { await navigator.clipboard.writeText(exportData()); setMsg('Backup copied – paste it somewhere safe (e.g. a note or email to yourself).'); }
-              catch { setMsg('Copying was blocked by your browser – use Export backup instead.'); }
+              try { await navigator.clipboard.writeText(exportData()); setMsg('Backup copied. Paste it somewhere safe (e.g. a note or email to yourself).'); }
+              catch { setMsg('Copying was blocked by your browser. Use Export backup instead.'); }
             }}>Copy backup</button>
             {!confirmReset ? (
               <button className="btn danger" onClick={() => setConfirmReset(true)}>Reset everything</button>
@@ -302,7 +302,7 @@ function AITutorSettings() {
       {provider === 'claude' ? (
         <p className="small"><strong>Full AI tutor is on.</strong> You're using the app inside Claude, so the tutor and exam marking use your Claude plan. There is no API key and nothing extra to pay.</p>
       ) : (
-        <p className="small"><strong>Built-in tutor is on.</strong> It answers from the app's own hints, worked steps, notes and mark schemes, and works offline. For a tutor that can answer any question, open the app inside Claude – it uses your Claude plan, with no API key and nothing extra to pay.</p>
+        <p className="small"><strong>Built-in tutor is on.</strong> It answers from the app's own hints, worked steps, notes and mark schemes, and works offline. For a tutor that can answer any question, open the app inside Claude. It uses your Claude plan, with no API key and nothing extra to pay.</p>
       )}
     </Section>
   );

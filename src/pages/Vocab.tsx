@@ -23,13 +23,13 @@ export function VocabPage() {
     <div className="page narrow vocab-page">
       <a className="small" href={href('/s/english-language')}>← English Language</a>
       <h1>Ambitious vocabulary</h1>
-      <p className="muted">{VOCAB.length} precise words for description, argument and analysis. {learned ? <><strong>{learned}</strong> learned so far (remembered for 3+ days).</> : 'Learn a few a day – your sessions bring them back before you forget.'}</p>
+      <p className="muted">{VOCAB.length} precise words for description, argument and analysis. {learned ? <><strong>{learned}</strong> learned so far (remembered for 3+ days).</> : 'Learn a few a day. Your sessions bring them back before you forget.'}</p>
       <div className="card pad wotd">
         <p className="eyebrow">Word of the day</p>
         <h2>{wotd.w} <span className="muted small">({wotd.pos === 'adj' ? 'adjective' : wotd.pos === 'adv' ? 'adverb' : wotd.pos})</span></h2>
         <p>{wotd.def}. Upgrades: <em>{wotd.plain}</em>.</p>
         <p className="muted"><em>{wotd.ex}</em></p>
-        <p className="small">Now write your own sentence with it – using a word is what makes it yours.</p>
+        <p className="small">Now write your own sentence with it. Using a word is what makes it yours.</p>
       </div>
       <div className="row gap wrap vocab-actions">
         <a className="btn primary" href={href('/learn', { topic: 'el-vocab', _: Date.now() })}><Icon name="learn" size={16} /> Learn words</a>

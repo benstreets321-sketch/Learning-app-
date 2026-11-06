@@ -113,7 +113,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
           </div>
           <textarea className="essay" {...answerProps('long', appKb)} rows={eq.marks >= 12 ? 18 : eq.marks >= 6 ? 10 : 5} value={text} onChange={(e) => setText(e.target.value)} placeholder="Write your answer as you would in the exam. It saves automatically." />
           <div className="row gap end">
-            <button className="btn primary" disabled={!text.trim()} onClick={() => { setRunning(false); addStudyTime(secs); setPhase('mark'); }}>I'm done – mark it</button>
+            <button className="btn primary" disabled={!text.trim()} onClick={() => { setRunning(false); addStudyTime(secs); setPhase('mark'); }}>Mark my answer</button>
           </div>
         </>
       )}
@@ -126,7 +126,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
               <div className="row gap wrap">
                 <div className="grow">
                   <strong>Check your answer</strong>
-                  <p className="muted small">{provider === 'claude' ? 'Claude marks your answer against the mark scheme and ticks the points you made. Check its marking – you have the final say.' : 'Compare your answer with the mark scheme below, or run a quick key-word check to see which points you seem to have covered.'}</p>
+                  <p className="muted small">{provider === 'claude' ? 'Claude marks your answer against the mark scheme and ticks the points you made. Check its marking. You have the final say.' : 'Compare your answer with the mark scheme below, or run a quick key-word check to see which points you seem to have covered.'}</p>
                 </div>
                 {provider === 'claude'
                   ? <button className="btn primary" disabled={aiBusy || phase === 'saved'} onClick={() => void runAI()}>{aiBusy ? 'Marking…' : 'Mark it with AI'}</button>
@@ -152,9 +152,9 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
                 <strong>Key-word check</strong>
                 <div className="two-col ai-fb">
                   <div><div className="small strong">Looks covered</div>{kw.points.some((x) => x.likely) ? <ul className="small">{kw.points.filter((x) => x.likely).map((x) => <li key={x.index}>{x.text}</li>)}</ul> : <p className="small muted">Nothing matched yet.</p>}</div>
-                  <div><div className="small strong">Not found – consider adding</div>{kw.points.some((x) => !x.likely && x.terms.length) ? <ul className="small">{kw.points.filter((x) => !x.likely && x.terms.length).map((x) => <li key={x.index}>{x.text}</li>)}</ul> : <p className="small muted">Every point seems to be there.</p>}</div>
+                  <div><div className="small strong">Missing points to consider</div>{kw.points.some((x) => !x.likely && x.terms.length) ? <ul className="small">{kw.points.filter((x) => !x.likely && x.terms.length).map((x) => <li key={x.index}>{x.text}</li>)}</ul> : <p className="small muted">Every point seems to be there.</p>}</div>
                 </div>
-                <p className="muted small">This only looks for key words, so it can't judge quality. {kw.levelled ? 'Use the level descriptors below to decide your mark.' : 'Likely points are ticked below – check each one honestly before saving.'}</p>
+                <p className="muted small">This only looks for key words, so it can't judge quality. {kw.levelled ? 'Use the level descriptors below to decide your mark.' : 'Likely points are ticked below. Check each one honestly before saving.'}</p>
               </div>
             )}
             {aiErr && <p className="small fb-detail">{aiErr}</p>}
@@ -166,7 +166,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
             </div>
             <div>
               <h3>Mark scheme</h3>
-              <p className="muted small">{levelScheme ? 'Read the level descriptors and tick every statement your answer genuinely meets. Mark it as strictly as an examiner would.' : 'Tick each point your answer clearly makes. Be strict – would an examiner give it?'}</p>
+              <p className="muted small">{levelScheme ? 'Read the level descriptors and tick every statement your answer genuinely meets. Mark it as strictly as an examiner would.' : 'Tick each point your answer clearly makes. Be strict. Would an examiner give it?'}</p>
               {eq.markScheme.map((m, k) => (
                 <label key={k} className="tick">
                   <input type="checkbox" disabled={phase === 'saved'} checked={ticks.has(k)} onChange={() => { setScore(null); setTicks((s) => { const n = new Set(s); if (n.has(k)) n.delete(k); else n.add(k); return n; }); }} />
@@ -194,7 +194,7 @@ export function ExamPage({ query }: { query: URLSearchParams }) {
           </div>
           {phase === 'saved' && (
             <div className="feedback good">
-              <p><strong>Next step:</strong> rewrite your weakest paragraph or point using the mark scheme and model – improving an answer teaches more than writing a new one.</p>
+              <p><strong>Next step:</strong> rewrite your weakest paragraph or point using the mark scheme and model. Improving an answer teaches more than writing a new one.</p>
               <div className="row gap wrap">
                 <button className="btn" onClick={() => { setPhase('write'); setTicks(new Set()); setScore(null); setSecs(0); }}>Improve my answer</button>
                 {pn !== null

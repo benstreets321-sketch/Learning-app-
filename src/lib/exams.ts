@@ -88,12 +88,12 @@ export function phaseFor(profile: Profile, courseStarted: number, date = new Dat
   const daysToNext = next ? daysBetween(now, atNine(next.date)) : undefined;
   const today = papers.filter((p) => p.date === todayIso);
   const name = (p: Paper) => `${subjectName(p.subjectId)} ${p.name.split(':')[0]}`;
-  if (!next) return { phase: 'finished', toFirst, today, title: 'Exams finished', advice: 'Every paper is done – well done. Rest, and keep the app for next year or for resits.' };
-  if (today.length) return { phase: 'exam-day', toFirst, next, daysToNext, today, title: `Exam today: ${today.map(name).join(' and ')}`, advice: 'A light 10-minute look at key facts and flashcards only. Eat breakfast, bring black pens, a calculator if allowed, and arrive early. You have prepared – trust it.' };
-  if (daysToNext === 1) return { phase: 'exam-eve', toFirst, next, daysToNext, today, title: `Tomorrow: ${name(next)}`, advice: 'Tonight: a short session on this subject only, then check your equipment and get a good night\'s sleep. Sleep fixes memories – a late cram does more harm than good.' };
+  if (!next) return { phase: 'finished', toFirst, today, title: 'Exams finished', advice: 'Every paper is done. Well done. Rest, and keep the app for next year or for resits.' };
+  if (today.length) return { phase: 'exam-day', toFirst, next, daysToNext, today, title: `Exam today: ${today.map(name).join(' and ')}`, advice: 'A light 10-minute look at key facts and flashcards only. Eat breakfast, bring black pens, a calculator if allowed, and arrive early. You have prepared. Trust it.' };
+  if (daysToNext === 1) return { phase: 'exam-eve', toFirst, next, daysToNext, today, title: `Tomorrow: ${name(next)}`, advice: 'Tonight: a short session on this subject only, then check your equipment and get a good night\'s sleep. Sleep fixes memories. A late cram does more harm than good.' };
   if (toFirst <= 42) return { phase: 'exam-season', toFirst, next, daysToNext, today, title: toFirst > 0 ? `Exam season: ${toFirst} days to go` : 'Exam season', advice: `Each day now follows your next exams (next: ${name(next)} in ${daysToNext} day${daysToNext === 1 ? '' : 's'}). Sessions focus on mistakes, weak spots and exam questions; take one timed mock paper each week.` };
   if (toFirst <= 120 || courseStarted >= 0.9) return { phase: 'consolidate', toFirst, next, daysToNext, today, title: 'Consolidate and practise exam questions', advice: 'The course is (nearly) all learned, so Learn now re-teaches your weakest topics. Do your daily session, one written exam question a day, and a full mock paper every two to three weeks.' };
-  return { phase: 'learn', toFirst, next, daysToNext, today, title: 'Learning the course', advice: 'Learn one new topic each day, then do your session – it keeps everything you have learned fresh. Aim to finish the course about four months before the exams, leaving time to consolidate.' };
+  return { phase: 'learn', toFirst, next, daysToNext, today, title: 'Learning the course', advice: 'Learn one new topic each day, then do your session. It keeps everything you have learned fresh. Aim to finish the course about four months before the exams, leaving time to consolidate.' };
 }
 
 const NAMES: Record<string, string> = {

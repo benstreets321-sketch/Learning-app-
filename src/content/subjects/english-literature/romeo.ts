@@ -92,7 +92,7 @@ A **sonnet** spoken by the Chorus: it tells us the "**star-crossed lovers**" wil
       ]),
       questions: [
         mc('What do Romeo\'s oxymorons in Act 1 Scene 1 suggest?', ['His love for Rosaline is confused and clichéd', 'His love for Juliet is mature and sincere', 'He is a skilled fighter eager to join the feud', 'He is calm, content and happy with his life'], '"O brawling love! O loving hate!" - conventional, self-indulgent misery.', { d: 2 }),
-        mc('How does Romeo\'s language change when he meets Juliet?', ['It becomes fresher, full of light imagery', 'It becomes more violent', 'He stops speaking in verse', 'He uses only oxymorons'], 'Light imagery ("teach the torches to burn bright") shows sincere wonder.', { d: 2 }),
+        mc('How does Romeo\'s language change when he meets Juliet?', ['It becomes fresher, full of light imagery', 'It becomes darker, full of violent imagery', 'It becomes plainer, as he drops verse', 'It becomes more confused, full of oxymorons'], 'Light imagery ("teach the torches to burn bright") shows sincere wonder.', { d: 2 }),
         tf('Romeo initially tries to avoid fighting Tybalt in Act 3 Scene 1.', true, 'He says he loves Tybalt "better than thou canst devise" - because they are now related by marriage.'),
         mc('How could you argue Romeo is responsible for the tragedy?', ['His impulsive choices - killing Tybalt, rushing to the tomb - drive events', 'He follows the Friar\'s advice carefully at every stage', 'He always thinks before he acts, unlike the other men', 'The Prologue makes clear he is completely innocent'], 'Fate frames the play, but Romeo\'s haste makes it happen.', { d: 3 }),
       ],
@@ -133,10 +133,10 @@ Juliet as a **female character with strong emotions** (2021), Juliet's **feeling
         ['Who abandons Juliet in Act 3 Scene 5?', 'Her mother and then the Nurse, who advises her to marry Paris.'],
       ]),
       questions: [
-        mc('What does "Wherefore art thou Romeo?" mean?', ['Why are you Romeo - a Montague?', 'Where are you, Romeo?', 'Are you Romeo?', 'Come here, Romeo'], '"Wherefore" means "why" - she laments that he belongs to the enemy family.', { d: 1 }),
-        mc('How does Juliet change between Act 1 Scene 3 and Act 3 Scene 5?', ['From obedient daughter to defiant, independent woman', 'From defiant rebel to obedient, dutiful daughter', 'She stays exactly the same from start to finish', 'From a happy girl to a bored and lonely wife'], 'She moves from "I\'ll look to like" to refusing her father\'s choice of husband.', { d: 2 }),
+        mc('What does "Wherefore art thou Romeo?" mean?', ['Why are you Romeo - a Montague?', 'Where are you, Romeo?', 'Why are you hiding, Romeo?', 'When will you come, Romeo?'], '"Wherefore" means "why" - she laments that he belongs to the enemy family.', { d: 1 }),
+        mc('How does Juliet change between Act 1 Scene 3 and Act 3 Scene 5?', ['From obedient daughter to defiant, independent woman', 'From defiant rebel to obedient, dutiful daughter', 'From a bold, flirtatious girl to a shy, quiet wife', 'From a happy girl to a bored and lonely wife'], 'She moves from "I\'ll look to like" to refusing her father\'s choice of husband.', { d: 2 }),
         tf('The Nurse supports Juliet\'s refusal to marry Paris to the end.', false, 'In 3.5 the Nurse advises her to marry Paris ("I think it best you married with the County") - Juliet feels betrayed.', { d: 2 }),
-        mc('Why is Juliet\'s potion speech (4.3) significant?', ['It shows her courage in facing terrifying fears alone', 'It shows she is happy to marry Paris', 'It is spoken to the Nurse', 'It is comic relief'], 'She imagines waking among corpses and Tybalt\'s body, yet drinks - remarkable bravery.', { d: 3 }),
+        mc('Why is Juliet\'s potion speech (4.3) significant?', ['It shows her courage in facing terrifying fears alone', 'It shows she has decided to obey her father', 'It shows that the Nurse is still on her side', 'It shows she has begun to doubt Romeo\'s love'], 'She imagines waking among corpses and Tybalt\'s body, yet drinks - remarkable bravery.', { d: 3 }),
       ],
     }),
     topic({

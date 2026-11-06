@@ -11,16 +11,16 @@ import type { Quote } from '../content/types';
 import { Calculator, PeriodicTable } from '../components/Tools';
 
 export const TOOL_INFO: Record<string, { title: string; desc: string }> = {
-  calculator: { title: 'Calculator', desc: 'Scientific calculator: powers, roots, trig (degrees), standard form, π and Ans – like an exam calculator.' },
+  calculator: { title: 'Calculator', desc: 'Scientific calculator: powers, roots, trig (degrees), standard form, π and Ans. Like an exam calculator.' },
   periodic: { title: 'Periodic table', desc: 'The exam data-sheet periodic table. Tap an element for protons, neutrons, electrons and shells.' },
-  reference: { title: 'Reference sheet', desc: 'Formulae, equations and must-learn facts – including what IS and ISN\'T given in the exam.' },
+  reference: { title: 'Reference sheet', desc: 'Formulae, equations and must-learn facts. Including what IS and ISN\'T given in the exam.' },
   quotes: { title: 'Quote trainer', desc: 'Memorise quotations with progressive deletion: words disappear until you know it by heart.' },
   essay: { title: 'Essay planner', desc: 'Plan a top-band answer: thesis, paragraphs, evidence, analysis and context.' },
   pastq: { title: 'Past question tracker', desc: 'Every question from recent real papers for your texts, by year.' },
   timeline: { title: 'Master timeline', desc: 'Every key date across your units in one place.' },
-  practicals: { title: 'Required practicals', desc: 'All the required practicals – method, variables, risks and typical exam questions.' },
+  practicals: { title: 'Required practicals', desc: 'All the required practicals. Method, variables, risks and typical exam questions.' },
   command: { title: 'Command words', desc: 'What "explain", "evaluate", "describe" and others actually ask you to do.' },
-  glossary: { title: 'Glossary', desc: 'Every key term and definition in this subject – searchable.' },
+  glossary: { title: 'Glossary', desc: 'Every key term and definition in this subject. Searchable.' },
   timer: { title: 'Focus timer', desc: '25-minute focus blocks with 5-minute breaks (Pomodoro).' },
 };
 
@@ -127,7 +127,7 @@ function QuoteTrainer({ subjectId, topicId }: { subjectId: string; topicId: stri
   };
   return (
     <div>
-      <p className="muted">Read the quote aloud, then step through the stages – more words vanish each time. Finally, type it from memory. Learn 3-5 a day and revisit them.</p>
+      <p className="muted">Read the quote aloud, then step through the stages. More words vanish each time. Finally, type it from memory. Learn 3-5 a day and revisit them.</p>
       <div className="quote-trainer">
         <div className="muted small">{q.topic}{q.who ? ` · ${q.who}` : ''}{q.where ? ` · ${q.where}` : ''} · {idx % quotes.length + 1}/{quotes.length}</div>
         {stage < 4 ? <p className="qt big">“{stageText(q.text, stage)}”</p> : (
@@ -135,7 +135,7 @@ function QuoteTrainer({ subjectId, topicId }: { subjectId: string; topicId: stri
             <textarea className="essay" {...answerProps('long', appKb)} rows={3} value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Type the quote from memory" />
             {checked === null ? <button className="btn primary" onClick={score} disabled={!typed.trim()}>Check</button> : (
               <div className={`feedback ${checked >= 90 ? 'good' : 'bad'}`}>
-                <strong>{checked}% match.</strong> {checked >= 90 ? 'You know it.' : 'Nearly – look again and retry.'}
+                <strong>{checked}% match.</strong> {checked >= 90 ? 'You know it.' : 'Nearly. Look again and retry.'}
                 <p className="qt">“{q.text}”</p>
               </div>
             )}
@@ -156,11 +156,11 @@ function QuoteTrainer({ subjectId, topicId }: { subjectId: string; topicId: stri
 const ESSAY_FIELDS: { key: string; label: string; help: string }[] = [
   { key: 'question', label: 'The question', help: 'Copy it out and underline the key focus words (e.g. "how", "presents", "ambition").' },
   { key: 'thesis', label: 'Thesis (your big argument in 1-2 sentences)', help: 'A clear, arguable answer that mentions the writer\'s purpose. e.g. "Shakespeare presents ambition as a corrupting force, using Macbeth\'s fall to warn a Jacobean audience..."' },
-  { key: 'p1', label: 'Paragraph 1 – idea + evidence + analysis', help: 'Start from the extract (if there is one). Topic sentence about an IDEA → embedded quote → zoom in on a word/technique → effect on reader → link to context/purpose.' },
-  { key: 'p2', label: 'Paragraph 2 – development / contrast', help: 'Move through the text: how does this idea change or develop? Use a different part of the text.' },
-  { key: 'p3', label: 'Paragraph 3 – the ending / alternative reading', help: 'How is the idea resolved at the end? Offer an alternative interpretation ("Alternatively...", "However, a modern audience might...").' },
-  { key: 'context', label: 'Context I\'ll weave in', help: 'Only context that explains the writer\'s choices – not a history lesson.' },
-  { key: 'conclusion', label: 'Conclusion', help: 'Return to the writer\'s purpose / message. Don\'t just repeat – say WHY it matters.' },
+  { key: 'p1', label: 'Paragraph 1: idea, evidence, analysis', help: 'Start from the extract (if there is one). Topic sentence about an IDEA → embedded quote → zoom in on a word/technique → effect on reader → link to context/purpose.' },
+  { key: 'p2', label: 'Paragraph 2: development or contrast', help: 'Move through the text: how does this idea change or develop? Use a different part of the text.' },
+  { key: 'p3', label: 'Paragraph 3: the ending or another reading', help: 'How is the idea resolved at the end? Offer an alternative interpretation ("Alternatively...", "However, a modern audience might...").' },
+  { key: 'context', label: 'Context I\'ll weave in', help: 'Only context that explains the writer\'s choices. Not a history lesson.' },
+  { key: 'conclusion', label: 'Conclusion', help: 'Return to the writer\'s purpose / message. Don\'t just repeat. Say WHY it matters.' },
 ];
 
 function EssayPlanner({ subjectId }: { subjectId: string }) {
@@ -176,7 +176,7 @@ function EssayPlanner({ subjectId }: { subjectId: string }) {
   }, [plan, key]);
   return (
     <div>
-      <p className="muted">Spend about 5 minutes planning in the exam – it is the difference between a list of points and a sustained argument. Practise planning lots of questions quickly: it's one of the best ways to revise English and History.</p>
+      <p className="muted">Spend about 5 minutes planning in the exam. It is the difference between a list of points and a sustained argument. Practise planning lots of questions quickly: it's one of the best ways to revise English and History.</p>
       {ESSAY_FIELDS.map((f) => (
         <label key={f.key} className="essay-field">
           <strong>{f.label}</strong>
@@ -197,7 +197,7 @@ function PastQuestions({ subjectId }: { subjectId: string }) {
   if (!topics.length) return <Empty title="No past questions for your options yet" />;
   return (
     <div>
-      <p className="muted">From real AQA papers (2020 and 2021 were November-only series). Use these to check you could answer on <em>any</em> focus. Exam boards never publish predictions – every character, theme and poem is examinable.</p>
+      <p className="muted">From real AQA papers (2020 and 2021 were November-only series). Use these to check you could answer on <em>any</em> focus. Exam boards never publish predictions. Every character, theme and poem is examinable.</p>
       {topics.map((t) => (
         <Section key={t.id} title={t.title}>
           <table className="table">

@@ -38,7 +38,7 @@ function retrieve(query: string, topic: Topic | undefined, subjectId: string, n 
     for (const c of chunks(topic.notes)) pool.push({ text: c, s: score(c) * 1.2 });
     for (const k of topic.keyPoints) pool.push({ text: k, s: score(k) * 1.3 });
     for (const f of topic.flashcards) pool.push({ text: `**${f.front.replace(/\n+/g, ' ')}** ${f.back}`, s: score(f.front + ' ' + f.back) * (frontHit(f.front) ? 1.8 : 1.1) });
-    for (const m of topic.misconceptions ?? []) pool.push({ text: `Common mistake: ${m.wrong} – actually, ${m.right}`, s: score(m.wrong + ' ' + m.right) });
+    for (const m of topic.misconceptions ?? []) pool.push({ text: `Common mistake: ${m.wrong}. Actually, ${m.right}`, s: score(m.wrong + ' ' + m.right) });
   }
   const subject = getSubject(subjectId);
   for (const u of subject?.units ?? []) for (const t of u.topics) {
@@ -67,17 +67,17 @@ function termsIn(text: string, topic?: Topic): string[] {
 
 const TYPE_HELP: Record<QItem['type'], string> = {
   mcq: 'Choose the **one** option that is correct.',
-  multi: 'Choose **every** option that is correct – there may be more than one.',
+  multi: 'Choose **every** option that is correct. There may be more than one.',
   tf: 'Decide whether the statement is **true or false**.',
   num: 'Work out a **number** and type it in (check the units it asks for).',
-  text: 'Type a **short answer** – usually the exact key term.',
+  text: 'Type a **short answer**, usually the exact key term.',
   order: 'Put the items in the **correct order**.',
   match: 'Match each item on the left with **one** on the right.',
   cloze: 'Fill each **gap** with the missing word.',
   sort: 'Put each item into the **group** it belongs to.',
   select: 'Tap the **words in the passage** that the question asks for.',
-  spot: 'One line of the working is **wrong** – find it.',
-  algebra: 'Type an **algebraic expression** – any equal form is accepted, but it must be in the form the question asks for (e.g. fully factorised).',
+  spot: 'One line of the working is **wrong**. Find it.',
+  algebra: 'Type an **algebraic expression**. Any equal form is accepted, but it must be in the form the question asks for (e.g. fully factorised).',
   plot: '**Plot points** on the grid by tapping (or type the coordinates).',
 };
 
@@ -126,7 +126,7 @@ export function offlineReply(c: NonNullable<TutorContext>, prompt: string, step:
   }
   if (/similar|another one|one to try|practice|try one/.test(p)) {
     const q = pickPractice(it);
-    if (!q) return 'There are no more short questions on this topic right now – try the **Practise** tab for this topic.';
+    if (!q) return 'There are no more short questions on this topic right now. Try the **Practise** tab for this topic.';
     practiceByKey.set(c.key, { item: q });
     return `Try this one:\n\n${practiceText(q)}`;
   }
@@ -138,7 +138,7 @@ export function offlineReply(c: NonNullable<TutorContext>, prompt: string, step:
         ...(it.type === 'num' || it.type === 'text' || it.type === 'algebra' || it.type === 'plot' ? (it.steps ?? []).slice(0, 1).map((s) => `First step: ${s}`) : []),
         ...(topic?.keyPoints ?? []).slice(0, 3).map((k) => `Remember: ${k}`),
       ];
-      return ladder.length ? `**Clue ${Math.min(step + 1, ladder.length)}:** ${ladder[Math.min(step, ladder.length - 1)]}${step + 1 < ladder.length ? '\n\n*Ask for another clue if you need one.*' : '\n\n*That was the last clue – have a go!*'}` : 'Rule out anything you know is wrong first, then look at what is left.';
+      return ladder.length ? `**Clue ${Math.min(step + 1, ladder.length)}:** ${ladder[Math.min(step, ladder.length - 1)]}${step + 1 < ladder.length ? '\n\n*Ask for another clue if you need one.*' : '\n\n*That was the last clue. Have a go!*'}` : 'Rule out anything you know is wrong first, then look at what is left.';
     }
     if (/asking|mean|understand|what do i|what should/.test(p)) {
       const qtext = 'q' in it && it.q ? it.q : it.type === 'cloze' ? it.text : '';
@@ -152,15 +152,15 @@ export function offlineReply(c: NonNullable<TutorContext>, prompt: string, step:
     }
     if (/simpl|another way|explain|topic|don.?t get|confus/.test(p)) {
       if (topic?.simpler) return topic.simpler;
-      if (topic) return `**${topic.title} – the key points:**\n${topic.keyPoints.slice(0, 5).map((k) => `- ${k}`).join('\n')}`;
+      if (topic) return `**${topic.title}. The key points:**\n${topic.keyPoints.slice(0, 5).map((k) => `- ${k}`).join('\n')}`;
     }
     if (/analys|quote|technique|effect/.test(p)) {
-      return 'Try **What – How – Why**:\n- **What** is the writer showing or suggesting?\n- **How** – which word or technique creates it? Zoom in on one word.\n- **Why** – what effect on the reader, and what is the writer\'s purpose or context?';
+      return 'Try **What – How – Why**:\n- **What** is the writer showing or suggesting?\n- **How**: which word or technique creates it? Zoom in on one word.\n- **Why**: what effect on the reader, and what is the writer\'s purpose or context?';
     }
   } else {
     if (/simpl|another way/.test(p) && topic?.simpler) return topic.simpler;
     if (/my (answer|mistake|thinking)|where (my|i) went wrong|why (is|was) (that|this|it|my answer) (right|wrong|the answer)|explain (the|my) (answer|mistake)|why.*\b(right|wrong)\b\??$/.test(p) || !p.trim()) {
-      const mis = topic?.misconceptions?.length ? `\n\n**Watch out:** ${topic.misconceptions[0].wrong} – actually, ${topic.misconceptions[0].right}` : '';
+      const mis = topic?.misconceptions?.length ? `\n\n**Watch out:** ${topic.misconceptions[0].wrong}. Actually, ${topic.misconceptions[0].right}` : '';
       const steps = (it.type === 'num' || it.type === 'text' || it.type === 'algebra' || it.type === 'plot') && it.steps?.length ? `\n\n${it.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}` : '';
       return `${c.correct ? '**You got it right.** Here is why:' : `**The answer is ${answerText(it)}.**`}\n\n${it.why}${steps}${c.correct ? '' : mis}`;
     }
@@ -190,7 +190,7 @@ function examReply(eq: ExamQuestion, topic: Topic, subjectId: string, draft: str
   if (/command|word/.test(p)) {
     const first = eq.q.replace(/[*_]/g, '').match(/\b(Describe|Explain|Evaluate|Compare|Analyse|Justify|Assess|Calculate|Discuss|Identify|State|Outline|Suggest|How far|To what extent|Give|Write|Work out|Solve)\b/i)?.[1];
     const cw = getSubject(subjectId)?.commandWords?.find((w) => first && w.word.toLowerCase() === first.toLowerCase());
-    return first ? `The command word is **${first}**.${cw ? ` ${cw.meaning}` : ''}` : 'Look for the command word at the start of the question (describe, explain, evaluate…) – it tells you what kind of answer to write.';
+    return first ? `The command word is **${first}**.${cw ? ` ${cw.meaning}` : ''}` : 'Look for the command word at the start of the question (describe, explain, evaluate…). It tells you what kind of answer to write.';
   }
   if (/feedback|check|mark|so far|improve/.test(p)) {
     if (!draft.trim()) return 'Write some of your answer first, then ask again and I\'ll check it against the mark scheme.';
@@ -199,7 +199,7 @@ function examReply(eq: ExamQuestion, topic: Topic, subjectId: string, draft: str
     const missing = r.points.filter((x) => !x.likely && x.terms.length);
     return [
       met.length ? `**Looks covered:**\n${met.slice(0, 5).map((x) => `- ${x.text}`).join('\n')}` : '',
-      missing.length ? `**Not found yet – think about adding:**\n${missing.slice(0, 4).map((x) => `- ${x.text}`).join('\n')}` : '',
+      missing.length ? `**Not found yet. Think about adding:**\n${missing.slice(0, 4).map((x) => `- ${x.text}`).join('\n')}` : '',
       '*This is a key-word check, not a real mark. Read the mark scheme to be sure.*',
     ].filter(Boolean).join('\n\n');
   }

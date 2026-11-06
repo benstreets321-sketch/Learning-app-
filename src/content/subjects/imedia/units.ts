@@ -36,7 +36,7 @@ Video, audio, music, **animation**, **special effects (SFX - physical, on set)**
         flashcards: cards([['Four traditional media sectors?', 'Film, television, radio, print publishing.'], ['Four new media sectors?', 'Digital games, interactive media, internet, digital publishing.'], ['SFX vs VFX?', 'SFX are physical effects created on set (explosions, make-up); VFX are added digitally in post-production (CGI).'], ['What is AR?', 'Augmented reality - digital content overlaid on a view of the real world (e.g. phone filters).'], ['What is media convergence?', 'When different media sectors and technologies combine (e.g. newspapers producing video online).']]),
         questions: [
           mc('Which is a NEW media sector?', ['Digital games', 'Radio', 'Print publishing', 'Film'], 'Digital games are new media.', { d: 1 }),
-          mc('An explosion created on set with pyrotechnics is an example of...', ['SFX (special effects)', 'VFX (visual effects)', 'AR', 'A wireframe'], 'Physical effects on set = SFX.', { d: 2 }),
+          mc('An explosion created on set with pyrotechnics is an example of...', ['SFX (special effects)', 'VFX (visual effects)', 'CGI (computer-generated imagery)', 'Green-screen compositing'], 'Physical effects on set = SFX.', { d: 2 }),
           tf('Virtual reality overlays digital images onto the real world.', false, 'That\'s AR. VR creates a fully simulated environment.', { d: 2 }),
         ],
       }),
@@ -118,8 +118,8 @@ Divide the audience by **demographics**: **age, gender, ethnicity, income, locat
         keyPoints: ['Demographics: age, gender, ethnicity, income, location, occupation, education, interests, lifestyle', 'Primary research: surveys, interviews, focus groups', 'Secondary: books, internet, journals', 'Quantitative = numbers; qualitative = opinions'],
         flashcards: cards([['What is primary research?', 'Research you carry out yourself (surveys, interviews, focus groups).'], ['What is secondary research?', 'Using existing information collected by others (books, websites, reports).'], ['Qualitative vs quantitative data?', 'Qualitative = opinions/descriptions; quantitative = numerical data.'], ['What is a focus group?', 'A small group discussing a product to give detailed (qualitative) feedback.']]),
         questions: [
-          mc('"72% of respondents preferred design B." This is...', ['Quantitative data', 'Qualitative data', 'Secondary research', 'A mood board'], 'Numerical = quantitative.', { d: 1 }),
-          mc('Which is a disadvantage of primary research?', ['It can be time-consuming and expensive', 'It may be out of date', 'It is never relevant', 'It belongs to someone else'], 'You have to design and carry it out yourself.', { d: 2 }),
+          mc('"72% of respondents preferred design B." This is...', ['Quantitative data', 'Qualitative data', 'Secondary research', 'Anecdotal evidence'], 'Numerical = quantitative.', { d: 1 }),
+          mc('Which is a disadvantage of primary research?', ['It can be time-consuming and expensive', 'It may be out of date', 'It may not be specific to your product', 'It may be biased by the original author'], 'You have to design and carry it out yourself.', { d: 2 }),
           tf('A focus group usually produces qualitative data.', true, 'Discussions give opinions and reasons.', { d: 2 }),
         ],
         examQuestions: [examQ('A games company wants to research whether teenagers would play its new puzzle game. Explain **one** primary and **one** secondary research method it could use.', 4, ['Primary: e.g. online survey of 13-18 year olds', 'Explanation: gives up-to-date, specific opinions from the target audience', 'Secondary: e.g. industry reports on teenage gaming habits', 'Explanation: quick/cheap, large data set showing trends'], { time: 4 })],
@@ -161,7 +161,7 @@ Cuts, **transitions** (fade, dissolve, wipe), **pace** (fast cuts = excitement),
         flashcards: cards([['What does an establishing shot do?', 'Shows the location/setting at the start of a scene.'], ['Effect of a low-angle shot?', 'Makes the subject look powerful or threatening.'], ['What is a pan?', 'The camera turns horizontally (left/right) from a fixed position.'], ['Diegetic sound?', 'Sound that exists within the world of the scene (dialogue, footsteps).'], ['What is low-key lighting?', 'Dark lighting with strong shadows - often used in horror and thrillers.'], ['Serif vs sans-serif fonts?', 'Serif fonts have small strokes (traditional/formal); sans-serif are plain (modern/clean).']]),
         questions: [
           mc('Which shot is best to show a character\'s emotion?', ['Close-up', 'Establishing shot', 'Long shot', 'Bird\'s-eye view'], 'Close-ups show facial expression.', { d: 1 }),
-          mc('A villain is filmed from below. What effect does this low angle create?', ['The villain appears powerful and threatening', 'The villain appears weak', 'It shows the location', 'It shows what the villain sees'], 'Low angle = power.', { d: 1 }),
+          mc('A villain is filmed from below. What effect does this low angle create?', ['The villain appears powerful and threatening', 'The villain appears weak and vulnerable', 'We see events from the villain\'s point of view', 'The villain appears distant and unimportant'], 'Low angle = power.', { d: 1 }),
           match('Match the camera movement to its description.', [['Pan', 'Turns left or right on a fixed point'], ['Tilt', 'Turns up or down on a fixed point'], ['Track', 'Camera moves alongside the action'], ['Zoom', 'Lens magnifies without moving the camera']], 'Camera movements.', { d: 2 }),
           tf('A soundtrack added in post-production is diegetic sound.', false, 'It is non-diegetic - the characters can\'t hear it.', { d: 2 }),
         ],
@@ -289,7 +289,7 @@ Choose by: **audience** (age, access to devices), **product** type, **cost**, **
         keyPoints: ['Online: websites, apps, social, streaming', 'Physical: discs, print, kiosks, broadcast', 'Online: global, cheap, updatable', 'Physical: no internet needed, tangible', 'Choose by audience, product, cost, compatibility'],
         flashcards: cards([['Two advantages of online distribution?', 'Global reach and low distribution cost (also easy updates and analytics).'], ['Two advantages of physical distribution?', 'No internet needed; tangible/collectable product.']]),
         questions: [
-          mc('Why might a museum choose a physical kiosk for an interactive guide?', ['Visitors can use it without their own device or internet', 'It reaches a global audience through the internet', 'It costs nothing to make, install or maintain', 'It works best for visitors who stay at home'], 'Kiosks are on-site and accessible.', { d: 2 }),
+          mc('Why might a museum choose a physical kiosk for an interactive guide?', ['Visitors can use it without their own device or internet', 'It reaches a global audience through the internet', 'It is cheaper to update than a mobile app', 'Visitors can keep using it after they leave'], 'Kiosks are on-site and accessible.', { d: 2 }),
         ],
       }),
       topic({
@@ -334,7 +334,7 @@ Properties: **sample rate** (e.g. 44.1 kHz), **bit depth** (16/24-bit), **bit ra
         flashcards: cards([['Bitmap vs vector?', 'Bitmap images are made of pixels and pixelate when enlarged; vector images are made of paths and scale without quality loss.'], ['Which image format supports transparency and is lossless?', 'PNG'], ['Which image format supports simple animation?', 'GIF'], ['Standard DPI for print?', '300 DPI'], ['Lossy vs lossless compression?', 'Lossy permanently removes data (smaller, lower quality); lossless reduces size without losing data.'], ['Which colour mode is used for print?', 'CMYK'], ['What is sample rate?', 'The number of audio samples taken per second (e.g. 44 100 Hz).'], ['What is frame rate?', 'The number of frames shown per second (fps).']]),
         questions: [
           mc('Which format is best for a company logo that must be printed on a billboard and a business card?', ['SVG (vector)', 'JPEG', 'GIF', 'BMP'], 'Vectors scale to any size without pixelating.', { d: 2 }),
-          mc('Which compression permanently removes data?', ['Lossy', 'Lossless', 'Vector', 'Uncompressed'], 'JPEG and MP3 are lossy.', { d: 1 }),
+          mc('Which compression permanently removes data?', ['Lossy', 'Lossless', 'Run-length encoding', 'ZIP compression'], 'JPEG and MP3 are lossy.', { d: 1 }),
           num('How many colours can a 4-bit image show?', 16, '2⁴ = 16.', { d: 2 }),
           match('Match the file format to its best use.', [['JPEG', 'Photos on a website'], ['PNG', 'Web graphic with transparent background'], ['WAV', 'High-quality audio editing'], ['MP4', 'Video for web streaming']], 'Format choice depends on purpose.', { d: 2 }),
           tf('A 72 DPI image is ideal for high-quality printing.', false, '72 DPI is screen resolution; print needs ~300 DPI.', { d: 1 }),
@@ -404,7 +404,7 @@ Consistent navigation on every screen, clear labels, readable fonts and contrast
         keyPoints: ['IDM types: websites, apps, kiosks, games, presentations', 'Navigation: menus, buttons, hyperlinks, hotspots', 'Plan with flow chart + wireframes', 'Optimise assets (formats, compression)', 'Test table: expected vs actual result', 'Review against the brief'],
         flashcards: cards([['Three navigation structures?', 'Linear, hierarchical, non-linear (web).'], ['What is a hotspot?', 'An area of an image/screen that is interactive when clicked or hovered.'], ['What goes in a test table?', 'Test, expected result, actual result, action taken.'], ['Why optimise assets in IDM?', 'Smaller file sizes load faster and work on more devices.']]),
         questions: [
-          mc('A tutorial that must be followed step by step uses which structure?', ['Linear', 'Hierarchical', 'Non-linear', 'Random'], 'One route through the content.', { d: 1 }),
+          mc('A tutorial that must be followed step by step uses which structure?', ['Linear', 'Hierarchical', 'Non-linear', 'Hybrid'], 'One route through the content.', { d: 1 }),
           mc('Which planning document best shows how all the screens of an app link together?', ['Flow chart', 'Mood board', 'Script', 'Asset log'], 'Flow charts map navigation.', { d: 1 }),
         ],
       }),
@@ -432,7 +432,7 @@ NEA must be your own work; reference all assets; follow your centre's rules on A
 :::
 `,
       keyPoints: ['Plan → create → review', 'Link every decision to the client and audience', 'Keep an asset log', 'Evidence your tools and techniques'],
-      questions: [mc('What are the three stages of every Creative iMedia NEA unit?', ['Plan, create, review', 'Research, test, sell', 'Draw, film, upload', 'Design, print, post'], 'All optional units follow plan → create → review.', { d: 1 })],
+      questions: [mc('What are the three stages of every Creative iMedia NEA unit?', ['Plan, create, review', 'Research, design, test', 'Plan, design, publish', 'Pitch, produce, present'], 'All optional units follow plan → create → review.', { d: 1 })],
       flashcards: cards([['Three stages of a Creative iMedia NEA?', 'Plan, create, review.']]),
       tags: ['Overview'],
     })],

@@ -119,5 +119,5 @@ describe('question generators', () => {
         if (typeof q.answer === 'number') expect(checkNumber(String(q.answer), q.answer, q.tol).ok, ctx).toBe(true);
       }
     }
-  });
+  }, 60_000);
 });

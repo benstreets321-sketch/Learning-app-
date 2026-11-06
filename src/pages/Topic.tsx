@@ -55,7 +55,7 @@ export function TopicPage({ id, tab }: { id: string; tab: string }) {
       {(t === 'learn' || !tabs.some((x) => x.id === t)) && !(ts?.n) && nQ >= 3 && (
         <div className="callout callout-tip pretest">
           <div className="callout-title">New topic? Try 3 questions before you read</div>
-          <p>Guessing first – even getting them wrong – makes the lesson stick better, because your brain is already looking for the answers.</p>
+          <p>Guessing first makes the lesson stick better, even when you get them wrong, because your brain is already looking for the answers.</p>
           <a className="btn small" href={href('/quiz', { scope: 'topic', id, n: 3, pre: 1 })}>Quick pre-test</a>
         </div>
       )}
@@ -183,7 +183,7 @@ export function TopicPage({ id, tab }: { id: string; tab: string }) {
 
       {t === 'past' && topic.pastQuestions && (
         <div>
-          <p className="muted">Questions from real past papers. Exam boards never say what will come up, so use this to check you can handle <em>any</em> focus – not to guess.</p>
+          <p className="muted">Questions from real past papers. Exam boards never say what will come up, so use this to check you can handle <em>any</em> focus. Not to guess.</p>
           <table className="table">
             <thead><tr><th>Series</th><th>Focus</th><th>Extract</th></tr></thead>
             <tbody>
@@ -257,7 +257,7 @@ function Blurt({ topicId, points }: { topicId: string; points: string[] }) {
     <div className="blurt">
       <div className="callout callout-tip">
         <div className="callout-title">How blurting works</div>
-        <p>Close your notes. Write down <strong>everything</strong> you can remember about this topic – facts, keywords, quotes, diagrams in words. Then check against the checklist and tick what you got. The gaps are exactly what to revise next.</p>
+        <p>Close your notes. Write down <strong>everything</strong> you can remember about this topic. Facts, keywords, quotes, diagrams in words. Then check against the checklist and tick what you got. The gaps are exactly what to revise next.</p>
       </div>
       {phase === 'write' && (
         <>
@@ -292,7 +292,7 @@ function Blurt({ topicId, points }: { topicId: string; points: string[] }) {
           ) : (
             <div className="feedback good">
               <strong>You recalled {Math.round(pct)}% of the key points.</strong>
-              <p>{pct >= 80 ? 'Excellent recall – try exam questions next.' : pct >= 50 ? 'Good start. Re-read the points you missed, then blurt again tomorrow.' : 'That shows you exactly what to learn. Re-read the lesson, then try again later today – the second attempt is where the learning happens.'}</p>
+              <p>{pct >= 80 ? 'Excellent recall. Try exam questions next.' : pct >= 50 ? 'Good start. Re-read the points you missed, then blurt again tomorrow.' : 'That shows you exactly what to learn. Re-read the lesson, then try again later today. The second attempt is where the learning happens.'}</p>
               <div className="row gap">
                 <button className="btn" onClick={() => { setText(''); setTicks(new Set()); setSecs(300); setPhase('write'); }}>Blurt again</button>
                 <a className="btn" href={href(`/t/${topicId}`)}>Re-read the lesson</a>
@@ -315,7 +315,7 @@ function MyNotes({ topicId }: { topicId: string }) {
   return (
     <div>
       <p className="muted small">Your own notes, mnemonics and things your teacher said. Saved automatically on this device.</p>
-      <textarea className="essay" {...answerProps('long', appKb)} rows={14} value={text} onChange={(e) => setText(e.target.value)} placeholder="Write it in your own words – explaining something yourself is one of the best ways to learn it." />
+      <textarea className="essay" {...answerProps('long', appKb)} rows={14} value={text} onChange={(e) => setText(e.target.value)} placeholder="Write it in your own words. Explaining something yourself is one of the best ways to learn it." />
     </div>
   );
 }

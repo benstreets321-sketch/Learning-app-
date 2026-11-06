@@ -87,7 +87,7 @@ Mean = Σ(f × x) ÷ Σf.
       questions: [
         num('The mean of 5 numbers is 12. Four of them are 10, 15, 8 and 14. Find the fifth.', 13, 'Total = 60; 60 − 47 = 13.', { d: 3 }),
         num('Find the median of 3, 9, 4, 12, 7, 5', 6, 'Ordered: 3, 4, 5, 7, 9, 12 → (5 + 7)/2 = 6.', { d: 2 }),
-        mc('Which average is best for house prices where one mansion costs £5 million?', ['Median', 'Mean', 'Range', 'Mode'], 'The median is not distorted by the extreme value.', { d: 2 }),
+        mc('Which average is best for house prices where one mansion costs £5 million?', ['Median', 'Mean', 'Mode', 'Midpoint of the highest and lowest'], 'The median is not distorted by the extreme value.', { d: 2 }),
       ],
     }),
     topic({
@@ -116,7 +116,7 @@ Look for trend and seasonal patterns.
       flashcards: cards([['Frequency density formula?', 'frequency ÷ class width'], ['What does a box plot show?', 'Minimum, lower quartile, median, upper quartile, maximum.'], ['Why is extrapolation unreliable?', 'The pattern may not continue outside the range of the data.']]),
       questions: [
         num('In a survey of 60 people, 15 chose blue. What angle is blue on a pie chart?', 90, '15/60 × 360 = 90°.', { d: 1, unit: '°' }),
-        mc('Taller people tend to have bigger shoe sizes. This is...', ['Positive correlation', 'Negative correlation', 'No correlation', 'Causation proved'], 'Both increase together.', { d: 1 }),
+        mc('Taller people tend to have bigger shoe sizes. This is...', ['Positive correlation', 'Negative correlation', 'No correlation', 'Perfect positive correlation'], 'Both increase together.', { d: 1 }),
         num('A class 10 ≤ t < 30 has frequency 40. What is the frequency density?', 2, '40 ÷ 20 = 2.', { d: 3, tier: 'H' }),
         multi('Which statements about lines of best fit are true?', ['They can be used to estimate values within the data range', 'They should follow the trend of the points'], ['They must pass through the origin', 'They prove one variable causes the other'], 'Use for interpolation; correlation isn\'t causation.', { d: 2 }),
         tf('On a cumulative frequency graph, points are plotted at the midpoint of each class.', false, 'They are plotted at the upper class boundary.', { d: 3, tier: 'H' }),

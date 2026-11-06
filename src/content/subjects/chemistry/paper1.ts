@@ -48,7 +48,7 @@ Dalton (solid spheres) → **Thomson** (electron, **plum pudding** model) → **
         generators: ['c-subatomic'],
         flashcards: cards([['What is an isotope?', 'Atoms of the same element with the same number of protons but different numbers of neutrons.'], ['What did the alpha scattering experiment show?', 'Mass is concentrated in a tiny, positively charged nucleus; most of the atom is empty space.'], ['Who discovered the neutron?', 'James Chadwick (1932).'], ['Electronic structure of magnesium (12)?', '2, 8, 2'], ['Charge and mass of an electron?', '−1, very small (about 1/1840 of a proton).'], ['How do you separate ink dyes?', 'Chromatography.']]),
         questions: [
-          mc('An atom has 17 protons and 18 neutrons. What is its mass number?', ['35', '17', '18', '1'], '17 + 18 = 35.', { d: 1 }),
+          mc('An atom has 17 protons and 18 neutrons. What is its mass number?', ['35', '17', '18', '34'], '17 + 18 = 35.', { d: 1 }),
           mc('What did Rutherford\'s alpha scattering experiment disprove?', ['The plum pudding model', 'The existence of electrons', 'The nuclear model', 'Bohr\'s shells'], 'Some alpha particles bounced back → a dense nucleus.', { d: 2 }),
           num('Copper is 69% ⁶³Cu and 31% ⁶⁵Cu. Calculate the relative atomic mass to 1 d.p.', 63.6, '(63 × 69 + 65 × 31) ÷ 100 = 63.62.', { d: 3, tol: 0.05 }),
           txt('Write the electronic structure of aluminium (atomic number 13).', ['2,8,3', '2, 8, 3', '2.8.3'], '2 + 8 + 3 = 13.', { d: 2 }),
@@ -85,7 +85,7 @@ Compared to group 1: higher melting points, denser, stronger, less reactive; **i
           mc('Which halogen is most reactive?', ['Fluorine', 'Chlorine', 'Bromine', 'Iodine'], 'Reactivity decreases down group 7.', { d: 1 }),
           mc('What gas is produced when potassium reacts with water?', ['Hydrogen', 'Oxygen', 'Chlorine', 'Carbon dioxide'], 'Metal + water → metal hydroxide + hydrogen.', { d: 1 }),
           tf('Iodine will displace chlorine from potassium chloride solution.', false, 'Only a more reactive halogen displaces a less reactive one; iodine is less reactive than chlorine.', { d: 2 }),
-          mc('Why are elements in the same group similar?', ['Same number of outer-shell electrons', 'Same number of shells', 'Same mass', 'Same number of neutrons'], 'Outer electrons determine chemical behaviour.', { d: 1 }),
+          mc('Why are elements in the same group similar?', ['Same number of outer-shell electrons', 'Same number of electron shells', 'Same number of protons', 'Same number of neutrons'], 'Outer electrons determine chemical behaviour.', { d: 1 }),
         ],
         examQuestions: [examQ('Explain why potassium is more reactive than sodium.', 3, ['Potassium\'s outer electron is in a shell further from the nucleus', 'More shielding / weaker attraction to the nucleus', 'So the outer electron is lost more easily'], { time: 3 })],
       }),
@@ -116,7 +116,7 @@ Dot-and-cross diagrams show where electrons came from but not 3D shape; ball-and
         keyPoints: ['Ionic: transfer, metal + non-metal', 'Covalent: sharing, non-metals', 'Metallic: delocalised electrons', 'Group 1 → +1, group 7 → −1', 'Formula balances charges'],
         flashcards: cards([['What is an ionic bond?', 'Electrostatic attraction between oppositely charged ions formed by electron transfer.'], ['What is a covalent bond?', 'A shared pair of electrons between two non-metal atoms.'], ['Describe metallic bonding', 'Positive metal ions in a sea of delocalised electrons, held by electrostatic attraction.'], ['Charge on an oxide ion?', '2− (O²⁻)'], ['Formula of aluminium oxide?', 'Al₂O₃']]),
         questions: [
-          mc('What type of bonding is in magnesium oxide?', ['Ionic', 'Covalent', 'Metallic', 'None'], 'Metal + non-metal.', { d: 1 }),
+          mc('What type of bonding is in magnesium oxide?', ['Ionic', 'Covalent', 'Metallic', 'Giant covalent'], 'Metal + non-metal.', { d: 1 }),
           txt('Write the formula of calcium chloride (Ca²⁺, Cl⁻).', ['CaCl2', 'CaCl₂'], 'Two Cl⁻ balance one Ca²⁺.', { d: 2 }),
           mc('How many covalent bonds does carbon form in methane, CH₄?', ['4', '1', '2', '3'], 'Carbon has 4 outer electrons and shares each.', { d: 1 }),
           tf('In ionic bonding electrons are shared between atoms.', false, 'Electrons are transferred; sharing is covalent.', { d: 1 }),
@@ -290,7 +290,7 @@ Mg + Cu²⁺ → Mg²⁺ + Cu (spectator ions left out).
         keyPoints: ['Acids → H⁺; alkalis → OH⁻', 'H⁺ + OH⁻ → H₂O', 'Acid + carbonate → salt + water + CO₂', 'Salt practical: excess base, filter, crystallise', 'Strong acids fully ionise (Higher)', '1 pH unit = 10× H⁺ concentration'],
         flashcards: cards([['Ionic equation for neutralisation?', 'H⁺(aq) + OH⁻(aq) → H₂O(l)'], ['Salt from nitric acid + sodium hydroxide?', 'Sodium nitrate (+ water).'], ['Why add excess metal oxide when making a salt?', 'To make sure all the acid has reacted.'], ['Difference between strong and weak acid?', 'Strong acids fully ionise in water; weak acids only partially ionise.']]),
         questions: [
-          mc('What are the products of calcium carbonate + hydrochloric acid?', ['Calcium chloride + water + carbon dioxide', 'Calcium chloride + hydrogen', 'Calcium oxide + water', 'Calcium hydroxide + CO₂'], 'Carbonate + acid → salt + water + CO₂.', { d: 2 }),
+          mc('What are the products of calcium carbonate + hydrochloric acid?', ['Calcium chloride + water + carbon dioxide', 'Calcium chloride + water + hydrogen', 'Calcium oxide + water + carbon dioxide', 'Calcium hydroxide + chlorine + carbon dioxide'], 'Carbonate + acid → salt + water + CO₂.', { d: 2 }),
           txt('Name the salt formed when zinc oxide reacts with sulfuric acid.', ['zinc sulfate', 'zinc sulphate'], 'Sulfuric acid → sulfates.', { d: 1 }),
           ord('Put the steps to make copper sulfate crystals in order.', ['Add excess copper oxide to warm sulfuric acid', 'Filter off the excess copper oxide', 'Heat the solution to evaporate some water', 'Leave to crystallise'], 'Excess → filter → evaporate → crystallise.', { d: 2 }),
           num('pH falls from 4 to 2. By what factor has the H⁺ concentration increased?', 100, 'Each pH unit is ×10: 10 × 10 = 100.', { d: 4, tier: 'H' }),
@@ -358,7 +358,7 @@ Mix solutions in a **polystyrene cup** with a lid (insulation), measure the temp
         generators: ['c-bond-energy'],
         flashcards: cards([['Define activation energy', 'The minimum energy that particles must have to react.'], ['Is bond breaking exothermic or endothermic?', 'Endothermic.'], ['Two examples of exothermic reactions?', 'Combustion and neutralisation.'], ['Why use a polystyrene cup in the temperature change practical?', 'Insulator - reduces energy transfer to the surroundings.'], ['What is produced in a hydrogen fuel cell?', 'Water (and electricity).']]),
         questions: [
-          mc('The temperature of a solution falls during a reaction. The reaction is...', ['Endothermic', 'Exothermic', 'Neutral', 'Combustion'], 'Energy is taken in from the surroundings.', { d: 1 }),
+          mc('The temperature of a solution falls during a reaction. The reaction is...', ['Endothermic', 'Exothermic', 'Reversible', 'Neutralisation'], 'Energy is taken in from the surroundings.', { d: 1 }),
           mc('On a reaction profile, what is the energy from reactants up to the peak called?', ['Activation energy', 'Overall energy change', 'Bond energy', 'Enthalpy of products'], 'Activation energy.', { d: 1 }),
           num('Bonds broken total 2648 kJ/mol; bonds made total 3466 kJ/mol. Calculate ΔH.', -818, '2648 − 3466 = −818 kJ/mol (exothermic).', { d: 3, tier: 'H', unit: 'kJ/mol' }),
           tf('Thermal decomposition is exothermic.', false, 'It requires heat - endothermic.', { d: 2 }),

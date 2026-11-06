@@ -36,7 +36,7 @@ export function HomeMocks() {
               {lastTest && last && (
                 <a className="list-row" href={href(`/mock/${last.testId}`, { review: last.id })}>
                   <Icon name="check" size={18} />
-                  <span className="grow small">Last result: {lastTest.paper.title} – <span className="mono">{last.score ?? 0}/{last.max}</span>{last.status === 'submitted' ? ' · finish marking your written answers' : ''}</span>
+                  <span className="grow small">Last result: {lastTest.paper.title}: <span className="mono">{last.score ?? 0}/{last.max}</span>{last.status === 'submitted' ? ' · finish marking your written answers' : ''}</span>
                   <span className="small">Review</span>
                 </a>
               )}

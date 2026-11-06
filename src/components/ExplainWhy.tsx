@@ -27,8 +27,8 @@ export function ExplainWhy({ why, answer, question, reason }: { why: string; ans
         <div className={`explain-res ${res.good ? 'good' : 'meh'}`}>
           <p className="small">
             {res.good
-              ? <>Good reason{res.hit.length ? <> – you mentioned <strong>{res.hit.slice(0, 4).join(', ')}</strong></> : null}.</>
-              : <>Close, but the key idea is missing{res.missed.length ? <> – try to use words like <strong>{res.missed.join(', ')}</strong></> : null}.</>}
+              ? <>Good reason{res.hit.length ? <>. You mentioned <strong>{res.hit.slice(0, 4).join(', ')}</strong></> : null}.</>
+              : <>Close, but the key idea is missing{res.missed.length ? <>. Try to use words like <strong>{res.missed.join(', ')}</strong></> : null}.</>}
           </p>
           <div className="small muted"><Markdown text={`**The reason:** ${why}`} /></div>
         </div>

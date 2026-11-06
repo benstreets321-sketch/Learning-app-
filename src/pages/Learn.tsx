@@ -130,7 +130,7 @@ function Lesson({ choice }: { choice: NonNullable<ReturnType<typeof pickLearnTop
 
       {phase === 'pre' && (
         <>
-          {i === 0 && <div className="banner support small"><Icon name="bulb" size={16} /> <span><strong>{choice.reason}</strong> First, a quick check – have a go even if you're not sure. Guessing before the lesson makes it stick better, and it isn't scored.</span></div>}
+          {i === 0 && <div className="banner support small"><Icon name="bulb" size={16} /> <span><strong>{choice.reason}</strong> First, a quick check. Have a go even if you're not sure. Guessing before the lesson makes it stick better, and it isn't scored.</span></div>}
           <QuestionCard
             key={`pre${i}`}
             item={pre[i]}
@@ -152,7 +152,7 @@ function Lesson({ choice }: { choice: NonNullable<ReturnType<typeof pickLearnTop
                 <ul>{topic.keyPoints.slice(0, 6).map((k, n) => <li key={n}><Markdown text={k} inline /></li>)}</ul>
               </div>
             )}
-            <div className="row end"><button className="btn primary" onClick={() => { shownAt.current = Date.now(); if (checks[i]) setAsking(true); else if (i + 1 < chunks.length) setI(i + 1); else { markNotesRead(topic.id); setI(0); setPhase(example ? 'example' : 'practice'); } }}>{checks[i] ? 'Got it – check me' : 'Next'}</button></div>
+            <div className="row end"><button className="btn primary" onClick={() => { shownAt.current = Date.now(); if (checks[i]) setAsking(true); else if (i + 1 < chunks.length) setI(i + 1); else { markNotesRead(topic.id); setI(0); setPhase(example ? 'example' : 'practice'); } }}>{checks[i] ? 'Got it. Check me' : 'Next'}</button></div>
           </div>
         ) : (
           <QuestionCard
@@ -179,7 +179,7 @@ function Lesson({ choice }: { choice: NonNullable<ReturnType<typeof pickLearnTop
 
       {phase === 'practice' && practice && (
         <>
-          <p className="muted small">Practice {Math.min(practiceDone + 1, PRACTICE)} of {PRACTICE} – the questions get harder when you're right and easier when you're not.</p>
+          <p className="muted small">Practice {Math.min(practiceDone + 1, PRACTICE)} of {PRACTICE}. The questions get harder when you're right and easier when you're not.</p>
           <QuestionCard
             key={`p${practice.id}${practiceDone}`}
             item={practice}
@@ -218,7 +218,7 @@ function WorkedExample({ ex, onDone }: { ex: NonNullable<import('../content/type
       <Markdown text={ex.problem} />
       <ol className="steps">{ex.steps.slice(0, shown).map((s, k) => <li key={k}><Markdown text={s} inline /></li>)}</ol>
       {all && ex.answer && <p><strong>Answer:</strong> <Markdown text={ex.answer} inline /></p>}
-      <p className="muted small">{all ? 'Now you try – the practice questions use the same method.' : 'Try to predict the next step before you reveal it.'}</p>
+      <p className="muted small">{all ? 'Now you try. The practice questions use the same method.' : 'Try to predict the next step before you reveal it.'}</p>
       <div className="row end">{all ? <button className="btn primary" onClick={onDone}>Start practice</button> : <button className="btn primary" onClick={() => setShown((n) => n + 1)}>Next step</button>}</div>
     </div>
   );
@@ -240,7 +240,7 @@ function LearnSummary({ choice, results, knewCards, cards, mins }: { choice: Non
         </div>
         <ul className="small learn-next">
           <li><Icon name="clock" size={14} /> This topic now comes back by itself: a review question in your sessions over the next few days, and the flashcards when they're due.</li>
-          {wrong > 0 && <li><Icon name="fix" size={14} /> {wrong} question{wrong === 1 ? '' : 's'} went on your Fix-it list – your session brings {wrong === 1 ? 'it' : 'them'} back until you get {wrong === 1 ? 'it' : 'them'} right twice.</li>}
+          {wrong > 0 && <li><Icon name="fix" size={14} /> {wrong} question{wrong === 1 ? '' : 's'} went on your Fix-it list. Your session brings {wrong === 1 ? 'it' : 'them'} back until you get {wrong === 1 ? 'it' : 'them'} right twice.</li>}
           <li><Icon name="target" size={14} /> Your {goal}-minute session mixes this in with reviews, mistakes and weak spots, so it all ties together.</li>
         </ul>
         <div className="row gap wrap">

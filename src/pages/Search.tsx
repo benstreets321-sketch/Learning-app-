@@ -70,7 +70,7 @@ export function SearchPage({ query }: { query: URLSearchParams }) {
         <Icon name="search" size={20} />
         <input
           autoFocus type="search" value={q} onChange={(e) => setQ(e.target.value)}
-          placeholder="Topics, key terms, quotes – e.g. osmosis, Lady Macbeth, break-even"
+          placeholder="Search topics, key terms or quotes, e.g. osmosis, Lady Macbeth, break-even"
           aria-label="Search everything"
         />
       </form>

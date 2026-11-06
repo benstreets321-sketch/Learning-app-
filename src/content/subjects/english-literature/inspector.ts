@@ -55,7 +55,7 @@ export const inspectorUnit: Unit[] = [{
         mc('Who is the father of Eva\'s baby?', ['Eric', 'Gerald', 'Mr Birling', 'The Inspector'], 'Revealed in Act 3; Mrs Birling unknowingly condemned her own son.', { d: 1 }),
         tf('The play is set in 1945.', false, 'Set in 1912, written in 1945 - the gap lets the audience see the Birlings\' mistakes in hindsight.'),
         ord_q(),
-        mc('Why does the lighting become "brighter and harder" when the Inspector arrives?', ['To show scrutiny and the exposure of truth', 'Because it gets dark outside', 'To show romance', 'To hide the characters'], '"Pink and intimate" suggests a rose-tinted view; the harsh light interrogates.', { d: 2 }),
+        mc('Why does the lighting become "brighter and harder" when the Inspector arrives?', ['To show scrutiny and the exposure of truth', 'To show the family\'s warm, celebratory mood', 'To show that time has passed and night has fallen', 'To soften the mood after the engagement'], '"Pink and intimate" suggests a rose-tinted view; the harsh light interrogates.', { d: 2 }),
         mc('What is the effect of the final phone call?', ['It is cyclical: the lesson must be faced again, especially by those who didn\'t learn', 'It shows the whole story was a dream that Sheila had', 'It proves the Inspector was a real police officer all along', 'It ends the play happily as the family celebrate the engagement'], 'Priestley denies the older Birlings their escape.', { d: 3 }),
       ],
     }),
@@ -91,11 +91,11 @@ export const inspectorUnit: Unit[] = [{
         ['What does Mrs Birling chair?', 'The Brumley Women\'s Charity Organisation.'],
       ]),
       questions: [
-        mc('What does the Inspector represent for Priestley?', ['Priestley\'s own socialist views and conscience', 'The capitalist class', 'The police force\'s corruption', 'Gerald\'s family'], 'He is Priestley\'s mouthpiece - delivering the play\'s message.', { d: 2 }),
-        mc('How does Sheila change?', ['From childish and self-centred to perceptive and morally responsible', 'From kind and generous to cruel and self-centred', 'She doesn\'t change: she stays loyal to her parents\' views', 'From poor and powerless to rich and influential'], 'She ends challenging her parents\' refusal to learn.', { d: 1 }),
+        mc('What does the Inspector represent for Priestley?', ['Priestley\'s own socialist views and conscience', 'The capitalist class Priestley admired', 'The corruption of the police force', 'The older generation\'s sense of duty'], 'He is Priestley\'s mouthpiece - delivering the play\'s message.', { d: 2 }),
+        mc('How does Sheila change?', ['From childish and self-centred to perceptive and morally responsible', 'From kind and generous to cruel and self-centred', 'She doesn\'t change: she stays loyal to her parents\' views', 'From confident and outspoken to quiet and obedient'], 'She ends challenging her parents\' refusal to learn.', { d: 1 }),
         tf('Mr Birling accepts responsibility for Eva\'s death by the end.', false, 'He is relieved when it seems a hoax and worries about the scandal and his knighthood.'),
         match('Match the character to their attitude at the end.', [['Mr Birling', 'Relieved - "the whole story\'s just a lot of moonshine"'], ['Sheila', 'Still feels responsible'], ['Eric', 'Condemns his parents'], ['Gerald', 'Wants things back to normal']], 'The generational divide is Priestley\'s point: hope lies with the young.', { d: 3 }),
-        mc('Why does Eva Smith never appear on stage?', ['So she can represent all exploited working-class people', 'Because the actress was ill', 'Because she is the Inspector in disguise', 'To make the play shorter'], '"Millions and millions of Eva Smiths" - she is symbolic.', { d: 2 }),
+        mc('Why does Eva Smith never appear on stage?', ['So she can represent all exploited working-class people', 'So the audience will blame the Inspector for her death', 'Because her story is a rumour the family made up', 'To keep the focus on Sheila as the central character'], '"Millions and millions of Eva Smiths" - she is symbolic.', { d: 2 }),
       ],
     }),
     topic({
@@ -130,7 +130,7 @@ Priestley sets the play in 1912 so the 1945 audience can see where selfishness l
         ['Why set the play in 1912?', 'So the audience, with hindsight of two world wars, can see the consequences of selfish capitalism.'],
       ]),
       questions: [
-        mc('What was Priestley\'s political view?', ['Socialist - he believed in collective responsibility', 'Strongly capitalist', 'He had no political views', 'He supported a monarchy with no parliament'], 'The Inspector voices his beliefs.', { d: 1 }),
+        mc('What was Priestley\'s political view?', ['Socialist - he believed in collective responsibility', 'Capitalist - he believed in self-reliance and profit', 'Liberal - he believed in free trade and charity', 'Conservative - he believed in tradition and class'], 'The Inspector voices his beliefs.', { d: 1 }),
         mc('Why would a 1945 audience distrust Mr Birling?', ['They knew his predictions (no war, Titanic unsinkable) were wrong', 'He was based on a real criminal the audience knew about', 'The actor playing him was famous for playing villains', 'He agreed with the Inspector, which seemed weak to them'], 'Dramatic irony undermines capitalism\'s spokesman.', { d: 2 }),
         multi('Which are examples of gender inequality in the play?', ['Eva\'s vulnerability to men with money and power', 'Mr Birling\'s comment that women need clothes to feel worthwhile', 'Women\'s lack of rights in 1912'], ['Sheila becoming Prime Minister'], 'Priestley exposes how women - especially working-class women - were exploited.', { d: 2 }),
         tf('The NHS already existed in 1912.', false, 'The NHS began in 1948 - part of the post-war welfare state Priestley\'s message supported.'),
@@ -158,7 +158,7 @@ Refer to it as a **play** for an **audience**: stage directions, lighting, entra
         { year: 'Jun 2025', focus: '**Gerald and Sheila\'s** changing relationship / Ideas about **power**' },
       ],
       questions: [
-        mc('How many questions on An Inspector Calls do you answer?', ['One, from a choice of two', 'Both', 'Three', 'None - it\'s on Paper 1'], 'Choose the question you can argue best.', { d: 1 }),
+        mc('How many questions on An Inspector Calls do you answer?', ['One, from a choice of two', 'Two, both compulsory', 'One, with no choice', 'One extract question and one essay'], 'Choose the question you can argue best.', { d: 1 }),
       ],
       examQuestions: [
         examQ('**How does Priestley use the character of the Inspector to explore ideas about responsibility?**\n\nWrite about:\n- what the Inspector says and does\n- how Priestley presents the Inspector.', 34, [

@@ -75,7 +75,7 @@ Refugee crisis: ~3 million East Germans fled via Berlin (a "brain drain"). **Khr
       ],
       flashcards: cards([['Why was the Berlin Wall built?', 'To stop East Germans fleeing to the West through Berlin.'], ['How did Kennedy respond to the missiles on Cuba?', 'A naval blockade (quarantine) around Cuba.'], ['What was secretly agreed to end the Cuban Missile Crisis?', 'The USA would remove its Jupiter missiles from Turkey.'], ['What was the Brezhnev Doctrine?', 'The USSR would intervene in any satellite state where communism was under threat.'], ['Who led the Prague Spring?', 'Alexander Dubček.']]),
       questions: [
-        mc('What was the main reason for building the Berlin Wall in 1961?', ['To stop the flow of refugees from East to West', 'To protect West Berlin from attack', 'Because the Allies demanded it', 'To end the Cold War'], 'The refugee "brain drain".', { d: 1 }),
+        mc('What was the main reason for building the Berlin Wall in 1961?', ['To stop the flow of refugees from East to West', 'To protect West Berlin from attack', 'To stop Western spies entering East Berlin', 'To mark the border agreed at Potsdam'], 'The refugee "brain drain".', { d: 1 }),
         multi('Which were consequences of the Cuban Missile Crisis?', ['A telephone hotline between Washington and Moscow', 'The Limited Test Ban Treaty', 'Removal of US missiles from Turkey'], ['The Berlin Blockade', 'The formation of NATO'], 'Moves towards reducing tension.', { d: 2 }),
         match('Match the leader to the crisis.', [['Dubček', 'Prague Spring'], ['Castro', 'Cuban Revolution'], ['Nagy', 'Hungarian Uprising'], ['Kennedy', 'Cuban Missile Crisis']], 'Key individuals.', { d: 1 }),
       ],
@@ -147,7 +147,7 @@ Germans called it a **Diktat**; Clemenceau thought it too lenient; Wilson disapp
       flashcards: cards([['What does LAMB stand for?', 'Land, Army, Money (reparations), Blame (war guilt) - terms of the Treaty of Versailles.'], ['What was Article 231?', 'The war guilt clause - Germany accepted blame for the war.'], ['What was Clemenceau\'s main aim?', 'To weaken Germany so it could never attack France again.'], ['What was self-determination?', 'Nations ruling themselves - one of Wilson\'s Fourteen Points.']]),
       questions: [
         mc('Which leader wanted the harshest treaty?', ['Clemenceau', 'Wilson', 'Lloyd George', 'Orlando'], 'France had suffered most.', { d: 1 }),
-        mc('What was Germany\'s army limited to?', ['100,000 men', '1 million men', '500,000 men', 'No limit'], 'LAMB - army.', { d: 1 }),
+        mc('What was Germany\'s army limited to?', ['100,000 men', '1,000,000 men', '500,000 men', '250,000 men'], 'LAMB - army.', { d: 1 }),
       ],
       examQuestions: [examQ('Write an account of how the Treaty of Versailles caused anger in Germany.', 8, ['Level 4 (7-8): analytical narrative showing how events linked to cause anger', 'Diktat - Germany excluded from negotiations', 'War guilt clause and reparations', 'Loss of land and military restrictions humiliating', 'Links to political instability (e.g. "November Criminals")'], { meta: 'AQA Paper 1B Q3', time: 10 })],
     }),

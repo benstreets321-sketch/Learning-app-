@@ -153,7 +153,7 @@ A fraction in its simplest form gives a **terminating** decimal only if the deno
       keyPoints: ['Learn the common equivalents', 'To order: convert to decimals', '% = decimal × 100', 'Recurring → fraction: multiply by 10ⁿ and subtract (Higher)', 'Terminating if denominator has only prime factors 2 and 5'],
       flashcards: cards([['1/8 as a decimal and %?', '0.125 = 12.5%'], ['0.333... as a fraction?', '1/3'], ['Why does 3/40 terminate?', '40 = 2³ × 5 - only 2s and 5s.'], ['0.09 as a percentage?', '9%']]),
       questions: [
-        mcAt('Which is largest?', ['0.6', '5/8', '62%', '0.059'], 1, '5/8 = 0.625 > 0.62 > 0.6 > 0.059.', { d: 2 }),
+        mcAt('Which is largest?', ['0.6', '5/8', '62%', '0.615'], 1, '5/8 = 0.625 > 0.62 > 0.6 > 0.059.', { d: 2 }),
         num('Write 7/20 as a percentage.', 35, '7/20 = 35/100 = 35%.', { d: 1, unit: '%' }),
         txt('Write 0.454545... as a fraction in its simplest form.', ['5/11'], '100x − x = 45 → 99x = 45 → 45/99 = 5/11.', { d: 4, tier: 'H', h: ['Two digits repeat - so multiply by 100.'] }),
         tf('3/7 is a terminating decimal.', false, '7 is not 2 or 5, so it recurs: 0.428571...', { d: 3, tier: 'H' }),
@@ -347,7 +347,7 @@ A **surd** is an irrational root like √2. Leave answers in surd form when aske
       questions: [
         num('£1 = €1.16. Convert £250 to euros.', 290, '250 × 1.16 = €290.', { d: 1, unit: '€' }),
         num('Sam earns £11.40 per hour, with overtime at time and a half. How much for 3 hours of overtime?', 51.3, '11.40 × 1.5 × 3 = £51.30.', { d: 2, unit: '£' }),
-        mc('A 500 g pack costs £2.40 and a 750 g pack costs £3.45. Which is better value?', ['750 g pack', '500 g pack', 'Same value', 'Cannot tell'], '500 g: 0.48p/g; 750 g: 0.46p/g.', { d: 2 }),
+        mc('A 500 g pack costs £2.40 and a 750 g pack costs £3.45. Which is better value?', ['The 750 g pack', 'The 500 g pack', 'They are the same value', 'You cannot tell from the prices'], '500 g: 0.48p/g; 750 g: 0.46p/g.', { d: 2 }),
       ],
     }),
   ],

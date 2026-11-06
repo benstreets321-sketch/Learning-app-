@@ -40,7 +40,7 @@ function RescuePicker() {
     <div className="page narrow">
       <p className="eyebrow">Struggling?</p>
       <h1>Rescue session</h1>
-      <p className="lead">Pick the topic that's causing trouble. We'll go back to the basics, walk through a worked example, then build up with three easy questions – about 10 minutes.</p>
+      <p className="lead">Pick the topic that's causing trouble. We'll go back to the basics, walk through a worked example, then build up with three easy questions. About 10 minutes.</p>
       {weak.length > 0 && (
         <section className="section">
           <h2>Your weakest topics</h2>
@@ -128,7 +128,7 @@ function Rescue({ topicId }: { topicId: string }) {
       {step === 'basics' && (
         <div className="panel">
           <h2>Start from the beginning</h2>
-          <p className="muted">Forget the exam question for a minute. Read this slowly – just the core idea.</p>
+          <p className="muted">Forget the exam question for a minute. Read this slowly. Just the core idea.</p>
           {topic.simpler ? <Markdown text={topic.simpler} /> : <Markdown text={topic.notes.split('\n## ')[0]} />}
           <div className="callout callout-key">
             <div className="callout-title">The essentials</div>
@@ -167,7 +167,7 @@ function Rescue({ topicId }: { topicId: string }) {
               {ex.answer && <p><strong>Answer:</strong> <Markdown text={ex.answer} inline /></p>}
               {ex.tryIt && (
                 <div className="tryit">
-                  <strong>Your turn – same method, new numbers:</strong>
+                  <strong>Your turn. Same method, new numbers:</strong>
                   <Markdown text={ex.tryIt} />
                   {ex.tryAnswer && (tryShown ? <p><strong>Answer:</strong> <Markdown text={ex.tryAnswer} inline /></p> : <button className="btn small" onClick={() => setTryShown(true)}>Check my answer</button>)}
                 </div>
@@ -204,23 +204,23 @@ function Rescue({ topicId }: { topicId: string }) {
 
       {step === 'check' && (
         <div className="panel">
-          <h2>{right === results.length && results.length > 0 ? 'That is real progress.' : right > 0 ? 'You are getting there.' : 'That is OK – this one needs a human.'}</h2>
+          <h2>{right === results.length && results.length > 0 ? 'That is real progress.' : right > 0 ? 'You are getting there.' : 'That is OK. This one needs a teacher.'}</h2>
           {results.length > 0 && <p>You got <strong>{right} of {results.length}</strong> right.</p>}
           <h3>How do you feel about {topic.title} now?</h3>
           <div className="choice-grid">
             <a className="choice" href={href('/quiz', { scope: 'topic', id: topicId, n: 6 })}>
-              <Icon name="target" /><strong>Better – let me practise</strong><span className="muted small">6 questions that adapt to you</span>
+              <Icon name="target" /><strong>Better, let me practise</strong><span className="muted small">6 questions that adapt to you</span>
             </a>
             <a className="choice" href={href(`/t/${topicId}`, { tab: 'learn' })}>
-              <Icon name="learn" /><strong>A bit better – re-read the lesson</strong><span className="muted small">Then try the flashcards</span>
+              <Icon name="learn" /><strong>A bit better, re-read the lesson</strong><span className="muted small">Then try the flashcards</span>
             </a>
             <a className="choice" href={href('/rescue', { topic: topicId, again: Date.now() })}>
-              <Icon name="steps" /><strong>Still confused – go again</strong><span className="muted small">New easy questions</span>
+              <Icon name="steps" /><strong>Still confused, go again</strong><span className="muted small">New easy questions</span>
             </a>
           </div>
 
           <div className="callout callout-tip">
-            <div className="callout-title">Ask for help – it's what teachers are there for</div>
+            <div className="callout-title">Ask for help. Teachers are there for this</div>
             <p>Copy this note and send it to your teacher (or show it at the start of a lesson). Fill in the gap first.</p>
             <pre className="note">{note()}</pre>
             <button className="btn small" onClick={copyNote}><Icon name="message" size={16} /> {copied ? 'Copied' : 'Copy note'}</button>

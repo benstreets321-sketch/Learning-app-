@@ -48,7 +48,7 @@ export function MocksPage() {
       <p className="lead">Three full practice papers for every exam you sit, timed to the real paper, with only the equipment you're allowed. Submit to see your marks, what you missed and how to improve.</p>
       <div className="callout callout-tip small">
         <div className="callout-title">About the predictions</div>
-        Exam boards never reveal what will come up, and any part of the specification can be examined. These papers follow each board's real structure and are weighted towards themes, characters and topics that haven't been asked recently – a sensible bet, not a guarantee.
+        Exam boards never reveal what will come up, and any part of the specification can be examined. These papers follow each board's real structure and are weighted towards themes, characters and topics that haven't been asked recently. A sensible bet, not a guarantee.
       </div>
       {hasOtherTier(profile) && (
         <label className="row gap small">
@@ -200,7 +200,7 @@ export function MockTakePage({ testId, attemptId }: { testId: string; attemptId?
             <li>Only the equipment allowed in the real exam is available: {paper.tools.filter((t) => t !== 'working').map((t) => TOOL_NAME[t].toLowerCase()).join(', ') || 'none'}. There are no hints and no tutor until you submit.</li>
             <li>Your answers save as you go. If you leave, you can resume with the time you had left.</li>
           </ul>
-          <button className="btn primary big" onClick={() => { const a = newAttempt(test, paper); saveMockAttempt(a); setAttempt(a); }}>Start – {fmtMins(paper.mins)}</button>
+          <button className="btn primary big" onClick={() => { const a = newAttempt(test, paper); saveMockAttempt(a); setAttempt(a); }}>Start the {fmtMins(paper.mins)} paper</button>
         </div>
       </div>
     );
@@ -250,7 +250,7 @@ export function MockTakePage({ testId, attemptId }: { testId: string; attemptId?
         <span className="small strong">{subject.short} · {paper.title.split(' – ')[0]}</span>
         <span className={`mono mock-timer ${left < 300 ? 'low' : ''}`} aria-label={`${clock(left)} remaining`}><Icon name="clock" size={16} /> {clock(left)}</span>
         <span className="small muted mono">{answeredCount}/{qs.length} answered</span>
-        <a className="small" href={href(`/mocks/${paper.id}`)} onClick={() => { if (attemptRef.current) saveMockAttempt(attemptRef.current); resetTools(); }} title="Your answers and time left are saved – resume from the paper page">Save &amp; exit</a>
+        <a className="small" href={href(`/mocks/${paper.id}`)} onClick={() => { if (attemptRef.current) saveMockAttempt(attemptRef.current); resetTools(); }} title="Your answers and time left are saved. Resume from the paper page">Save &amp; exit</a>
         {!confirm
           ? <button className="btn small primary" onClick={() => setConfirm(true)}>Submit</button>
           : <span className="row gap"><span className="small">{qs.length - answeredCount ? `${qs.length - answeredCount} unanswered. ` : ''}Submit now?</span><button className="btn small primary" onClick={() => submit(attempt)}>Yes, submit</button><button className="btn small ghost" onClick={() => setConfirm(false)}>Keep going</button></span>}
@@ -353,7 +353,7 @@ function MockAutoInput({ item, value, onChange, marks, disabled = false }: { ite
       )}
       {item.type === 'match' && (
         <div className="match">
-          <p className="muted small">Draw one line from each item – choose its match.</p>
+          <p className="muted small">Draw one line from each item. Choose its match.</p>
           {item.pairs.map(([l], i) => (
             <div key={i} className="match-row">
               <div className="match-left"><Markdown text={l} inline /></div>
@@ -365,7 +365,7 @@ function MockAutoInput({ item, value, onChange, marks, disabled = false }: { ite
           ))}
         </div>
       )}
-      {marks > 1 && item.type === 'num' && <p className="muted small">Show your working in the working space – method marks can be given if your final answer is wrong.</p>}
+      {marks > 1 && item.type === 'num' && <p className="muted small">Show your working in the working space. Method marks can be given if your final answer is wrong.</p>}
     </div>
   );
 }
@@ -427,10 +427,10 @@ export function MockReviewPage({ testId, attemptId }: { testId: string; attemptI
   const writtenLost = qs.filter((q) => q.kind === 'written').reduce((a, q) => a + q.marks - (attempt.marks[q.n] ?? 0), 0);
 
   const advice = [
-    unanswered.length ? `**${unanswered.length} question${unanswered.length === 1 ? '' : 's'} left blank.** In the real exam always write something – a method or one relevant point can earn marks.` : '',
+    unanswered.length ? `**${unanswered.length} question${unanswered.length === 1 ? '' : 's'} left blank.** In the real exam always write something. A method or one relevant point can earn marks.` : '',
     timeTaken > paper.mins * 0.98 && unanswered.length ? `**Timing:** you ran out of time. Aim for about a mark a minute${paper.mins / paper.marks > 1.1 ? ` (here ${Math.round((paper.mins / paper.marks) * 10) / 10} minutes per mark)` : ''} and move on from anything you're stuck on.` : '',
     writtenLost > autoLost && writtenLost > 0 ? `**Most marks were lost in longer written answers** (${writtenLost} marks). Use the mark scheme points and model answers below: plan before writing, and make every point specific.` : '',
-    autoLost >= writtenLost && autoLost > 0 ? `**Most marks were lost on short, knowledge-based questions** (${autoLost} marks). These are the quickest to fix – they are now on your Fix-it list and will come back in your sessions.` : '',
+    autoLost >= writtenLost && autoLost > 0 ? `**Most marks were lost on short, knowledge-based questions** (${autoLost} marks). These are the quickest to fix. They are now on your Fix-it list and will come back in your sessions.` : '',
     weakest.length ? `**Revise first:** ${weakest.slice(0, 3).map(([t]) => getTopic(t)?.topic.title).filter(Boolean).join(', ')}.` : '',
   ].filter(Boolean);
 
@@ -462,7 +462,7 @@ export function MockReviewPage({ testId, attemptId }: { testId: string; attemptI
 
       <section className="section card pad">
         <h2 style={{ marginTop: 0 }}>How to improve</h2>
-        {advice.length ? <ul className="plain">{advice.map((a, i) => <li key={i}><Markdown text={a} inline /></li>)}</ul> : <p>Full marks – excellent. Try the next practice paper.</p>}
+        {advice.length ? <ul className="plain">{advice.map((a, i) => <li key={i}><Markdown text={a} inline /></li>)}</ul> : <p>Full marks. Excellent. Try the next practice paper.</p>}
         {weakest.length > 0 && (
           <div className="list" style={{ marginTop: '0.6rem' }}>
             {weakest.map(([t, v]) => (
@@ -571,7 +571,7 @@ function AutoReview({ q, answer, got, onMethod }: { q: Extract<MockQ, { kind: 'a
       {g.detail && !g.correct && <p className="small muted">{g.detail}</p>}
       {!g.correct && q.method?.length ? (
         <div className="callout small">
-          <div className="callout-title">Method marks – tick any your working showed</div>
+          <div className="callout-title">Method marks: tick any your working showed</div>
           {q.method.map((m, k) => (
             <label key={k} className="tick"><input type="checkbox" checked={got > k} onChange={(e) => onMethod(e.target.checked ? Math.max(got, k + 1) : k)} /> <Markdown text={m} inline /></label>
           ))}

@@ -5,7 +5,7 @@ import { href } from '../lib/router';
 import { streak, useProfile, useProgress } from '../lib/store';
 import { daysToExam, dueCardCount, recommendations, subjectStats } from '../lib/insights';
 import { todayKey } from '../lib/util';
-import { ProgressBar, Ring, Section } from '../components/ui';
+import { ProgressBar, Section } from '../components/ui';
 import { SubjectMark } from '../components/SubjectMark';
 import { Icon } from '../components/Icon';
 import { InstallCard } from '../components/Install';
@@ -58,82 +58,70 @@ export function Home() {
     preview.weak ? `${preview.weak} weak spot${preview.weak === 1 ? '' : 's'}` : '',
   ].filter(Boolean);
 
+  const dateLine = new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+  const subjectWord = focus.group?.short ?? 'Revision';
+  const evening = new Date().getHours() >= 16;
+  const frac = Math.min(1, mins / Math.max(1, goal));
+  const RING = 2 * Math.PI * 40;
+  const note = goalDone
+    ? 'Done for today. Keep going if you like: it all still counts.'
+    : focus.exam
+      ? 'Exam season: today follows your next exam instead of the timetable.'
+      : '';
+
   return (
-    <div className="page">
-      <header className="page-head">
-        <div>
-          <p className="eyebrow">{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-          <h1>{profile.name ? `Hi ${profile.name}` : 'Welcome back'}</h1>
-          <p className="muted">
-            {days > 0 ? <><span className="mono">{days}</span> day{days === 1 ? '' : 's'} until your first GCSE exam ({profile.examYear})</> : 'Exam season has started.'}
-          </p>
-        </div>
-        <div className="head-stats">
-          <div className="kpi"><Icon name="flame" size={18} /><span className="mono">{st}</span><span className="muted small">day streak</span></div>
-          <div className="kpi"><Icon name="clock" size={18} /><span className="mono">{mins}</span><span className="muted small">min today</span></div>
-        </div>
-      </header>
-
-      {st > 0 && today.q + today.cards === 0 && new Date().getHours() >= 17 && (
-        <div className="notice">
-          <Icon name="flame" size={18} />
-          <span>You haven't studied today yet. Ten minutes keeps your {st}-day streak going.</span>
-          <a className="btn small primary" href={href('/quiz', { scope: 'smart', n: 8, subjects: onlyQ })}>Ten minutes now</a>
-        </div>
-      )}
-
-      <PhaseCard compact />
-
-      <section className="today card">
+    <div className="page home">
+      <section className="today">
+        <p className="today-top mono"><span>{dateLine}</span><span>{days > 0 ? `${days} day${days === 1 ? '' : 's'} to go` : 'Exam season'}</span></p>
         <div className="today-head">
-          <div>
-            <h2>Today{focus.group ? <>: <span className="today-subject">{focus.group.short}</span></> : null}</h2>
-            <p className="muted small">
-              {goalDone
-                ? 'Done for today – you can keep going as long as you like, and it all still counts.'
-                : focus.exam
-                  ? `Exam season: today follows your next exam, ${focus.group!.short}, instead of the weekly timetable. Learn re-teaches the topic worth the most marks; the session focuses on mistakes, weak spots and exam-style questions.`
-                  : focus.group
-                  ? `${focus.dayName} is ${focus.group.short} day. Learn something new, then do your ${goal}-minute session – the app chooses everything in it from your mistakes, reviews, weak spots and target grade.`
-                  : `Learn something new, then do your ${goal}-minute session – the app chooses everything in it.`}
-            </p>
+          <svg className="focus-ring" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label={`${mins} of ${goal} minutes done today`}>
+            <circle cx="48" cy="48" r="40" className="fr-track" />
+            {frac > 0 && <circle cx="48" cy="48" r="40" className={`fr-fill ${goalDone ? 'done' : ''}`} strokeDasharray={`${(frac * RING).toFixed(1)} ${RING.toFixed(1)}`} transform="rotate(-90 48 48)" />}
+            <text x="48" y="50" textAnchor="middle" className="fr-n">{mins}</text>
+            <text x="48" y="66" textAnchor="middle" className="fr-u">{goalDone ? 'DONE' : `OF ${goal} MIN`}</text>
+          </svg>
+          <div className="today-name">
+            <p className="today-kicker">{evening ? "Tonight's subject" : "Today's subject"}{profile.name ? `, ${profile.name}` : ''}</p>
+            <h1 className="today-title">{subjectWord}</h1>
+            <p className="today-stats"><span className="mono">{mins}</span> of <span className="mono">{goal}</span> min · {st > 0 ? <><span className="mono">{st}</span>-day streak</> : 'start a streak today'}</p>
           </div>
-          <Ring value={mins / goal} label={`${Math.min(100, Math.round((mins / goal) * 100))}%`} size={64} />
         </div>
+        {note && <p className="today-intro">{note}</p>}
+
+        {st > 0 && today.q + today.cards === 0 && new Date().getHours() >= 17 && (
+          <p className="notice small">
+            <Icon name="flame" size={16} /> Nothing yet today. Ten minutes keeps your {st}-day streak going.
+            <a className="btn small" href={href('/quiz', { scope: 'smart', n: 8, subjects: onlyQ })}>Ten minutes now</a>
+          </p>
+        )}
+
         <div className="today-actions">
           <button className="today-btn learn" onClick={() => go('/learn', { _: Date.now() })}>
-            <span className="today-ic"><Icon name="learn" size={24} /></span>
-            <span className="today-txt">
-              <strong>Learn</strong>
-              <span className="small">{learnNext ? <>Next: <b>{learnNext.topic.title}</b></> : 'Your next topic'}</span>
-              <span className="muted small">Lesson, practice and flashcards · about 15 minutes</span>
-            </span>
-            <Icon name="arrow" size={18} className="push" />
+            <span className="today-label">Learn · 15 min</span>
+            <span className="today-main">{learnNext ? learnNext.topic.title : 'Your next topic'}</span>
+            <span className="today-sub">Lesson, practice and flashcards</span>
           </button>
           <button className="today-btn session" onClick={() => launchSession(goal, focus.ids ?? undefined)}>
-            <span className="today-ic"><Icon name="target" size={24} /></span>
-            <span className="today-txt">
-              <strong>{goal}-minute session</strong>
-              <span className="small">{sessionBits.length ? sessionBits.join(' · ') : 'Practice, reviews and new questions'}</span>
-              <span className="muted small">The app picks every question and mode for you</span>
-            </span>
-            <Icon name="arrow" size={18} className="push" />
+            <span className="today-label">{goal}-minute session</span>
+            <span className="today-main">{sessionBits.length ? sessionBits.join(', ') : 'Practice, reviews and new questions'}</span>
+            <span className="today-sub">Every question is picked for you</span>
           </button>
         </div>
-        <TodayExtras ids={focus.ids} />
-        {preds.length > 0 && (
-          <div className="today-grades">
-            {preds.map((p) => (
-              <a key={p.subject.id} className="grade-chip" href={href('/progress', { tab: 'grades' })} title="Predicted grade if you sat the exam today">
-                <SubjectMark subject={p.subject} size="sm" />
-                <span className="small">{p.subject.short}: {p.ready ? <>predicted <strong className="mono">{rangeText(p)}</strong></> : 'grade prediction after ~20 answers'}{p.target ? <> · target <strong className="mono">{shortGrade(p.target)}</strong>{p.ready ? (p.gap ? ` (${Math.ceil(p.gap)}% to go)` : ' – on track') : ''}</> : ' · set a target'}</span>
-              </a>
-            ))}
-          </div>
-        )}
+
+        <div className="also-today">
+          <TodayExtras ids={focus.ids} />
+          {preds.map((p) => (
+            <a key={p.subject.id} className="extra-card" href={href('/progress', { tab: 'grades' })}>
+              <span className="ex-kind">Grade</span>
+              <span className="grow clip">{preds.length > 1 ? `${p.subject.short}: ` : ''}{p.ready ? <>Predicted <strong className="mono">{rangeText(p)}</strong></> : 'A prediction appears after about 20 answers'}{p.target ? <>, target <strong className="mono">{shortGrade(p.target)}</strong>{p.ready ? (p.gap ? ` (${Math.ceil(p.gap)}% to go)` : ' (on track)') : ''}</> : ''}</span>
+              {!p.target && <span className="small muted">Set a target</span>}
+            </a>
+          ))}
+        </div>
+
         {goalDone && (
           <div className="keep-going">
-            <span className="small"><strong>Goal reached.</strong> Want more? Extra practice still updates your progress and Fix-it list.</span>
+            <span className="small"><strong>Goal reached.</strong> Extra practice still counts towards your progress and Fix-it list.</span>
             <div className="row gap wrap">
               <a className="btn small primary" href={href('/session', { mins: 10, subjects: onlyQ, _: Date.now() })}>Keep going: 10 more minutes{focus.group ? ` of ${focus.group.short}` : ''}</a>
               <a className="btn small" href={href('/session', { mins: 20, subjects: onlyQ, _: Date.now() })}>20 more minutes</a>
@@ -141,55 +129,35 @@ export function Home() {
             </div>
           </div>
         )}
-        {(
-          <div className="week-strip" aria-label="Your weekly timetable">
-            {WEEK_DAYS.map((d) => (
-              <span key={d.n} className={`wk ${d.n === todayN ? 'on' : ''}`} title={`${d.name}: ${groupById(week[d.n])?.name ?? 'All my subjects'}`}>
-                <span className="wk-d">{d.short}</span>
-                <span className="wk-s">{groupById(week[d.n])?.short ?? 'Mixed'}</span>
-              </span>
-            ))}
-            <a className="small wk-edit" href={href('/setup', { tab: 'week' })}>Change</a>
-          </div>
-        )}
+
+        <div className="week-strip" aria-label="Your weekly timetable">
+          {WEEK_DAYS.map((d) => (
+            <span key={d.n} className={`wk ${d.n === todayN ? 'on' : ''}`} title={`${d.name}: ${groupById(week[d.n])?.name ?? 'All my subjects'}`}>
+              <span className="wk-d">{d.short}</span>
+              <span className="wk-s">{groupById(week[d.n])?.short ?? 'Mixed'}</span>
+            </span>
+          ))}
+          <a className="small wk-edit" href={href('/setup', { tab: 'week' })}>Change</a>
+        </div>
       </section>
 
+      <PhaseCard compact />
+
       {[0, 1].includes(new Date().getDay()) && Object.keys(progress.days).length > 2 && (
-        <Section title="Your week in review" right={<a className="small" href="#/progress">Progress</a>}>
-          <div className="card pad"><WeeklyReview /></div>
+        <Section title="Your week" right={<a className="small" href="#/progress">Progress</a>}>
+          <WeeklyReview />
         </Section>
       )}
 
-      <div className="split three">
-        <a className="card link-card" href={href('/rescue')}>
-          <Icon name="life" size={22} />
-          <span>
-            <strong>Struggling with a topic?</strong>
-            <span className="muted small block">A 10-minute rescue session rebuilds it from the basics.</span>
-          </span>
-          <Icon name="arrow" size={18} className="push" />
-        </a>
-        <a className="card link-card" href={href('/sprint')}>
-          <Icon name="clock" size={22} />
-          <span>
-            <strong>90-second sprint</strong>
-            <span className="muted small block">Quick-fire recall across your subjects.{progress.sprints?.all ? ` Best: ${progress.sprints.all}.` : ''}</span>
-          </span>
-          <Icon name="arrow" size={18} className="push" />
-        </a>
-        <a className="card link-card" href={href('/tools/calculator')}>
-          <Icon name="calc" size={22} />
-          <span>
-            <strong>Calculator, periodic table and formula sheets</strong>
-            <span className="muted small block">Also available inside every question.</span>
-          </span>
-          <Icon name="arrow" size={18} className="push" />
-        </a>
-      </div>
+      <nav className="tool-links" aria-label="Other ways to revise">
+        <a href={href('/rescue')}><Icon name="life" size={18} /> Rescue a topic you're stuck on</a>
+        <a href={href('/sprint')}><Icon name="clock" size={18} /> 90-second sprint{progress.sprints?.all ? <span className="muted"> (best {progress.sprints.all})</span> : null}</a>
+        <a href={href('/tools/calculator')}><Icon name="calc" size={18} /> Calculator, periodic table and formula sheets</a>
+      </nav>
 
       <InstallCard />
 
-      <Section title="Recommended next" right={<a className="small" href="#/plan">Revision plan</a>}>
+      <Section title="Next up" right={<a className="small" href="#/plan">Revision plan</a>}>
         <div className="rec-list">
           {recs.map((r) => (
             <a
@@ -204,9 +172,9 @@ export function Home() {
               <SubjectMark subject={r.subject} size="sm" />
               <span className="rec-body">
                 <span className="rec-title">{r.topic.title}</span>
-                <span className="muted small">{r.subject.short} · {r.reason}</span>
+                <span className="muted small">{r.subject.short}. {r.reason}</span>
               </span>
-              <span className="rec-action small">{r.action === 'learn' ? 'Learn' : r.action === 'exam' ? 'Exam' : 'Practise'}</span>
+              <span className="rec-action small">{r.action === 'learn' ? 'Learn' : r.action === 'exam' ? 'Exam question' : 'Practise'}</span>
             </a>
           ))}
         </div>
@@ -214,63 +182,52 @@ export function Home() {
 
       <Suspense fallback={null}><HomeMocks /></Suspense>
 
-      {(() => {
-        const gaps = uncovered(subjects, profile, progress, 3);
-        const totals = subjects.map((s) => specCoverage(s, profile, progress)).reduce((a, c) => ({ t: a.t + c.total, s: a.s + c.started }), { t: 0, s: 0 });
-        return (
-          <Section title="Exam coverage" right={<a className="small" href="#/progress">All subjects</a>}>
-            <div className="card pad">
-              <p className="cov-line"><span className="mono">{totals.s}/{totals.t}</span> specification points practised across your subjects</p>
-              <div className="cov-bar"><span className="sec" style={{ width: `${(totals.s / Math.max(1, totals.t)) * 100}%` }} /></div>
-              {gaps.length > 0 && (
-                <>
-                  <p className="small muted" style={{ marginTop: '0.8rem' }}>Not started yet – pick one today:</p>
-                  <div className="list">
-                    {gaps.map((g) => (
-                      <a key={g.subject.id + g.point.code} className="list-row" href={href(`/t/${g.topicId}`)}>
-                        <SubjectMark subject={g.subject} size="sm" />
-                        <span className="grow">{g.point.title}</span>
-                        <span className="mono small muted">{g.point.code}</span>
-                      </a>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </Section>
-        );
-      })()}
-
       <Section title="Your subjects" right={<a className="small" href="#/setup">Subjects and options</a>}>
-        <div className="subject-grid">
+        <div className="subject-list">
           {stats.map((s) => (
-            <a key={s.subject.id} className="subject-card" href={href(`/s/${s.subject.id}`)} style={{ ['--subj' as string]: s.subject.color }}>
-              <div className="subject-card-head">
-                <SubjectMark subject={s.subject} />
-                <span>
-                  <span className="subject-name">{s.subject.name}</span>
-                  <span className="muted small block">{s.started}/{s.topics.length} topics started{s.mistakes > 0 && <> · {s.mistakes} to fix</>}</span>
-                </span>
-                <span className="mono subject-pct">{Math.round(s.mastery * 100)}%</span>
-              </div>
+            <a key={s.subject.id} className="subject-row" href={href(`/s/${s.subject.id}`)} style={{ ['--subj' as string]: s.subject.color }}>
+              <SubjectMark subject={s.subject} size="sm" />
+              <span className="subject-name">{s.subject.name}</span>
+              <span className="muted small subject-meta">{s.started} of {s.topics.length} topics{s.mistakes > 0 && <>, {s.mistakes} to fix</>}</span>
               <ProgressBar value={s.mastery} color={s.subject.color} label={`${s.subject.name} mastery`} />
+              <span className="mono subject-pct">{Math.round(s.mastery * 100)}%</span>
             </a>
           ))}
         </div>
       </Section>
 
-      <Section title="Revision tip">
-        <div className="tip">
-          <Icon name="bulb" size={20} />
-          <div>
-            <strong>{tip.title}.</strong> {tip.text}
-            <div><a className="small" href="#/how">How to revise effectively</a></div>
-          </div>
-        </div>
-      </Section>
+      {(() => {
+        const gaps = uncovered(subjects, profile, progress, 3);
+        const totals = subjects.map((s) => specCoverage(s, profile, progress)).reduce((a, c) => ({ t: a.t + c.total, s: a.s + c.started }), { t: 0, s: 0 });
+        return (
+          <Section title="Exam coverage" right={<a className="small" href="#/progress">All subjects</a>}>
+            <p className="cov-line"><span className="mono">{totals.s}</span> of <span className="mono">{totals.t}</span> specification points practised</p>
+            <div className="cov-bar"><span className="sec" style={{ width: `${(totals.s / Math.max(1, totals.t)) * 100}%` }} /></div>
+            {gaps.length > 0 && (
+              <>
+                <p className="small muted" style={{ marginTop: '0.8rem' }}>Not started yet:</p>
+                <div className="list">
+                  {gaps.map((g) => (
+                    <a key={g.subject.id + g.point.code} className="list-row" href={href(`/t/${g.topicId}`)}>
+                      <SubjectMark subject={g.subject} size="sm" />
+                      <span className="grow">{g.point.title}</span>
+                      <span className="mono small muted">{g.point.code}</span>
+                    </a>
+                  ))}
+                </div>
+              </>
+            )}
+          </Section>
+        );
+      })()}
 
-      <p className="muted small center foot-counts">
-        {counts.topics} topics · {counts.questions.toLocaleString()} questions · {counts.cards.toLocaleString()} flashcards · {counts.exam} exam questions · {counts.generatorTypes} question generators
+      <aside className="tip">
+        <p className="eyebrow">Revision tip</p>
+        <p><strong>{tip.title}.</strong> {tip.text} <a className="small" href="#/how">How to revise</a></p>
+      </aside>
+
+      <p className="muted small foot-counts">
+        {counts.topics} topics, {counts.questions.toLocaleString()} written questions, {counts.cards.toLocaleString()} flashcards, {counts.exam} exam questions and {counts.generatorTypes} question generators.
       </p>
     </div>
   );

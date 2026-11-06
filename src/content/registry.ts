@@ -6,6 +6,7 @@ import { askedDp } from '../lib/answer';
 import { GENERATORS, FACT_TOPICS } from './generators';
 import { plotGenerator, quoteGenerator, timelineGenerator, type UnitEvent, type UnitQuote } from './generators/topic-facts';
 import { keyTerms, notesGenerator } from './generators/notes-gen';
+import { formOk, harmonise, pickPlausible } from './generators/plausible';
 import { EXTRA } from './extra';
 import { EXTRA_LIT } from './extra-lit';
 import { finishCluster } from './subjects/english-literature/poetry-helpers';
@@ -66,12 +67,15 @@ function deriveQuestions(topic: Topic, speakers: string[]): Question[] {
       out.push({ type: 'order', q: 'Put these events in chronological order (earliest first).', items: tl.slice(i, i + 4).map((e) => e.event), why: tl.slice(i, i + 4).map((e) => `**${e.date}**: ${e.event}`).join('  \n'), d: 3 });
     }
     const dates = [...new Set(tl.map((e) => e.date))];
+    // "2.6" reads as Act 2, Scene 6; a date is only offered against dates written the same way (no "Prologue" among
+    // scene numbers, no "1860-61" among single years)
+    const scene = (d: string) => (/^\d+\.\d+$/.test(d) ? `Act ${d.split('.')[0]}, Scene ${d.split('.')[1]}` : d);
     tl.slice(0, 8).forEach((e, i) => {
-      const wrong = dates.filter((d) => d !== e.date);
+      const wrong = dates.filter((d) => d !== e.date && formOk(e.date, d));
       if (wrong.length < 3) return;
       const w = [wrong[(i + 1) % wrong.length], wrong[(i + 3) % wrong.length], wrong[(i + 5) % wrong.length]];
-      const opts = [...new Set([e.date, ...w])];
-      if (opts.length >= 3) out.push({ type: 'mcq', q: `When did this happen? **${e.event}**`, options: opts, answer: 0, why: `${e.date}: ${e.event}`, d: 2 });
+      const opts = [...new Set([e.date, ...w])].map(scene);
+      if (opts.length >= 3) out.push({ type: 'mcq', q: `When did this happen? **${e.event}**`, options: opts, answer: 0, why: `${scene(e.date)}: ${e.event}`, d: 2 });
     });
   }
   return out;
@@ -81,30 +85,22 @@ function deriveQuestions(topic: Topic, speakers: string[]): Question[] {
 const plain = (s: string) => s.replace(/[*_`]/g, '').trim();
 const isShort = (s: string, n: number) => s.length <= n && !s.includes('\n');
 
+/** a card that defines a term: a plain term, or "What is/are/does ... (mean)?" */
+const isDefinitional = (s: string) => !isQuestion(s) || ((/^(what|who) (is|are|was|were) (a |an |the )?["“']?[^?]{2,45}["”']?\?$/i.test(s.trim()) || /^what does ["“']?[^?]{2,45}["”']? mean\?$/i.test(s.trim())) && !/\b(why|how|difference|advantage|disadvantage|purpose|stages|function|role)\b/i.test(s));
 const isQuestion = (s: string) => /[?:]$/.test(s.trim()) || /^(what|which|who|when|where|why|how|name|give|state|define|list|explain|describe|outline|identify|solve|work out|calculate|find|simplify|expand|factorise|convert|write|estimate|round|is|are|does|do|can)\b/i.test(s.trim());
-const numeric = (s: string) => /^[\s£$€\d.,%×x^/+\-−=()a-zµ²³]{1,24}$/i.test(plain(s)) && /\d/.test(s);
 
-/** Choose 3 distractors that look like the answer (similar length and form), preferring the same topic. */
-function lookalikes(answer: string, topicId: string, pool: { text: string; topicId: string }[], seed: number): string[] {
-  const len = plain(answer).length;
-  const num = numeric(answer);
-  const scored = pool
-    .filter((p) => plain(p.text) !== plain(answer))
-    .map((p, i) => {
-      const l = plain(p.text).length;
-      let score = Math.abs(Math.log((l + 4) / (len + 4)));
-      if (numeric(p.text) !== num) score += 2;
-      if (p.topicId === topicId) score -= 0.35;
-      score += (((seed + i * 2654435761) >>> 0) % 1000) / 4000; // small deterministic jitter
-      return { t: p.text, score };
-    })
-    .sort((a, b) => a.score - b.score);
-  const out: string[] = [];
-  for (const c of scored) {
-    if (out.length === 3) break;
-    if (!out.some((o) => plain(o) === plain(c.t))) out.push(c.t);
-  }
-  return out;
+/**
+ * Choose 3 wrong options of the same kind and form as the answer (see plausible.ts), preferring the same topic. Answers
+ * to question-style cards ("How many marks is P2 Q3?") vary too much in kind across a unit, so those only use the same
+ * topic and need a close match; with fewer than 3 good options the question is not made at all.
+ */
+function lookalikes(answer: string, topicId: string, pool: { text: string; topicId: string }[], seed: number, strict = false): string[] {
+  let x = seed || 1;
+  const rand = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+  const cands = pool.filter((p) => !strict || p.topicId === topicId);
+  const same = new Set(cands.filter((p) => p.topicId === topicId).map((p) => p.text));
+  const picked = pickPlausible(answer, cands.map((p) => p.text), 3, rand, strict ? 0.5 : -1, (c) => (same.has(c) ? 1.2 : 0));
+  return picked ?? [];
 }
 
 function deriveFromCards(topic: Topic, unitCards: { front: string; back: string; topicId: string }[]): Question[] {
@@ -116,13 +112,16 @@ function deriveFromCards(topic: Topic, unitCards: { front: string; back: string;
     for (const ch of c.front + c.back) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
     const others = unitCards.filter((o) => o.front !== c.front && o.back !== c.back);
     if (others.length < 3) return;
-    // recognise the answer: front -> choose the right back
-    if (isShort(c.back, 120)) {
-      const wrong = lookalikes(c.back, topic.id, others.filter((o) => isShort(o.back, 140)).map((o) => ({ text: o.back, topicId: o.topicId })), seed);
+    // recognise the answer: front -> choose the right back. Only for cards that define a term ("Simile", "What is
+    // détente?"): every wrong option is then another definition from the unit, which could all be right. The answer
+    // to a specific question ("Who does Romeo love at the start?") can't be matched by other cards' answers, so those
+    // cards stay as flashcards and typed recall.
+    const front = c.front.trim();
+    if (isShort(c.back, 120) && isDefinitional(front)) {
+      const wrong = lookalikes(c.back, topic.id, others.filter((o) => isShort(o.back, 140) && isDefinitional(o.front.trim())).map((o) => ({ text: o.back, topicId: o.topicId })), seed);
       if (wrong.length === 3) {
-        const front = c.front.trim();
         const q = isQuestion(front) ? front : `Which of these matches **${plain(front)}**?`;
-        out.push({ type: 'mcq', q, options: [c.back, ...wrong], answer: 0, why: `**${plain(front)}** - ${c.back}`, d: 1, derived: true } as Question);
+        out.push({ type: 'mcq', q, options: harmonise([c.back, ...wrong]), answer: 0, why: `**${plain(front)}** - ${c.back}`, d: 1, derived: true } as Question);
         made++;
       }
     }
@@ -130,7 +129,7 @@ function deriveFromCards(topic: Topic, unitCards: { front: string; back: string;
     if (i % 2 === 0 && isShort(c.front, 45) && !isQuestion(c.front) && isShort(c.back, 220)) {
       const wrong = lookalikes(c.front, topic.id, others.filter((o) => isShort(o.front, 45) && !isQuestion(o.front)).map((o) => ({ text: o.front, topicId: o.topicId })), seed >>> 3);
       if (wrong.length === 3) {
-        out.push({ type: 'mcq', q: `Which term or idea is this?\n\n> ${c.back}`, options: [c.front, ...wrong], answer: 0, why: `**${plain(c.front)}**: ${c.back}`, d: 2, derived: true } as Question);
+        out.push({ type: 'mcq', q: `Which term or idea is this?\n\n> ${c.back}`, options: harmonise([c.front, ...wrong]), answer: 0, why: `**${plain(c.front)}**: ${c.back}`, d: 2, derived: true } as Question);
         made++;
       }
     }

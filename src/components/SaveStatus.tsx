@@ -16,7 +16,7 @@ export function SaveStatus({ detail = false }: { detail?: boolean }) {
   const [, tick] = useState(0);
   useEffect(() => { const t = setInterval(() => tick((n) => n + 1), 20000); return () => clearInterval(t); }, []);
   const local = s.status === 'error' ? 'Could not save on this device' : s.status === 'pending' ? 'Saving…' : `Saved on this device${s.at ? ` ${ago(s.at)}` : ''}`;
-  const cloud = s.cloud === 'synced' ? `Synced to your Claude account ${ago(s.cloudAt)}` : s.cloud === 'syncing' ? 'Syncing to your Claude account…' : s.cloud === 'error' ? 'Account sync paused – saved on this device' : '';
+  const cloud = s.cloud === 'synced' ? `Synced to your Claude account ${ago(s.cloudAt)}` : s.cloud === 'syncing' ? 'Syncing to your Claude account…' : s.cloud === 'error' ? 'Account sync paused. Saved on this device' : '';
   return (
     <div className={`save-status ${s.status === 'error' ? 'err' : ''}`} role="status" aria-live="polite">
       <Icon name={s.status === 'error' ? 'close' : 'check'} size={14} />

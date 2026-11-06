@@ -54,10 +54,10 @@ export const jekyllUnit: Unit[] = [{
         ['Why can\'t Jekyll make more potion?', 'The original salt was impure; new batches don\'t work.'],
       ]),
       questions: [
-        mc('Why does Stevenson tell most of the story through Utterson?', ['To keep the mystery hidden, as he doesn\'t know the truth', 'Because Utterson is Hyde', 'To make it a comedy', 'Because Jekyll is dead from the start'], 'Utterson\'s limited viewpoint creates suspense; the truth is revealed only at the end.', { d: 2 }),
+        mc('Why does Stevenson tell most of the story through Utterson?', ['To keep the mystery hidden, as he doesn\'t know the truth', 'Because Utterson has seen every one of Hyde\'s crimes', 'So the whole story can be told in the first person', 'Because Utterson is the most emotional character'], 'Utterson\'s limited viewpoint creates suspense; the truth is revealed only at the end.', { d: 2 }),
         mc('What clue in Chapter 5 links Jekyll and Hyde?', ['The handwriting on Hyde\'s letter is like Jekyll\'s', 'Hyde is seen wearing Jekyll\'s clothes in the street', 'Jekyll and Hyde are seen together at the old door', 'Hyde\'s footprints are found in Jekyll\'s study'], 'Guest, a handwriting expert, notes the similarity - but Utterson keeps it quiet to protect reputations.', { d: 2 }),
         tf('Lanyon dies because Hyde attacks him.', false, 'He dies from the shock of witnessing the transformation - his rational, scientific worldview is shattered.', { d: 2 }),
-        mc('What is the effect of multiple narratives (letters, statements)?', ['It feels like evidence in a case and reflects fragmented identity', 'It confuses the reader for no reason', 'It shows Stevenson couldn\'t decide on a narrator', 'It makes it a romance'], 'The title calls it a "Case" - documents are like legal evidence.', { d: 3 }),
+        mc('What is the effect of multiple narratives (letters, statements)?', ['It feels like evidence in a case and reflects fragmented identity', 'It makes the story feel light-hearted and comic', 'It lets Hyde explain his own actions in every chapter', 'It shows that every narrator is lying to Utterson'], 'The title calls it a "Case" - documents are like legal evidence.', { d: 3 }),
       ],
     }),
     topic({
@@ -150,7 +150,7 @@ export const jekyllUnit: Unit[] = [{
       ]),
       questions: [
         mc('What does the "blistered and distained" door symbolise?', ['The neglected, hidden side of Jekyll - Hyde', 'Jekyll\'s great wealth and respectable reputation', 'Utterson\'s cold, unwelcoming personality', 'The progress of Victorian science and technology'], 'Behind a respectable house lies a decaying back entrance - duality in architecture.', { d: 2 }),
-        mc('How does Darwin\'s theory of evolution link to Hyde?', ['Hyde\'s ape-like features reflect fears humans might degenerate', 'Hyde is a scientist who studies Darwin\'s theory', 'Darwin helped Stevenson to plan and write the novella', 'Hyde\'s behaviour proves that evolution cannot be true'], 'Victorians feared the "beast" within civilised humans.', { d: 2 }),
+        mc('How does Darwin\'s theory of evolution link to Hyde?', ['Hyde\'s ape-like features reflect fears humans might degenerate', 'Hyde\'s violence shows humans evolving to become stronger', 'Jekyll\'s experiment copies Darwin\'s work on plants', 'Hyde\'s behaviour proves that evolution cannot be true'], 'Victorians feared the "beast" within civilised humans.', { d: 2 }),
         multi('Which characters keep secrets to protect reputation?', ['Utterson', 'Enfield', 'Jekyll'], ['The maid who witnesses the Carew murder'], 'The maid reports the murder; the gentlemen hide the truth.', { d: 2 }),
         tf('The novella suggests that repressing desires makes them weaker.', false, 'Jekyll says his devil "came out roaring" after being "long caged" - repression makes Hyde stronger.', { d: 3 }),
       ],

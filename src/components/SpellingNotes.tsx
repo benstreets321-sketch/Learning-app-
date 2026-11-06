@@ -15,13 +15,13 @@ export function SpellingNotes({ text, quiet = false }: { text: string; quiet?: b
   if (!notes.length) return quiet ? null : <p className="small spell-ok">Spelling: no mistakes spotted.</p>;
   return (
     <div className="spell-notes" role="note">
-      <strong className="small">Spelling – {notes.length} word{notes.length === 1 ? '' : 's'} to check</strong>
+      <strong className="small">Check the spelling of {notes.length} word{notes.length === 1 ? '' : 's'}</strong>
       <ul>
         {notes.map((n) => (
           <li key={n.word}><span className="spell-wrong">{n.word}</span> → <strong>{n.suggestion}</strong></li>
         ))}
       </ul>
-      <span className="muted small">Spelling, punctuation and grammar earn marks in English, History and Literature (AO4/AO6) – and key terms must be spelt correctly in every subject.</span>
+      <span className="muted small">Spelling, punctuation and grammar earn marks in English, History and Literature (AO4/AO6), and key terms must be spelt correctly in every subject.</span>
     </div>
   );
 }

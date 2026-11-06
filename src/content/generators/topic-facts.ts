@@ -2,6 +2,7 @@
 // quotations, scenes, themes and plot order). Wrong options come from the same unit - other events of the same
 // period, other speakers and scenes from the same text - so they are always plausible.
 import type { Generator, GeneratedQuestion, Quote, TimelineEvent } from '../types';
+import { actScene, relabel } from './plausible';
 import { mcq, numQ, pick } from './facts-kit';
 import { shuffle } from '../../lib/util';
 
@@ -70,7 +71,7 @@ export function plotGenerator(id: string, title: string, own: UnitEvent[], text:
         const e = pick(rand, own);
         const i = places.indexOf(e.date);
         const near = places.filter((p) => p !== e.date).sort((a, b) => Math.abs(places.indexOf(a) - i) - Math.abs(places.indexOf(b) - i));
-        return mcq(rand, `Where in *${text}* does this happen? **${e.event}**`, e.date, near, [`${e.date}: ${e.event}`], 2);
+        return relabel(mcq(rand, `Where in *${text}* does this happen? **${e.event}**`, e.date, near, [`${actScene(e.date)}: ${e.event}`], 2), actScene);
       }
       // four events from different scenes, of similar length so the answer can't be spotted as the longest
       const order = shuffle(own, rand);
@@ -111,7 +112,7 @@ export function quoteGenerator(id: string, title: string, own: UnitQuote[], unit
       const why = [`“${q.text}”${q.who ? ` – ${q.who}` : ''}${q.where ? `, ${q.where}` : ''}`, q.analysis];
       if (kind === 'where') {
         const near = wheres.filter((w) => w !== q.where && !unit.some((u) => u.text === q.text && u.where === w));
-        return mcq(rand, `Where in *${text}* does this quotation come from?\n\n> “${q.text}”`, q.where!, shuffle(near, rand), why, 3);
+        return relabel(mcq(rand, `Where in *${text}* does this quotation come from?\n\n> “${q.text}”`, q.where!, shuffle(near, rand), why, 3), actScene);
       }
       if (kind === 'theme') {
         const wrong = themes.filter((t) => !(q.themes ?? []).includes(t));

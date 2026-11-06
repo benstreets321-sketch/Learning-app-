@@ -109,7 +109,7 @@ Direct proportion: straight line **through the origin**. Inverse: reciprocal-sha
       keyPoints: ['Gradient = rate of change', 'Tangent for instantaneous rate', 'Chord for average rate', 'Area under v-t graph = distance', 'Trapezia to estimate area'],
       flashcards: cards([['How do you find the rate of change at a point on a curve?', 'Draw a tangent and find its gradient.'], ['Units of gradient of a distance (m) - time (s) graph?', 'm/s']]),
       questions: [
-        mc('A velocity-time graph has velocity in m/s and time in s. What does its gradient show?', ['Acceleration in m/s²', 'Distance in m', 'Speed in m/s', 'Time in s'], 'Change in velocity ÷ time = acceleration.', { d: 3, tier: 'H' }),
+        mc('A velocity-time graph has velocity in m/s and time in s. What does its gradient show?', ['Acceleration in m/s²', 'Distance in m', 'Speed in m/s', 'Average speed in m/s'], 'Change in velocity ÷ time = acceleration.', { d: 3, tier: 'H' }),
         num('A car accelerates uniformly from 0 to 20 m/s in 8 s. How far does it travel in that time (area under the graph)?', 80, 'Triangle: ½ × 8 × 20 = 80 m.', { d: 3, tier: 'H', unit: 'm' }),
       ],
     }),

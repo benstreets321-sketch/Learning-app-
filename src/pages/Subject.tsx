@@ -60,21 +60,25 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
         <>
           <div className="today-actions subject-actions">
             <button className="today-btn learn" onClick={() => go('/learn', { subjects: subject.id, _: Date.now() })}>
-              <span className="today-txt"><strong>Learn</strong><span className="muted small">The next {subject.short} topic: lesson, practice, flashcards</span></span>
+              <span className="today-label">Learn</span>
+              <span className="today-main">The next {subject.short} topic</span>
+              <span className="today-sub">Lesson, practice and flashcards.</span>
             </button>
             <button className="today-btn session" onClick={() => launchSession(profile.dailyGoal, [subject.id])}>
-              <span className="today-txt"><strong>{profile.dailyGoal}-minute {subject.short} session</strong><span className="muted small">The app chooses every question</span></span>
+              <span className="today-label">{profile.dailyGoal}-minute session</span>
+              <span className="today-main">{subject.short} only</span>
+              <span className="today-sub">Every question is picked for you.</span>
             </button>
           </div>
           {(subject.id === 'english-language' || subject.id === 'english-literature') && (
             <a className="card link-card" href={href('/vocab')}>
               <Icon name="learn" size={22} />
-              <span><strong>Ambitious vocabulary</strong><span className="muted small block">Precise words for description, argument and analysis – with a word of the day.</span></span>
+              <span><strong>Ambitious vocabulary</strong><span className="muted small block">Precise words for description, argument and analysis. With a word of the day.</span></span>
               <Icon name="arrow" size={18} className="push" />
             </a>
           )}
           <Section title="Your grade">
-            <div className="card pad"><GradePredictor only={subject.id} /></div>
+            <GradePredictor only={subject.id} />
           </Section>
           {recs.length > 0 && (
             <Section title="Do this next">
@@ -176,7 +180,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
           </a>
           <a className="cta" href={href('/quiz', { scope: 'mixed', id, n: 20 })}>
             <span className="cta-title">Mixed review (interleaved)</span>
-            <span className="cta-sub">Jumps between topics – harder, but proven to make learning stick and mirrors the real exam.</span>
+            <span className="cta-sub">Jumps between topics. Harder, but proven to make learning stick and mirrors the real exam.</span>
           </a>
           <a className="cta" href={href('/cards', { scope: 'subject', id })}>
             <span className="cta-title">Flashcards ({stats.dueCards} due)</span>
@@ -188,7 +192,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
           </a>
           <a className="cta" href={href('/quiz', { scope: 'subject', id, n: 10, timed: 1 })}>
             <span className="cta-title">Speed round</span>
-            <span className="cta-sub">10 questions against the clock – builds fast recall for the exam.</span>
+            <span className="cta-sub">10 questions against the clock. Builds fast recall for the exam.</span>
           </a>
           {units.some((u) => u.topics.some((tp) => tp.generators?.length)) && (
             <a className="cta" href={href('/quiz', { scope: 'subject', id, n: 20, gen: 1 })}>
@@ -201,7 +205,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
 
       {t === 'exam' && (
         <div>
-          <p className="muted">Write a full answer, then mark it yourself against the mark scheme and a model answer. This is the closest thing to the real exam – do some every week.</p>
+          <p className="muted">Write a full answer, then mark it yourself against the mark scheme and a model answer. This is the closest thing to the real exam. Do some every week.</p>
           {units.map((u) => {
             const qs = u.topics.flatMap((tp) => (tp.examQuestions ?? []).map((q, i) => ({ tp, q, i })));
             if (!qs.length) return null;
@@ -244,7 +248,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
 
       {t === 'revise' && (
         <div>
-          <p className="muted">Research-backed ways to revise <strong>{subject.name}</strong>. The app is built around these – but knowing why they work helps you use them.</p>
+          <p className="muted">Research-backed ways to revise <strong>{subject.name}</strong>. The app is built around these, and knowing why they work helps you use them.</p>
           {subject.strategies.map((s) => (
             <div key={s.title} className="strategy">
               <h3>{s.title}</h3>
@@ -265,7 +269,7 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
             </details>
           ))}
           {subject.commandWords?.length ? (
-            <Section title="Command words – what the question is really asking">
+            <Section title="Command words and what they ask for">
               <table className="table">
                 <tbody>{subject.commandWords.map((c) => <tr key={c.word}><th>{c.word}</th><td><Markdown text={c.meaning} inline /></td></tr>)}</tbody>
               </table>
@@ -290,7 +294,7 @@ function SpecChecklist({ subjectId }: { subjectId: string }) {
         <div>
           <p className="eyebrow">{cov.name}</p>
           <p className="cov-line"><span className="mono">{cov.started}/{cov.total}</span> specification points practised · <span className="mono">{cov.secure}</span> secure</p>
-          <p className="muted small">Every point on the specification for your options is listed here and linked to the lessons that teach it. Work down the list until everything is green – then nothing in the exam is a surprise.</p>
+          <p className="muted small">Every point on the specification for your options is listed here and linked to the lessons that teach it. Work down the list until everything is green. Then nothing in the exam is a surprise.</p>
         </div>
         <div className="cov-bars" aria-hidden="true">
           <div className="cov-bar"><span style={{ width: `${(cov.secure / Math.max(1, cov.total)) * 100}%` }} className="sec" /><span style={{ width: `${((cov.started - cov.secure) / Math.max(1, cov.total)) * 100}%` }} className="prog" /></div>

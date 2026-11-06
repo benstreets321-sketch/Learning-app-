@@ -31,11 +31,11 @@ export const SOURCE_LABEL: Record<Source, string> = {
 };
 export const SOURCE_HELP: Record<Source, string> = {
   fix: 'You got this wrong before. Get it right twice, on different days, to clear it.',
-  review: 'Due for review – just before you would forget it.',
+  review: 'Due for review, just before you would forget it.',
   similar: 'You answered this topic correctly before. A different question checks it has stuck.',
   weak: 'One of your weakest topics.',
   target: 'One of the topics that would add the most marks towards your target grade.',
-  skill: 'The kind of question you find hardest in this subject – practice on the format itself.',
+  skill: 'The kind of question you find hardest in this subject, so you practise the format itself.',
   new: 'A part of the specification you have not started yet.',
   retry: 'You missed this a few questions ago. Have another go.',
   follow: 'A similar question to one you missed earlier.',

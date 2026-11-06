@@ -253,7 +253,7 @@ The **roots** are where y = ax² + bx + c crosses the x-axis.
       questions: [
         txt('Solve x² + x − 12 = 0. Type both answers separated by a comma, smaller first.', ['-4, 3', '-4,3', 'x=-4, x=3', '−4, 3', '-4 and 3', '-4 or 3', 'x = -4 or x = 3', '3, -4', '3 and -4'], '(x + 4)(x − 3) = 0 → x = −4 or 3.', { d: 3 }),
         mc('Write x² − 8x + 3 in the form (x + p)² + q', ['(x − 4)² − 13', '(x − 4)² + 3', '(x − 8)² + 3', '(x + 4)² − 13'], '(x − 4)² = x² − 8x + 16, so subtract 13.', { d: 4, tier: 'H' }),
-        mc('How many real roots does x² + 2x + 5 = 0 have?', ['None', 'One', 'Two', 'Infinitely many'], 'b² − 4ac = 4 − 20 = −16 < 0.', { d: 4, tier: 'H' }),
+        mc('How many real roots does x² + 2x + 5 = 0 have?', ['None', 'One', 'Two', 'Two equal roots'], 'b² − 4ac = 4 − 20 = −16 < 0.', { d: 4, tier: 'H' }),
       ],
       examQuestions: [examQ('Solve 2x² − 3x − 7 = 0. Give your answers to 2 decimal places.', 3, ['M1: correct substitution into the quadratic formula: (3 ± √(9 + 56)) / 4', 'M1: √65 evaluated or correct partial evaluation', 'A1: x = 2.77 and x = −1.27'], { meta: 'Higher · calculator', time: 4 })],
     }),
@@ -286,7 +286,7 @@ Roots of f(x) = 0 are the x-intercepts. To solve x² − 3 = x, find where y = x
       flashcards: cards([['What does y = f(x − 3) do?', 'Translates the graph 3 units right.'], ['Radius of x² + y² = 49?', '7'], ['Shape of y = 1/x?', 'Reciprocal - two branches with asymptotes on the axes.']]),
       questions: [
         mc('y = f(x) is transformed to y = f(x + 2). Describe the transformation.', ['Translation 2 left', 'Translation 2 right', 'Translation 2 up', 'Reflection in the y-axis'], 'Inside the bracket works in the opposite direction.', { d: 3, tier: 'H' }),
-        mc('Which equation is a circle of radius 5 centred at the origin?', ['x² + y² = 25', 'x² + y² = 5', 'y = x² + 5', 'x + y = 25'], 'r² = 25.', { d: 2, tier: 'H' }),
+        mc('Which equation is a circle of radius 5 centred at the origin?', ['x² + y² = 25', 'x² + y² = 5', 'x² + y² = 10', '(x − 5)² + (y − 5)² = 25'], 'r² = 25.', { d: 2, tier: 'H' }),
         mc('Which graph has asymptotes on both axes?', ['y = 1/x', 'y = x²', 'y = x³', 'y = 2ˣ'], 'The reciprocal graph never touches the axes.', { d: 2, tier: 'H' }),
       ],
     }),

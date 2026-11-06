@@ -2,6 +2,7 @@
 // text a character belongs to, which text matches a premise, writer and date. Wrong options are always other
 // characters from the same text or other set texts from the same exam section, so nothing can be ruled out by look.
 import type { Generator, GeneratedQuestion } from '../types';
+import { relabel } from './plausible';
 import { mcq, pick, typed } from './facts-kit';
 import { shuffle } from '../../lib/util';
 
@@ -312,7 +313,8 @@ function textGenerator(t: LitText): Generator {
       if (kind === 'year' && years.length >= 3) {
         const yk = (y: string) => Number(/\d{4}/.exec(y)?.[0] ?? 0);
         const near = [...new Set(years)].sort((a, b) => Math.abs(yk(a) - yk(t.year)) - Math.abs(yk(b) - yk(t.year)));
-        return mcq(rand, `When was *${t.title}* first published or performed?`, t.year, near, [`*${t.title}*: ${t.writer}, ${t.year}.`, 'Knowing the date helps you link the text to its context.'], 2);
+        // a range (1860-61) among single years would stand out, so every option shows its first year
+        return relabel(mcq(rand, `When was *${t.title}* first published or performed?`, t.year, near, [`*${t.title}*: ${t.writer}, ${t.year}.`, 'Knowing the date helps you link the text to its context.'], 2), (y) => y.replace(/^(\d{4})\s*[–-]\s*\d{2,4}$/, '$1'));
       }
       const wrong = shuffle(sameGroup.map((x) => x.title), rand);
       return mcq(rand, `Which set text has this premise?\n\n> ${t.premise}`, t.title, wrong.length >= 3 ? wrong : [...wrong, ...otherTitles], [`*${t.title}* (${t.writer}, ${t.year}): ${t.premise}`], 1);

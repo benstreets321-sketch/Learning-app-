@@ -92,7 +92,7 @@ Remove or correct errors, missing values and impossible entries (e.g. age 300); 
         flashcards: cards([['What is a leading question?', 'A question that encourages a particular answer.'], ['Two features of good response boxes?', 'No overlaps and cover all possible answers (plus a time frame).'], ['Lab vs field experiment?', 'Lab: controlled, artificial setting. Field: real-world, harder to control.'], ['What is data cleaning?', 'Identifying and correcting or removing errors and missing values before analysis.']]),
         questions: [
           mc('Which is a problem with these response boxes: 0-2 hours, 2-4 hours, 4-6 hours?', ['They overlap and miss "more than 6 hours", with no time frame', 'They are too detailed for people to answer honestly', 'They turn the question into an open question', 'They are biased towards people who watch a lot of TV'], 'Where does exactly 2 go? What about 7 hours? Per day or week?', { d: 2 }),
-          mc('"Don\'t you agree that school starts too early?" This question is...', ['Leading', 'Closed and fair', 'Open', 'Anonymous'], 'It pushes towards "yes".', { d: 1 }),
+          mc('"Don\'t you agree that school starts too early?" This question is...', ['Leading', 'Closed and fair', 'Open', 'Ambiguous'], 'It pushes towards "yes".', { d: 1 }),
         ],
       }),
     ],
@@ -146,7 +146,7 @@ Look for: axes not starting at 0, uneven scales, 3D effects distorting size, mis
         flashcards: cards([['Weighted mean formula?', 'Σ(weight × value) ÷ Σ(weights)'], ['Which average suits qualitative data?', 'The mode.'], ['Why is a grouped mean only an estimate?', 'Midpoints are used because the exact values are unknown.']]),
         questions: [
           num('Coursework (weight 40%) = 70, exam (weight 60%) = 55. Calculate the weighted mean.', 61, '0.4 × 70 + 0.6 × 55 = 28 + 33 = 61.', { d: 2 }),
-          mc('Which average is most affected by an outlier?', ['Mean', 'Median', 'Mode', 'None'], 'Every value contributes to the mean.', { d: 1 }),
+          mc('Which average is most affected by an outlier?', ['Mean', 'Median', 'Mode', 'Modal class'], 'Every value contributes to the mean.', { d: 1 }),
         ],
       }),
       topic({
@@ -178,8 +178,8 @@ Always compare **an average AND a measure of spread** in context, e.g. "Group A'
         flashcards: cards([['IQR formula?', 'Upper quartile − lower quartile'], ['Outlier test using quartiles?', 'Below Q1 − 1.5×IQR or above Q3 + 1.5×IQR.'], ['In positively skewed data, which is largest: mean, median or mode?', 'The mean.'], ['What does a large standard deviation show?', 'The data are widely spread around the mean.'], ['How should you compare two distributions?', 'Compare an average and a measure of spread, in the context of the question.']]),
         questions: [
           num('Q1 = 20, Q3 = 32. What is the upper limit for outliers?', 50, 'IQR = 12 → 32 + 18 = 50.', { d: 3 }),
-          mc('A distribution has mean 42, median 38, mode 35. What is its skew?', ['Positive', 'Negative', 'Symmetrical', 'Cannot tell'], 'Mean > median > mode.', { d: 2 }),
-          mc('Which measure of spread is NOT affected by extreme values?', ['Interquartile range', 'Range', 'Standard deviation', 'Mean'], 'IQR uses the middle 50%.', { d: 2 }),
+          mc('A distribution has mean 42, median 38, mode 35. What is its skew?', ['Positive', 'Negative', 'Symmetrical', 'Bimodal'], 'Mean > median > mode.', { d: 2 }),
+          mc('Which measure of spread is NOT affected by extreme values?', ['Interquartile range', 'Range', 'Standard deviation', 'Variance'], 'IQR uses the middle 50%.', { d: 2 }),
         ],
         examQuestions: [examQ('Two classes sat a test. Class A: median 62, IQR 10. Class B: median 58, IQR 22. Compare the distributions of marks.', 4, ['Compares averages: Class A had a higher median so generally scored higher', 'In context (marks)', 'Compares spread: Class A had a smaller IQR so marks were more consistent', 'In context'], { time: 4 })],
       }),

@@ -54,7 +54,7 @@ An **invariant point** does not move under a transformation:
 `,
     keyPoints: ['Negative scale factor: image on the other side of the centre, upside down', 'Invariant points stay in the same place'],
     questions: [
-      mc('Which points are invariant under a reflection?', ['Points on the mirror line', 'Only the origin', 'No points', 'Points furthest from the line'], 'Points on the mirror line map to themselves.', { d: 2, tier: 'H' }),
+      mc('Which points are invariant under a reflection?', ['Points on the mirror line', 'Only the origin', 'No points', 'Points on the y-axis'], 'Points on the mirror line map to themselves.', { d: 2, tier: 'H' }),
       mc('Point (2, 1) is enlarged with scale factor −3, centre (0, 0). Where is its image?', ['(−6, −3)', '(6, 3)', '(−2, −1)', '(6, −3)'], 'Multiply each coordinate by −3: (−6, −3).', { d: 3, tier: 'H' }),
       tf('A translation has no invariant points.', true, 'Every point moves by the same vector, so none stay still (unless the vector is zero).', { d: 2, tier: 'H' }),
     ],
@@ -89,8 +89,8 @@ The **population** is everyone or everything you are interested in. A **sample**
 `,
     keyPoints: ['Frequency polygon: plot at class midpoints, join with straight lines', 'A sample should be random and large enough to represent the population'],
     questions: [
-      mc('Where are the points of a frequency polygon plotted for the class 10 < x ≤ 20?', ['At x = 15', 'At x = 10', 'At x = 20', 'At the class width'], 'Points are plotted at the class midpoint.', { d: 1 }),
-      mc('Why might asking 5 friends be a poor sample for "the favourite sport of students in the school"?', ['It is too small and not random, so it may not represent the school', 'It is too large and would take far too long to collect', 'Friends always tell the truth, so the data is too accurate', 'Samples must include teachers as well as the students'], 'Small, non-random samples are often biased.', { d: 2 }),
+      mc('Where are the points of a frequency polygon plotted for the class 10 < x ≤ 20?', ['At x = 15', 'At x = 10', 'At x = 20', 'At x = 10.5'], 'Points are plotted at the class midpoint.', { d: 1 }),
+      mc('Why might asking 5 friends be a poor sample for "the favourite sport of students in the school"?', ['It is too small and not random, so it may not represent the school', 'It is too large and would take far too long to collect', 'It is a census rather than a sample, so it is biased', 'Friends would need a closed question rather than an open one'], 'Small, non-random samples are often biased.', { d: 2 }),
     ],
   },
   // ---------- Biology 4.6.3: Mendel and speciation ----------
@@ -141,7 +141,7 @@ S-waves are not detected on the opposite side of the Earth from an earthquake (t
         'P-waves': ['Longitudinal', 'Travel through liquids', 'Faster'],
         'S-waves': ['Transverse', 'Solids only', 'Slower'],
       }, 'P = primary (push-pull, longitudinal); S = secondary (shake, transverse).', { d: 2 }),
-      mc('What does the S-wave shadow zone tell us about the Earth?', ['The outer core is liquid', 'The crust is solid', 'The inner core is hot', 'The mantle is made of iron'], 'S-waves cannot travel through liquids.', { d: 3 }),
+      mc('What does the S-wave shadow zone tell us about the Earth?', ['The outer core is liquid', 'The inner core is liquid', 'The mantle is liquid', 'The outer core is solid'], 'S-waves cannot travel through liquids.', { d: 3 }),
     ],
   },
   // ---------- Statistics: experimental design ----------
@@ -179,7 +179,7 @@ Choose by the **amount** needed, **cost** (interest, fees, giving up ownership),
     keyPoints: ['Support can be informal, professional or from government/voluntary bodies', 'Choose finance by amount, cost, time and risk'],
     questions: [
       mc('Which source of support gives free advice but may not be expert?', ['Family and friends', 'An accountant', 'A solicitor', 'A bank business adviser'], 'Informal support is free but may lack specialist knowledge.', { d: 1 }),
-      mc('A business angel provides finance in exchange for…', ['A share of the business (equity)', 'Interest payments only', 'A fixed monthly rent', 'Free products for life'], 'Angels invest for a share of ownership and often give advice.', { d: 2 }),
+      mc('A business angel provides finance in exchange for…', ['A share of the business (equity)', 'Interest payments only', 'A fixed monthly fee', 'Repayment within one year'], 'Angels invest for a share of ownership and often give advice.', { d: 2 }),
     ],
   },
 };
@@ -217,7 +217,7 @@ The Spoken Language endorsement is **reported separately** from your GCSE grade 
       ]),
       questions: [
         tf('The Spoken Language endorsement counts towards your 9-1 GCSE English Language grade.', false, 'It is reported separately as Pass, Merit or Distinction.', { d: 1 }),
-        mc('Which helps most for a Distinction?', ['Using cue cards and responding confidently to challenging questions', 'Reading a full script word for word', 'Choosing a topic with nothing to argue about', 'Using lots of slang to sound natural'], 'Assessors look for formal presentation, purposeful responses to questions and Standard English.', { d: 2 }),
+        mc('Which helps most for a Distinction?', ['Using cue cards and responding confidently to challenging questions', 'Reading a full script word for word', 'Speaking for as long as possible without pausing', 'Avoiding questions so you can stick to your plan'], 'Assessors look for formal presentation, purposeful responses to questions and Standard English.', { d: 2 }),
         sort('Sort into the assessment objective.', {
           AO7: ['Presenting in a formal setting'],
           AO8: ['Responding to questions and feedback'],

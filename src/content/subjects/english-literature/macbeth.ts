@@ -109,7 +109,7 @@ export const macbethUnit: Unit[] = [{
         ['What makes Macbeth a tragic hero?', 'A noble figure with a fatal flaw (ambition) whose fall arouses pity and fear.'],
       ]),
       questions: [
-        mc('What does "vaulting ambition, which o\'erleaps itself" suggest?', ['Ambition that jumps too high and will cause a fall', 'Ambition that is healthy and natural', 'That Macbeth wants to be a horse rider', 'That ambition is a gift from God'], 'The metaphor of a rider leaping too far onto a horse and falling off: Macbeth predicts his own downfall.', { d: 2 }),
+        mc('What does "vaulting ambition, which o\'erleaps itself" suggest?', ['Ambition that jumps too high and will cause a fall', 'Ambition that is healthy and natural', 'Ambition held back by his conscience', 'Ambition that others have forced on him'], 'The metaphor of a rider leaping too far onto a horse and falling off: Macbeth predicts his own downfall.', { d: 2 }),
         mc('How does Macbeth\'s attitude to murder change from Act 2 to Act 4?', ['From guilt-ridden hesitation to killing without thought', 'From cold enjoyment of killing to deep, lasting regret', 'From confident planning to refusing to kill anyone else', 'It stays the same: he always hesitates before he kills'], 'Compare "Will all great Neptune\'s ocean..." with "The very firstlings of my heart shall be the firstlings of my hand" (act on impulse).', { d: 3 }),
         tf('Shakespeare makes it absolutely clear that the witches force Macbeth to kill Duncan.', false, 'The witches only predict; "my black and deep desires" suggests the ambition was already within him. The ambiguity drives debate about fate vs free will.'),
         multi('Which quotes show Macbeth\'s guilt or mental torment?', ['"O, full of scorpions is my mind"', '"Will all great Neptune\'s ocean wash this blood..."', '"Macbeth does murder sleep"'], ['"brave Macbeth"', '"look like th\' innocent flower"'], 'Scorpions, ocean/blood and sleep imagery all express guilt. The others are the Captain and Lady Macbeth.', { d: 2 }),
@@ -209,8 +209,8 @@ export const macbethUnit: Unit[] = [{
       ]),
       questions: [
         mc('What is Banquo\'s main dramatic function?', ['A foil showing that Macbeth could have resisted temptation', 'The play\'s main villain, who plots against Duncan from the start', 'Comic relief, lightening the mood between the murders', 'Lady Macbeth\'s secret accomplice in Duncan\'s murder'], 'He hears the prophecies too but chooses differently.', { d: 2 }),
-        mc('What does Macduff\'s line "I must also feel it as a man" suggest?', ['Real men can show grief and love', 'Men should never cry', 'He wants revenge immediately', 'He blames his wife'], 'It challenges Lady Macbeth\'s idea that manhood equals ruthless violence.', { d: 3 }),
-        mc('How do the witches\' speech patterns mark them as different?', ['They speak in a chanting, rhyming trochaic rhythm', 'They speak in long prose speeches', 'They only speak in Latin', 'They speak exactly like Duncan'], 'Trochaic tetrameter (DUM-da) inverts the usual iambic rhythm - fittingly unnatural.', { d: 3 }),
+        mc('What does Macduff\'s line "I must also feel it as a man" suggest?', ['Real men can show grief and love', 'Men must hide their grief to stay strong', 'He will take revenge before he grieves', 'He blames Malcolm for making him leave'], 'It challenges Lady Macbeth\'s idea that manhood equals ruthless violence.', { d: 3 }),
+        mc('How do the witches\' speech patterns mark them as different?', ['They speak in a chanting, rhyming trochaic rhythm', 'They speak in long prose speeches', 'They speak in blank verse like the nobles', 'They speak in rhyming iambic pentameter'], 'Trochaic tetrameter (DUM-da) inverts the usual iambic rhythm - fittingly unnatural.', { d: 3 }),
         tf('The witches directly order Macbeth to murder Duncan.', false, 'They only prophesy. Macbeth (and Lady Macbeth) decide to murder - a key point in fate vs free will arguments.'),
         mc('What happens in nature after Duncan\'s murder?', ['Darkness in the day and Duncan\'s horses eat each other', 'A bright, calm day, as if nature approves of Macbeth', 'Birnam Wood begins to move towards Dunsinane', 'A heavy snowfall that traps everyone inside the castle'], 'Unnatural events show regicide breaks the natural order and the Great Chain of Being.', { d: 3 }),
       ],
@@ -264,10 +264,10 @@ export const macbethUnit: Unit[] = [{
         ['How is Scotland presented under Macbeth?', 'As a suffering body: it "weeps, it bleeds" - tyranny wounds the nation.'],
       ]),
       questions: [
-        mc('Which quote best shows ambition as self-destructive?', ['"vaulting ambition, which o\'erleaps itself"', '"brave Macbeth"', '"Double, double toil and trouble"', '"I must also feel it as a man"'], 'The image of over-leaping and falling predicts the fall that ambition causes.', { d: 1 }),
+        mc('Which quote best shows ambition as self-destructive?', ['"vaulting ambition, which o\'erleaps itself"', '"Stars, hide your fires"', '"brave Macbeth"', '"look like th\' innocent flower"'], 'The image of over-leaping and falling predicts the fall that ambition causes.', { d: 1 }),
         mc('How might the dagger in Act 2 support the idea that the supernatural is psychological?', ['Macbeth calls it "a dagger of the mind, a false creation"', 'Lady Macbeth sees the dagger too and tells him to take it', 'The witches place the dagger in his hand before the murder', 'Banquo picks up the dagger and hands it to Macbeth'], 'He wonders if it is "a false creation, proceeding from the heat-oppressed brain".', { d: 3 }),
         tf('The theme of appearance vs reality is introduced in the very first scene.', true, '"Fair is foul, and foul is fair" (1.1).'),
-        mc('What does the Porter\'s reference to an "equivocator" link to?', ['The 1605 Gunpowder Plot trial', 'The Spanish Armada', 'The Great Fire of London', 'The Battle of Hastings'], 'Father Henry Garnet was accused of equivocation at his trial after the Gunpowder Plot - a topical reference for the 1606 audience.', { d: 4 }),
+        mc('What does the Porter\'s reference to an "equivocator" link to?', ['The 1605 Gunpowder Plot trial', 'The Spanish Armada of 1588', 'The Babington Plot of 1586', 'The Essex Rebellion of 1601'], 'Father Henry Garnet was accused of equivocation at his trial after the Gunpowder Plot - a topical reference for the 1606 audience.', { d: 4 }),
         multi('Which are examples of good kingship in the play?', ['Duncan\'s generosity', 'Malcolm\'s "king-becoming graces"', 'Edward the Confessor\'s healing touch'], ['Macbeth\'s use of spies', 'The murder of Macduff\'s family'], 'Shakespeare contrasts legitimate, virtuous kings with Macbeth\'s tyranny.', { d: 2 }),
       ],
     }),
@@ -298,10 +298,10 @@ Don't write "In Jacobean times people believed in witches." Write: "*Shakespeare
         ['What was Shakespeare\'s main historical source?', 'Holinshed\'s Chronicles.'],
       ]),
       questions: [
-        mc('Why did Shakespeare present Banquo positively?', ['King James I believed Banquo was his ancestor', 'Banquo was Shakespeare\'s friend', 'Banquo was a historical saint', 'To make him the villain'], 'Flattering the king\'s lineage was wise for the King\'s Men.', { d: 2 }),
-        mc('Which event made regicide and treachery very topical in 1606?', ['The Gunpowder Plot of 1605', 'The Battle of Bosworth', 'The English Civil War', 'The Spanish Armada'], 'An attempted assassination of James I by Catholic conspirators.', { d: 1 }),
+        mc('Why did Shakespeare present Banquo positively?', ['King James I believed Banquo was his ancestor', 'Banquo was a famous Scottish war hero', 'Elizabeth I had admired Banquo\'s story', 'Banquo was the true heir to Duncan'], 'Flattering the king\'s lineage was wise for the King\'s Men.', { d: 2 }),
+        mc('Which event made regicide and treachery very topical in 1606?', ['The Gunpowder Plot of 1605', 'The Spanish Armada of 1588', 'The Essex Rebellion of 1601', 'The Babington Plot of 1586'], 'An attempted assassination of James I by Catholic conspirators.', { d: 1 }),
         tf('A Jacobean audience would generally have believed that witches were real.', true, 'Witch trials and James\'s Daemonologie show witchcraft was widely feared.'),
-        mc('How does the Great Chain of Being help explain the unnatural events after Duncan\'s death?', ['Killing God\'s anointed king breaks the natural order, so nature itself is disrupted', 'Duncan was believed to control the weather through magic', 'Scottish horses were known to behave wildly in storms', 'Macbeth uses witchcraft to make the storms and darkness happen'], 'The cosmos reflects the moral disorder of regicide.', { d: 3 }),
+        mc('How does the Great Chain of Being help explain the unnatural events after Duncan\'s death?', ['Killing God\'s anointed king breaks the natural order, so nature itself is disrupted', 'Duncan\'s ghost raises the storms to haunt his murderer', 'The witches cause the storms to celebrate Duncan\'s murder', 'Macbeth uses witchcraft to make the storms and darkness happen'], 'The cosmos reflects the moral disorder of regicide.', { d: 3 }),
       ],
     }),
     topic({
@@ -332,7 +332,7 @@ Use the exam practice below to write one essay a week.
         { year: 'Jun 2025', focus: 'How far Macbeth is presented as an **ambitious** character', extract: 'Act 1 Scene 7' },
       ],
       questions: [
-        mc('How many marks is the AQA Shakespeare question worth in total?', ['34 (30 + 4 SPaG)', '30', '40', '24'], '30 for AO1-3 and 4 for AO4.', { d: 1 }),
+        mc('How many marks is the AQA Shakespeare question worth in total?', ['34 (30 + 4 SPaG)', '30 (26 + 4 SPaG)', '40 (36 + 4 SPaG)', '24 (20 + 4 SPaG)'], '30 for AO1-3 and 4 for AO4.', { d: 1 }),
         mc('Which of these has NOT been the main focus of a recent AQA Macbeth question?', ['Guilt and conscience', 'Ambition', 'The supernatural', 'Violence'], 'Guilt hasn\'t been the headline focus recently - but it is just as examinable, so prepare it.', { d: 2 }),
       ],
       examQuestions: [

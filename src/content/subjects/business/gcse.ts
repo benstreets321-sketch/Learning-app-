@@ -36,7 +36,7 @@ People who take a **risk** to start a business, aiming for **rewards**.
         flashcards: cards([['What does SMART stand for?', 'Specific, Measurable, Achievable, Realistic, Time-bound.'], ['Two risks of starting a business?', 'Financial loss and business failure (also lack of security).'], ['Give two non-financial objectives', 'Social objectives, personal satisfaction (also independence, challenge).'], ['What is "adding value"?', 'Increasing the worth of a product (branding, quality, convenience, USP) so customers pay more than the cost of inputs.']]),
         questions: [
           mc('Which is a non-financial objective?', ['Personal satisfaction', 'Increasing profit by 10%', 'Survival', 'Increasing market share'], 'Not measured in money.', { d: 1 }),
-          mc('Why might a new business\'s main objective be survival?', ['It has few customers and limited cash, so it must avoid failure first', 'It already dominates its market and has no rivals left', 'Survival is the only objective any business can have', 'It is making too much profit and must slow its growth'], 'New businesses face high risk.', { d: 2 }),
+          mc('Why might a new business\'s main objective be survival?', ['It has few customers and limited cash, so it must avoid failure first', 'It already dominates its market and has no rivals left', 'The law requires it to break even in its first year', 'It must repay all of its start-up loans before trading'], 'New businesses face high risk.', { d: 2 }),
           multi('Which are characteristics of successful entrepreneurs?', ['Willingness to take risks', 'Creativity', 'Resilience'], ['Avoiding all risk', 'Dislike of hard work'], 'Entrepreneurs embrace calculated risk.', { d: 1 }),
         ],
       }),
@@ -58,9 +58,9 @@ People who take a **risk** to start a business, aiming for **rewards**.
         keyPoints: ['Sole traders and partners: unlimited liability', 'Ltd and PLC: limited liability (incorporated)', 'PLC shares sold on the stock exchange', 'Franchise: lower risk but fees and less control', 'Not-for-profit reinvests surplus'],
         flashcards: cards([['What is unlimited liability?', 'The owner is personally liable for all business debts - personal assets are at risk.'], ['What is limited liability?', 'Owners can only lose the amount they invested.'], ['Difference between Ltd and PLC?', 'Ltd shares are sold privately; PLC shares are sold publicly on the stock exchange.'], ['Franchisee vs franchisor?', 'The franchisor owns the brand; the franchisee buys the right to use it.']]),
         questions: [
-          mc('Which type of business has unlimited liability?', ['Sole trader', 'Private limited company', 'Public limited company', 'All of them'], 'Sole traders are unincorporated.', { d: 1 }),
+          mc('Which type of business has unlimited liability?', ['Sole trader', 'Private limited company', 'Public limited company', 'Limited liability partnership'], 'Sole traders are unincorporated.', { d: 1 }),
           tf('A PLC can sell shares to the general public.', true, 'Through the stock exchange.', { d: 1 }),
-          mc('Which is an advantage of opening a franchise?', ['An established brand reduces risk', 'You keep all the profit', 'You have total control', 'There are no fees'], 'Customers already know the brand.', { d: 2 }),
+          mc('Which is an advantage of opening a franchise?', ['An established brand reduces risk', 'You keep all of the profit you make', 'You can choose your own suppliers', 'You set the menu and prices yourself'], 'Customers already know the brand.', { d: 2 }),
         ],
         examQuestions: [examQ('Priya runs a successful café as a sole trader. She wants to open three more cafés. Evaluate whether she should change to a private limited company.', 9, EVAL(['Limited liability protects personal assets as risk grows', 'Easier to raise finance by selling shares to friends/family/investors', 'Loss of some control; profits shared with shareholders', 'Accounts must be published; more paperwork/costs', 'Justified recommendation linked to her expansion plans']), { meta: 'Evaluate (9 marks)', time: 11 })],
       }),
@@ -113,7 +113,7 @@ Businesses trading and operating internationally. Opportunities: bigger markets,
         flashcards: cards([['Organic growth?', 'Growing internally, e.g. opening new branches or launching new products.'], ['Merger vs takeover?', 'A merger is an agreed joining of two firms; a takeover is one firm buying control of another.'], ['What is a purchasing economy of scale?', 'Lower unit costs from bulk-buying discounts.'], ['What is a diseconomy of scale?', 'Rising average costs when a business becomes too large (e.g. poor communication).'], ['What is a tariff?', 'A tax on imported goods.']]),
         questions: [
           mc('A supermarket buys a farm that supplies it. This is...', ['Backward vertical integration', 'Horizontal integration', 'Forward vertical integration', 'Organic growth'], 'Buying a supplier = backward vertical.', { d: 3 }),
-          mc('Which is an economy of scale?', ['Bulk-buying discounts', 'Poor communication', 'Higher rent', 'More competitors'], 'Lower unit costs from purchasing power.', { d: 1 }),
+          mc('Which is an economy of scale?', ['Bulk-buying discounts', 'Poor communication between departments', 'Paying higher wages to attract staff', 'Lower prices because of more competitors'], 'Lower unit costs from purchasing power.', { d: 1 }),
           tf('Organic growth is usually faster than a takeover.', false, 'Organic growth is slower but less risky.', { d: 2 }),
         ],
       }),
@@ -148,7 +148,7 @@ Fair pay, fair trade, sustainable sourcing, reducing pollution/waste. ✓ attrac
         keyPoints: ['Technology: efficiency and e-commerce vs cost', 'Ethics: reputation vs higher costs', 'Higher interest rates reduce spending and raise loan costs', 'SPICED: strong pound, imports cheaper, exports dearer', 'Employment and consumer law add costs but protect'],
         flashcards: cards([['What does SPICED stand for?', 'Strong Pound: Imports Cheaper, Exports Dearer.'], ['Effect of rising interest rates on a business?', 'Higher cost of loans; customers have less disposable income so demand falls.'], ['Three rights under the Consumer Rights Act?', 'Goods must be of satisfactory quality, fit for purpose and as described.'], ['Why might acting ethically reduce profit?', 'It often costs more (e.g. fair trade materials, higher wages).']]),
         questions: [
-          mc('The pound strengthens against the euro. What happens to a UK firm exporting to France?', ['Its products become more expensive in France', 'Its products become cheaper in France', 'No effect', 'Its costs fall'], 'Exports dearer (SPICED).', { d: 3 }),
+          mc('The pound strengthens against the euro. What happens to a UK firm exporting to France?', ['Its products become more expensive in France', 'Its products become cheaper in France', 'Its prices in France stay the same', 'Its imported materials become more expensive'], 'Exports dearer (SPICED).', { d: 3 }),
           mc('Interest rates fall. What is likely to happen?', ['Consumer spending and borrowing increase', 'Consumers save more', 'Loans become more expensive', 'Unemployment rises'], 'Borrowing is cheaper.', { d: 2 }),
           tf('Ethical behaviour always increases a business\'s costs and never benefits it.', false, 'It can attract customers and improve reputation, offsetting costs.', { d: 2 }),
         ],
@@ -281,7 +281,7 @@ A **market map** plots products on two axes (e.g. price vs quality) to find **ga
         flashcards: cards([['What is a market map?', 'A diagram plotting brands on two dimensions (e.g. price and quality) to show positioning and gaps.'], ['Disadvantage of secondary research?', 'May be out of date or not specific to the business\'s needs.'], ['What is segmentation?', 'Dividing a market into groups of customers with similar characteristics.']]),
         questions: [
           mc('Which is primary research?', ['A questionnaire given to customers', 'Government population statistics', 'A published Mintel market report', 'A newspaper article about the market'], 'Primary = collected first-hand.', { d: 1 }),
-          mc('Why do businesses segment markets?', ['To target products and promotion at specific customer groups', 'To increase costs so that prices can be raised', 'To avoid competitors by selling to nobody else', 'To meet the legal requirements for becoming a plc'], 'Better targeting = more effective marketing.', { d: 1 }),
+          mc('Why do businesses segment markets?', ['To target products and promotion at specific customer groups', 'To sell exactly the same product to every customer', 'To reduce the number of competitors in the market', 'To lower costs by making only one version of a product'], 'Better targeting = more effective marketing.', { d: 1 }),
         ],
       }),
       topic({
@@ -349,7 +349,7 @@ The 4Ps must be consistent: a premium product needs a premium price, upmarket pr
         generators: ['bus-interest'],
         flashcards: cards([['What is an overdraft?', 'Short-term borrowing allowing a business to spend more than is in its bank account, up to a limit.'], ['What is trade credit?', 'Buying from suppliers now and paying later (e.g. 30 days).'], ['Advantage of share capital?', 'It doesn\'t need to be repaid and no interest is paid.'], ['What is crowdfunding?', 'Raising small amounts of money from many people, usually online.'], ['What is retained profit?', 'Profit kept in the business rather than paid to owners.']]),
         questions: [
-          mc('Which is the best source of finance for a short-term cash shortage?', ['Overdraft', 'Share capital', 'Mortgage', 'Selling the factory'], 'Overdrafts are flexible and short-term.', { d: 1 }),
+          mc('Which is the best source of finance for a short-term cash shortage?', ['Overdraft', 'Share capital', 'Mortgage', 'Venture capital'], 'Overdrafts are flexible and short-term.', { d: 1 }),
           mc('Which source is only available to limited companies?', ['Selling shares', 'Bank loan', 'Owner\'s savings', 'Trade credit'], 'Sole traders can\'t issue shares.', { d: 2 }),
           tf('Retained profit is an external source of finance.', false, 'It comes from within the business - internal.', { d: 1 }),
         ],
@@ -436,7 +436,7 @@ Higher margins = more efficient at turning sales into profit. Compare with previ
         questions: [
           num('Revenue £80,000; cost of sales £50,000. Calculate the gross profit margin.', 37.5, '30,000 ÷ 80,000 × 100 = 37.5%.', { d: 2, unit: '%' }),
           num('A machine costs £20,000 and generates total returns of £30,000 over 5 years. Calculate the average rate of return (ARR).', 10, 'Total profit = 30,000 − 20,000 = £10,000; average per year = 10,000 ÷ 5 = £2,000; ARR = 2,000 ÷ 20,000 × 100 = 10%.', { d: 4, unit: '%' }),
-          mc('Which appears on the statement of financial position?', ['Assets and liabilities', 'Revenue and cost of sales', 'Gross profit margin', 'Break-even output'], 'It shows what the business owns and owes.', { d: 2 }),
+          mc('Which appears on the statement of financial position?', ['Assets and liabilities', 'Revenue and cost of sales', 'Gross profit margin', 'Profit for the year'], 'It shows what the business owns and owes.', { d: 2 }),
         ],
       }),
     ],

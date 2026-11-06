@@ -67,7 +67,7 @@ export function Tutor() {
   return (
     <div className="tutor">
       <div className="tutor-head">
-        <span className="muted small">Talking about {label}{c.kind === 'question' && !c.answered ? ' – no spoilers until you answer' : ''}</span>
+        <span className="muted small">Talking about {label}{c.kind === 'question' && !c.answered ? '. No spoilers until you answer' : ''}</span>
         {turns.length > 0 && <button className="btn link small" onClick={() => { setTurns([]); history.delete(key); }}>Clear</button>}
       </div>
       {provider === 'none' && turns.length === 0 && (

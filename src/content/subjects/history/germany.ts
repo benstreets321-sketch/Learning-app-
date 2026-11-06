@@ -27,7 +27,7 @@ export function germanyTopics(p: string, board: 'edexcel' | 'aqa'): Topic[] {
       ],
       flashcards: cards([['What was Weltpolitik?', 'Wilhelm II\'s policy of making Germany a world power, e.g. building a navy and empire.'], ['Why did the Kaiser fear the SPD?', 'It was a socialist party that grew rapidly with industrialisation and wanted to reduce his power.'], ['What happened in November 1918?', 'Naval mutiny at Kiel, revolution, the Kaiser abdicated and Germany became a republic.']]),
       questions: [
-        mc('Why did support for the SPD grow before 1914?', ['Industrialisation created a large working class', 'The Kaiser supported socialism', 'Germany lost a war', 'The army backed it'], 'Workers wanted better conditions.', { d: 2 }),
+        mc('Why did support for the SPD grow before 1914?', ['Industrialisation created a large working class', 'The Kaiser supported socialist reforms', 'Weltpolitik made workers better off', 'The army encouraged workers to join'], 'Workers wanted better conditions.', { d: 2 }),
         tf('The Reichstag controlled the army before 1914.', false, 'The Kaiser controlled the army; the Reichstag had limited power.', { d: 2 }),
       ],
     }),
@@ -129,7 +129,7 @@ Political deals: **von Papen** and **Hindenburg** made Hitler **Chancellor on 30
       flashcards: cards([['What was the Munich Putsch?', 'Hitler\'s failed attempt to seize power in Bavaria in November 1923.'], ['Why was the Munich Putsch important despite failing?', 'Hitler gained publicity at his trial, wrote Mein Kampf, and switched to a legal route to power.'], ['How many were unemployed in Germany in 1932?', 'About 6 million.'], ['How did Hitler become Chancellor?', 'Through a political deal - von Papen and Hindenburg appointed him in January 1933, thinking they could control him.']]),
       questions: [
         ord('Put these events in order.', ['Munich Putsch', 'Wall Street Crash', 'Nazis become largest party', 'Hitler becomes Chancellor'], '1923 → 1929 → 1932 → 1933.', { d: 1 }),
-        mc('Why did Nazi support grow after 1929?', ['The Depression caused mass unemployment and anger at Weimar', 'Germany was very prosperous', 'Hitler won the 1925 presidential election', 'The Nazis abolished the SA'], 'Economic crisis made extremist promises attractive.', { d: 1 }),
+        mc('Why did Nazi support grow after 1929?', ['The Depression caused mass unemployment and anger at Weimar', 'The Nazis won a majority of seats in the 1928 election', 'Hitler was appointed Chancellor by Hindenburg in 1929', 'The Weimar government stopped paying reparations'], 'Economic crisis made extremist promises attractive.', { d: 1 }),
         tf('Hitler was elected Chancellor by a majority of German voters.', false, 'Nazis never won a majority in free elections; Hitler was appointed through backroom deals.', { d: 2 }),
       ],
       examQuestions: [board === 'edexcel'
@@ -168,7 +168,7 @@ Limited: some churchmen, youth groups (Swing Youth, **Edelweiss Pirates**), work
       ],
       flashcards: cards([['What did the Enabling Act allow?', 'Hitler to pass laws without the Reichstag\'s approval for four years.'], ['What was the Night of the Long Knives?', 'The murder of SA leaders including Röhm by the SS (June 1934) to remove rivals and win the army\'s support.'], ['Who ran Nazi propaganda?', 'Joseph Goebbels.'], ['Who led the Confessing Church?', 'Pastor Martin Niemöller.'], ['What was the Gestapo?', 'The Nazi secret police.']]),
       questions: [
-        mc('Why did Hitler carry out the Night of the Long Knives?', ['To remove Röhm and the SA as a threat and win the army\'s support', 'To punish communists for the Reichstag Fire', 'To end the Depression', 'To prepare for the Olympics'], 'The army saw the SA as a rival.', { d: 2 }),
+        mc('Why did Hitler carry out the Night of the Long Knives?', ['To remove Röhm and the SA as a threat and win the army\'s support', 'To punish communists for the Reichstag Fire', 'To remove the Nationalists from his coalition government', 'To stop army leaders plotting against Hindenburg'], 'The army saw the SA as a rival.', { d: 2 }),
         ord('Put the steps to dictatorship in order.', ['Reichstag Fire', 'Enabling Act', 'Political parties banned', 'Night of the Long Knives', 'Hitler becomes Führer'], '1933-34.', { d: 2 }),
         tf('Opposition to the Nazis was large and well organised in the 1930s.', false, 'Fear, propaganda and popular policies kept opposition small.', { d: 2 }),
       ],
@@ -205,7 +205,7 @@ Limited: some churchmen, youth groups (Swing Youth, **Edelweiss Pirates**), work
       ],
       flashcards: cards([['What were the Nuremberg Laws (1935)?', 'Laws removing German citizenship from Jews and banning marriage between Jews and non-Jews.'], ['What was Kristallnacht?', 'A night of violence against Jews (November 1938): synagogues, shops and homes attacked.'], ['What was Strength Through Joy?', 'A Nazi organisation providing cheap holidays and leisure activities for workers.'], ['What does "Kinder, Küche, Kirche" mean?', 'Children, kitchen, church - the Nazi ideal role for women.'], ['What was "invisible unemployment"?', 'Unemployed women and Jews were not counted in official figures.']]),
       questions: [
-        mc('How did the Nazis reduce unemployment?', ['Public works, rearmament and conscription', 'Joining the League of Nations', 'Increasing reparations', 'Banning the Hitler Youth'], 'Plus not counting women and Jews.', { d: 1 }),
+        mc('How did the Nazis reduce unemployment?', ['Public works, rearmament and conscription', 'Dawes Plan loans and lower reparations', 'Unemployment benefit and shorter hours', 'Free trade and lower taxes on business'], 'Plus not counting women and Jews.', { d: 1 }),
         mc('What did the Nuremberg Laws do?', ['Removed Jews\' German citizenship', 'Made the Hitler Youth compulsory', 'Introduced conscription', 'Banned trade unions'], '1935.', { d: 1 }),
         tf('Most workers received a Volkswagen car through the KdF scheme before the war.', false, 'Workers paid in but almost none received a car - factories switched to war production.', { d: 3 }),
       ],

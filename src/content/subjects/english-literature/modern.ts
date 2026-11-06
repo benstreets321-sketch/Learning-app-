@@ -48,9 +48,9 @@ Liverpool, 1950s-1980s. Working-class **Mrs Johnstone**, abandoned by her husban
         ]),
         questions: [
           mc('Why does Russell show the twins\' deaths at the start?', ['To create dramatic irony and a sense of inevitable tragedy', 'To confuse the audience about which twin is which', 'To make the audience sympathise with Mrs Lyons first', 'To show that the play is really a comedy about class'], 'We watch knowing the outcome - focusing on WHY it happens.', { d: 2 }),
-          mc('What does the Narrator\'s final question suggest killed the twins?', ['Class', 'Bad luck only', 'The police', 'Linda'], '"...what we, the English, have come to know as class?"', { d: 2 }),
+          mc('What does the Narrator\'s final question suggest killed the twins?', ['Class', 'Superstition', 'Fate', 'Mrs Lyons'], '"...what we, the English, have come to know as class?"', { d: 2 }),
           tf('Edward goes to prison for robbery.', false, 'Mickey goes to prison after the robbery with Sammy; Edward goes to university.'),
-          mc('How do the twins\' adult lives differ?', ['Edward has university and a career; Mickey is unemployed and in prison', 'They have identical lives because they are twins', 'Mickey becomes a councillor; Edward works in a factory', 'Both emigrate to America to escape their families'], 'Class determines opportunity.', { d: 1 }),
+          mc('How do the twins\' adult lives differ?', ['Edward has university and a career; Mickey is unemployed and in prison', 'They lead similar lives once they leave school', 'Mickey becomes a councillor; Edward works in a factory', 'Edward joins the army; Mickey stays at home with Linda'], 'Class determines opportunity.', { d: 1 }),
         ],
       }),
       topic({

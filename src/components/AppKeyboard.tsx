@@ -163,7 +163,7 @@ export function AppKeyboard() {
   return (
     <div className="app-kb" ref={panel} role="group" aria-label="Answer keyboard" onPointerDown={(e) => e.preventDefault()}>
       <div className="kb-top">
-        <span className="muted small">App keyboard – no autocorrect, like the real exam</span>
+        <span className="muted small">App keyboard: no autocorrect, as in the exam</span>
         <button {...keyProps('hide', 'Hide keyboard', 'kb-hide')}>Hide ▾</button>
       </div>
       {kind === 'algebra' && layer === '123' ? (

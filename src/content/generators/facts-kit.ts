@@ -2,6 +2,7 @@
 // answer (other elements, other enzymes, other units...), most confusable first, so options can't be ruled out by
 // their look alone. Higher levels switch to typed recall, which can't be guessed.
 import type { GeneratedQuestion } from '../types';
+import { formOk, harmonise, kindScore } from './plausible';
 
 const norm = (s: string) => s.replace(/[*_`]/g, '').trim().toLowerCase();
 
@@ -11,12 +12,16 @@ const norm = (s: string) => s.replace(/[*_`]/g, '').trim().toLowerCase();
  * question doesn't always show the same distractors.
  */
 export function mcq(rand: () => number, q: string, answer: string, wrong: string[], why: string[], d = 2, hints?: string[]): GeneratedQuestion {
-  const pool = [...new Set(wrong.filter((w) => norm(w) !== norm(answer)))];
+  const all = [...new Set(wrong.filter((w) => norm(w) !== norm(answer)))];
+  // wrong options of the same kind and form as the answer (no number among words, no different unit, no sentence among
+  // single terms), whenever there are enough of them; a deliberately mixed set (0.6 vs 5/8 vs 62%) keeps its mix
+  const same = all.filter((w) => formOk(answer, w));
+  const pool = same.length >= 3 ? same : all;
   // Most confusable first - but the right answer must not stand out as the longest (or shortest) option, so among the
   // closest candidates prefer ones of a similar length, with a little randomness so the same set doesn't always appear.
   const L = Math.max(answer.length, 8);
   const lenGap = (w: string) => Math.abs(w.length - answer.length) / L;
-  const scored = pool.map((w, i) => ({ w, s: Math.min(i, 8) * 0.3 + lenGap(w) * 6 + rand() * 1.5 }));
+  const scored = pool.map((w, i) => ({ w, s: Math.min(i, 8) * 0.3 + lenGap(w) * 6 - Math.max(-3, Math.min(4, kindScore(answer, w))) * 0.35 + rand() * 1.5 }));
   scored.sort((a, b) => a.s - b.s);
   const opts = [answer];
   for (const { w } of scored) {
@@ -24,7 +29,9 @@ export function mcq(rand: () => number, q: string, answer: string, wrong: string
     if (!opts.some((o) => norm(o) === norm(w))) opts.push(w);
   }
   if (opts.length < 3) throw new Error(`not enough distractors for: ${q}`);
-  return { q, answer, options: opts, steps: why, d, hints };
+  // the same capitals and end punctuation for every option, so none stands out
+  const even = harmonise(opts);
+  return { q, answer: even[0], options: even, steps: why, d, hints };
 }
 
 /** Typed recall (tolerant of small spelling slips) */

@@ -19,7 +19,8 @@ export interface Profile {
   multiOptions: Record<string, string[]>;
   dailyGoal: number; // minutes
   onboarded: boolean;
-  theme: 'auto' | 'light' | 'dark';
+  /** auto and dark: the desk-lamp dark design (the default); light: daylight; device: follow the device setting */
+  theme: 'auto' | 'light' | 'dark' | 'device';
   showAllOptions: boolean;
   /** daily study reminder */
   reminder?: { on: boolean; time: string };

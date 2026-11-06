@@ -94,7 +94,7 @@ AO3 isn't assessed on unseen poetry, so don't guess about the poet's life.
         ord('Put the reading method in order.', ['Read for gist: speaker, situation, mood', 'Annotate striking words and the shift', 'Decide the big idea linked to the question', 'Write, moving through the poem'], 'Three reads, then write.', { d: 1 }),
         tf('You should write about the poet\'s biography in 27.1 to gain context marks.', false, 'There are no AO3 marks for unseen poetry.'),
         multi('Which of these are "methods"?', ['Enjambment', 'Personification', 'A cyclical structure'], ['The poet\'s age', 'Your opinion of the topic'], 'Methods = language, form and structure choices.', { d: 2 }),
-        mc('How long should you spend on 27.2?', ['About 15 minutes', 'About 45 minutes', 'About 2 minutes', 'An hour'], 'It\'s only 8 marks - be concise and comparative.', { d: 1 }),
+        mc('How long should you spend on 27.2?', ['About 15 minutes', 'About 30 minutes', 'About 5 minutes', 'About 45 minutes'], 'It\'s only 8 marks - be concise and comparative.', { d: 1 }),
       ],
       examQuestions: [
         examQ(`${ADLESTROP}\n\n**27.1** In 'Adlestrop', how does the poet present the speaker's feelings about a moment of stillness?`, 24, [

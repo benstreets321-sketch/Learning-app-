@@ -47,7 +47,7 @@ function buildScope(query: URLSearchParams) {
       if (scope === 'weak') {
         const weak = all.filter((t) => ['weak', 'developing'].includes(level(progress.topics[t.id])));
         if (weak.length) topicIds = weak.map((t) => t.id);
-        else title += ' (none yet – practising everything)';
+        else title += ' (none yet, so practising everything)';
       }
       if (scope === 'mixed') {
         const started = all.filter((t) => (progress.topics[t.id]?.n ?? 0) > 0);
@@ -206,14 +206,14 @@ export function QuizPage({ query }: { query: URLSearchParams }) {
       <div className="session-head">
         <a className="small" href={ref ? href(`/s/${ref.subject.id}`, { tab: 'practice' }) : '#/'}>End session</a>
         <span className="small">{setup.title}</span>
-        <span className="small mono">{answers.length + 1}/{total} · {correctSoFar} correct</span>
+        <span className="small mono">{String(answers.length + 1).padStart(2, '0')} / {String(total).padStart(2, '0')} · {correctSoFar} right</span>
       </div>
-      <ProgressBar value={answers.length / total} color={ref?.subject.color} />
-      {mode === 'stretch' && <div className="banner stretch">Three in a row – the next one will be harder.</div>}
-      {mode === 'support' && !reteach && recentWrong < 4 && <div className="banner support">Two wrong – the next question will be a bit easier.</div>}
+      <ProgressBar value={answers.length / total} />
+      {mode === 'stretch' && <div className="banner stretch">Three in a row. The next one will be harder.</div>}
+      {mode === 'support' && !reteach && recentWrong < 4 && <div className="banner support">Two wrong. The next question will be a bit easier.</div>}
       {recentWrong >= 4 && !reteach && (
         <div className="banner care">
-          <strong>This one's tough right now – that's normal.</strong> Getting things wrong while practising is how memory gets stronger.
+          <strong>This one's tough right now, and that's normal.</strong> Getting things wrong while practising is how memory gets stronger.
           {' '}You could <a href={href('/rescue', { topic: current?.topicId ?? '' })}>rebuild this topic step by step</a>, or take a 5-minute break and come back.
         </div>
       )}
@@ -268,7 +268,7 @@ export function Reteach({ topicId, onContinue }: { topicId: string; onContinue: 
       )}
       <div className="row gap end">
         <a className="btn ghost" href={href(`/t/${topicId}`)}>Open full lesson</a>
-        <button className="btn primary" onClick={onContinue}>Got it – carry on</button>
+        <button className="btn primary" onClick={onContinue}>Carry on</button>
       </div>
     </div>
   );
@@ -298,7 +298,7 @@ function Summary({ title, answers, startMastery, secs, timed, pre }: { title: st
       {confidentWrong > 0 && (
         <div className="callout callout-warn">
           <div className="callout-title">{confidentWrong} confident mistake{confidentWrong > 1 ? 's' : ''}</div>
-          <p>You were sure but wrong – these are misconceptions, and fixing them gives the biggest gains. They're top of your Fix-it list.</p>
+          <p>You were sure but wrong. These are misconceptions, and fixing them gives the biggest gains. They're top of your Fix-it list.</p>
         </div>
       )}
       {luckyGuesses > 0 && <p className="muted small">{luckyGuesses} correct answer{luckyGuesses > 1 ? 's were guesses' : ' was a guess'} - they'll come back sooner to check you really know them.</p>}
@@ -337,7 +337,7 @@ function Summary({ title, answers, startMastery, secs, timed, pre }: { title: st
       {pre && first && (
         <div className="callout callout-tip">
           <div className="callout-title">Now read the lesson</div>
-          <p>Look out for the answers to the questions you just tried – that's what makes a pre-test work.</p>
+          <p>Look out for the answers to the questions you just tried. That's what makes a pre-test work.</p>
           <a className="btn primary small" href={href(`/t/${first.topic.id}`)}>Read {first.topic.title}</a>
         </div>
       )}

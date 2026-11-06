@@ -95,7 +95,7 @@ Undifferentiated cells that can divide and become other types of cell.
         questions: [
           ord('Put the stages of the cell cycle in order.', ['Cell grows and DNA replicates', 'Chromosomes are pulled to each end of the cell', 'Nucleus divides', 'Cytoplasm and membrane divide to form two cells'], 'Growth → mitosis → cytokinesis.', { d: 2 }),
           mc('How do the two cells produced by mitosis compare to the parent cell?', ['Genetically identical', 'Half the chromosomes', 'Genetically different', 'Twice the chromosomes'], 'Mitosis produces identical diploid cells.', { d: 1 }),
-          mc('Which is an advantage of therapeutic cloning?', ['Stem cells won\'t be rejected by the patient', 'It is cheap and quick', 'There are no ethical issues', 'It uses adult cells only'], 'The cells have the patient\'s own genes.', { d: 2 }),
+          mc('Which is an advantage of therapeutic cloning?', ['Stem cells won\'t be rejected by the patient', 'The stem cells can be made without creating an embryo', 'There is no risk of passing on a viral infection', 'The stem cells divide only a set number of times'], 'The cells have the patient\'s own genes.', { d: 2 }),
           tf('Adult stem cells from bone marrow can form any type of human cell.', false, 'Adult stem cells can only form a limited range (e.g. blood cells).', { d: 2 }),
         ],
         examQuestions: [examQ('Evaluate the use of embryonic stem cells to treat medical conditions.', 6, SIX(['Can differentiate into any cell type - could treat diabetes, paralysis', 'Therapeutic cloning reduces rejection', 'Ethical/religious objections - embryo destroyed / potential life', 'Risk of viral infection transfer', 'Risk of uncontrolled division (cancer)', 'Reasoned conclusion']), { meta: '6-mark evaluate', time: 7 })],
@@ -124,8 +124,8 @@ Cut equal potato cylinders, record mass, place in sugar solutions of different c
         misconceptions: [{ wrong: 'In osmosis, the sugar moves into the cell.', right: 'Only WATER moves in osmosis; the solute can\'t cross the membrane.' }],
         flashcards: cards([['Define diffusion', 'The net movement of particles from an area of higher concentration to an area of lower concentration.'], ['Define osmosis', 'The diffusion of water from a dilute solution to a more concentrated solution through a partially permeable membrane.'], ['Define active transport', 'Movement of substances from a dilute to a more concentrated solution (against the gradient), using energy from respiration.'], ['Four features of a good exchange surface?', 'Large surface area, thin membrane, good blood supply, ventilated.']]),
         questions: [
-          mc('Which process needs energy from respiration?', ['Active transport', 'Diffusion', 'Osmosis', 'All of them'], 'Active transport moves substances against a concentration gradient.', { d: 1 }),
-          mc('A potato cylinder gains mass in a sugar solution. What does this tell you?', ['The solution was more dilute than the cell sap', 'The solution was more concentrated', 'Sugar moved into the potato', 'Active transport occurred'], 'Water moved in by osmosis from the more dilute solution.', { d: 3 }),
+          mc('Which process needs energy from respiration?', ['Active transport', 'Diffusion', 'Osmosis', 'Transpiration'], 'Active transport moves substances against a concentration gradient.', { d: 1 }),
+          mc('A potato cylinder gains mass in a sugar solution. What does this tell you?', ['The solution was more dilute than the cell sap', 'The solution was more concentrated than the cell sap', 'Sugar diffused from the solution into the cells', 'Water entered the cells by active transport'], 'Water moved in by osmosis from the more dilute solution.', { d: 3 }),
           cloze('Root hair cells absorb mineral ions by {{active transport}} because the concentration of ions in the soil is {{lower}} than inside the cell.', 'Moving against the gradient needs energy.', { d: 3 }),
           num('A potato piece goes from 2.50 g to 2.20 g. Calculate the percentage change in mass.', -12, '(2.20 − 2.50) ÷ 2.50 × 100 = −12%.', { d: 3, unit: '%' }),
           tf('A larger organism has a larger surface area to volume ratio.', false, 'SA:V decreases as size increases - so large organisms need specialised exchange surfaces.', { d: 3 }),
@@ -237,7 +237,7 @@ Fatty deposits narrow coronary arteries → less oxygen to heart muscle.
         questions: [
           ord('Put the path of blood through the right side of the heart in order.', ['Vena cava', 'Right atrium', 'Right ventricle', 'Pulmonary artery'], 'Deoxygenated blood goes to the lungs.', { d: 2 }),
           mc('Why is the left ventricle wall thicker than the right?', ['It pumps blood around the whole body at higher pressure', 'It holds a larger volume of blood than the right side', 'It receives deoxygenated blood from the whole body', 'It has more valves to stop blood flowing backwards'], 'More force needed for the body circuit.', { d: 2 }),
-          mc('Which feature helps red blood cells carry oxygen?', ['Haemoglobin and no nucleus', 'A large nucleus', 'Thick cell wall', 'Many mitochondria'], 'More room for haemoglobin; biconcave shape increases surface area.', { d: 1 }),
+          mc('Which feature helps red blood cells carry oxygen?', ['Haemoglobin and no nucleus', 'Haemoglobin and a large nucleus', 'Many mitochondria and no nucleus', 'Myoglobin and many ribosomes'], 'More room for haemoglobin; biconcave shape increases surface area.', { d: 1 }),
           tf('Statins are used to widen narrowed arteries.', false, 'Stents widen arteries; statins lower cholesterol.', { d: 2 }),
         ],
         examQuestions: [examQ('Compare the use of stents and statins to treat coronary heart disease.', 6, SIX(['Stent: mesh tube keeps artery open; immediate effect', 'Stent: requires surgery - risk of infection, blood clots', 'Statins: reduce cholesterol, slowing build-up; no surgery', 'Statins: must be taken long term; side effects; slower effect', 'Statins can be preventative', 'Comparative conclusion']), { meta: '6-mark compare', time: 7 })],
@@ -268,7 +268,7 @@ Uncontrolled cell division → **tumour**.
         keyPoints: ['Communicable = caused by pathogens', 'Risk factors increase likelihood of disease', 'Smoking, diet, alcohol, carcinogens', 'Benign tumours stay put; malignant spread via blood', 'Correlation ≠ causation'],
         flashcards: cards([['Difference between benign and malignant tumours?', 'Benign stay in one place; malignant invade tissue and spread via the blood.'], ['Name a non-communicable disease', 'e.g. coronary heart disease, type 2 diabetes, cancer.'], ['What is a carcinogen?', 'A substance or factor that increases the risk of cancer (e.g. ionising radiation, tobacco smoke).']]),
         questions: [
-          mc('Which tumour type spreads to other parts of the body?', ['Malignant', 'Benign', 'Both', 'Neither'], 'Malignant cells break off and travel in the blood.', { d: 1 }),
+          mc('Which tumour type spreads to other parts of the body?', ['Malignant', 'Benign', 'Dormant', 'Encapsulated'], 'Malignant cells break off and travel in the blood.', { d: 1 }),
           multi('Which are non-communicable diseases?', ['Type 2 diabetes', 'Lung cancer', 'Coronary heart disease'], ['Measles', 'Malaria', 'Salmonella'], 'Non-communicable diseases are not caused by pathogens.', { d: 1 }),
           tf('If two factors are correlated, one must cause the other.', false, 'Correlation shows a link; a causal mechanism must be proven separately.', { d: 2 }),
         ],
@@ -297,8 +297,8 @@ Measured with a **potometer** (rate of water uptake).
         keyPoints: ['Palisade: most photosynthesis; spongy: gas exchange', 'Xylem: water up (transpiration); phloem: sugars both ways (translocation)', 'Transpiration faster: hot, bright, windy, dry', 'Guard cells control stomata', 'Potometer measures water uptake'],
         flashcards: cards([['What does phloem transport?', 'Dissolved sugars (translocation), up and down the plant.'], ['What does xylem transport?', 'Water and mineral ions from roots to leaves.'], ['Four factors increasing transpiration rate?', 'Higher temperature, light intensity, air movement; lower humidity.'], ['Function of guard cells?', 'Open and close stomata to control gas exchange and water loss.']]),
         questions: [
-          mc('Which conditions give the fastest transpiration?', ['Hot, dry, windy and bright', 'Cold, humid and still', 'Dark and humid', 'Cold and dark'], 'Evaporation and diffusion are fastest; stomata open in light.', { d: 2 }),
-          mc('What is translocation?', ['Movement of sugars through phloem', 'Movement of water through xylem', 'Loss of water from leaves', 'Absorption of minerals'], 'Translocation = phloem transport of sugars.', { d: 1 }),
+          mc('Which conditions give the fastest transpiration?', ['Hot, dry, windy and bright', 'Hot, humid, still and bright', 'Cold, dry, windy and dark', 'Warm, humid, windy and dark'], 'Evaporation and diffusion are fastest; stomata open in light.', { d: 2 }),
+          mc('What is translocation?', ['Movement of sugars through phloem', 'Movement of water through phloem', 'Movement of sugars through xylem', 'Movement of mineral ions through xylem'], 'Translocation = phloem transport of sugars.', { d: 1 }),
           tf('Xylem tubes are made of living cells.', false, 'Xylem is dead, hollow, lignified cells.', { d: 2 }),
         ],
       }),
@@ -330,7 +330,7 @@ Preventing spread: hygiene, isolating infected individuals, destroying vectors, 
         flashcards: cards([['What type of pathogen causes malaria?', 'A protist, spread by mosquitoes (vectors).'], ['How is measles spread?', 'Droplets from sneezes and coughs.'], ['What does TMV do to plants?', 'Causes a mosaic pattern on leaves - less chlorophyll so less photosynthesis.'], ['How do bacteria make us ill?', 'They produce toxins that damage tissues.'], ['How is gonorrhoea treated?', 'Antibiotics - but resistant strains are increasing.']]),
         questions: [
           match('Match the disease to its pathogen type.', [['Measles', 'Virus'], ['Salmonella', 'Bacterium'], ['Rose black spot', 'Fungus'], ['Malaria', 'Protist']], 'Learn one example of each type.', { d: 2 }),
-          mc('How is malaria spread?', ['By mosquitoes (vectors)', 'By droplets in the air', 'In contaminated food', 'By touching infected leaves'], 'Mosquitoes carry the protist between people.', { d: 1 }),
+          mc('How is malaria spread?', ['By mosquitoes (vectors)', 'By droplets in the air', 'In contaminated water', 'By direct skin contact'], 'Mosquitoes carry the protist between people.', { d: 1 }),
           tf('Antibiotics can be used to treat HIV.', false, 'HIV is a virus; antibiotics only kill bacteria. HIV is treated with antiretroviral drugs.', { d: 2 }),
         ],
       }),
@@ -392,7 +392,7 @@ Detected by stunted growth, spots, decay, growths, malformed stems, discoloratio
         keyPoints: ['Hybridoma = lymphocyte + tumour cell', 'Monoclonal antibodies are identical and specific', 'Uses: pregnancy tests, diagnosis, cancer treatment', 'Nitrate deficiency: stunted growth; magnesium: chlorosis', 'Plant defences: physical, chemical, mechanical'],
         flashcards: cards([['What is a hybridoma?', 'A cell made by fusing a lymphocyte with a tumour cell; it divides and makes one type of antibody.'], ['What causes chlorosis?', 'Magnesium ion deficiency (less chlorophyll).'], ['One use of monoclonal antibodies?', 'Pregnancy tests, diagnosis, or targeting drugs to cancer cells.']]),
         questions: [
-          mc('Which cells are fused to make a hybridoma?', ['Lymphocyte and tumour cell', 'Red blood cell and lymphocyte', 'Sperm and egg', 'Phagocyte and platelet'], 'Lymphocytes make antibodies; tumour cells divide quickly.', { d: 3, tier: 'H' }),
+          mc('Which cells are fused to make a hybridoma?', ['Lymphocyte and tumour cell', 'Phagocyte and tumour cell', 'Lymphocyte and stem cell', 'Lymphocyte and red blood cell'], 'Lymphocytes make antibodies; tumour cells divide quickly.', { d: 3, tier: 'H' }),
           mc('A plant has yellow leaves (chlorosis). Which ion is likely deficient?', ['Magnesium', 'Nitrate', 'Potassium', 'Calcium'], 'Magnesium is needed to make chlorophyll.', { d: 2 }),
         ],
       }),
@@ -430,7 +430,7 @@ Place pondweed (Elodea) at different distances from a lamp; count bubbles of oxy
         flashcards: cards([['Word equation for photosynthesis?', 'carbon dioxide + water → glucose + oxygen'], ['Balanced symbol equation for photosynthesis?', '6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂'], ['Four limiting factors of photosynthesis?', 'Light intensity, CO₂ concentration, temperature, amount of chlorophyll.'], ['Inverse square law for light?', 'Light intensity is inversely proportional to the square of the distance.'], ['Why is photosynthesis endothermic?', 'Energy is transferred from the environment (light) to the chloroplasts.']]),
         questions: [
           mc('In the pondweed experiment, how is CO₂ kept constant?', ['Add sodium hydrogencarbonate to the water', 'Place a heat shield between the lamp and the pondweed', 'Keep the lamp at the same distance each time', 'Count the bubbles for one minute each time'], 'Sodium hydrogencarbonate releases CO₂.', { d: 3 }),
-          mc('The rate of photosynthesis stops increasing as light increases. Why?', ['Another factor such as CO₂ or temperature is now limiting', 'The plant has died from too much light', 'Light is no longer needed once glucose is made', 'The chlorophyll has been broken down by heat'], 'Plateau = a different limiting factor.', { d: 2 }),
+          mc('The rate of photosynthesis stops increasing as light increases. Why?', ['Another factor such as CO₂ or temperature is now limiting', 'The stomata close in bright light, so no more CO₂ can enter', 'The enzymes are denatured by the extra light energy', 'The chlorophyll cannot absorb light any faster'], 'Plateau = a different limiting factor.', { d: 2 }),
           num('A lamp is moved from 20 cm to 10 cm from a plant. By what factor does light intensity increase?', 4, 'Half the distance → (2)² = 4 times.', { d: 4, tier: 'H' }),
           multi('What can plants use glucose for?', ['Making cellulose', 'Respiration', 'Storing as starch', 'Making proteins (with nitrates)'], ['Making chlorophyll from nothing', 'Producing oxygen gas for respiration'], 'Glucose has many uses.', { d: 2 }),
         ],

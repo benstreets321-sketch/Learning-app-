@@ -152,7 +152,7 @@ Compare how fast hot water in beakers cools with different insulating materials 
         flashcards: cards([['Equation linking charge, current and time?', 'Q = It'], ['Equation linking p.d., current and resistance?', 'V = IR'], ['How does a thermistor\'s resistance change as it gets hotter?', 'It decreases.'], ['How does an LDR\'s resistance change in bright light?', 'It decreases.'], ['Current in a series circuit?', 'The same through every component.'], ['Total resistance of 3 Ω and 6 Ω in series?', '9 Ω'], ['Why does a filament lamp\'s resistance increase?', 'As it gets hotter, ions vibrate more and collide with electrons more.']]),
         questions: [
           num('A current of 0.5 A flows through a 12 Ω resistor. Calculate the p.d.', 6, 'V = 0.5 × 12 = 6 V.', { d: 1, unit: 'V' }),
-          mc('What happens to the resistance of an LDR as light intensity increases?', ['It decreases', 'It increases', 'It stays the same', 'It becomes zero'], 'LDRs are used in automatic night lights.', { d: 1 }),
+          mc('What happens to the resistance of an LDR as light intensity increases?', ['It decreases', 'It increases', 'It stays the same', 'It only changes if the temperature changes'], 'LDRs are used in automatic night lights.', { d: 1 }),
           mc('Two identical lamps are connected in parallel to a 6 V battery. What is the p.d. across each?', ['6 V', '3 V', '12 V', '0 V'], 'In parallel each branch gets the full p.d.', { d: 2 }),
           tf('Adding a resistor in parallel increases the total resistance.', false, 'It decreases total resistance - there are more paths for current.', { d: 3 }),
           match('Match the component to its behaviour.', [['Diode', 'Current flows in one direction only'], ['Filament lamp', 'Resistance rises as it heats up'], ['Thermistor', 'Resistance falls as temperature rises'], ['Ohmic resistor', 'Constant resistance at constant temperature']], 'I-V characteristics.', { d: 2 }),
@@ -205,7 +205,7 @@ Power stations → **step-up transformers** (very high p.d., e.g. 400 000 V, **l
         flashcards: cards([['What moves when an insulator is charged by rubbing?', 'Electrons.'], ['A polythene rod gains electrons. What is its charge?', 'Negative.'], ['Direction of electric field lines?', 'From positive to negative.']]),
         questions: [
           tf('When a balloon is rubbed, positive charges move onto it.', false, 'Only electrons (negative) move.', { d: 2 }),
-          mc('Two negatively charged rods are brought close. They...', ['Repel', 'Attract', 'Do nothing', 'Become neutral'], 'Like charges repel.', { d: 1 }),
+          mc('Two negatively charged rods are brought close. They...', ['Repel', 'Attract', 'Attract, then repel once they touch', 'Have no effect on each other'], 'Like charges repel.', { d: 1 }),
         ],
       }),
     ],
@@ -284,7 +284,7 @@ The time for the **number of unstable nuclei** (or the **activity**) to halve. D
         generators: ['p-halflife'],
         flashcards: cards([['What is an alpha particle?', '2 protons and 2 neutrons (a helium nucleus).'], ['What stops beta radiation?', 'A few mm of aluminium.'], ['Most ionising type of radiation?', 'Alpha.'], ['Define half-life', 'The time taken for the number of radioactive nuclei (or the activity) to halve.'], ['Difference between contamination and irradiation?', 'Contamination: radioactive material gets on/in the body. Irradiation: exposed to radiation from outside; you don\'t become radioactive.'], ['Unit of activity?', 'Becquerel (Bq).']]),
         questions: [
-          mc('Which radiation is stopped by a sheet of paper?', ['Alpha', 'Beta', 'Gamma', 'All of them'], 'Alpha has very low penetration.', { d: 1 }),
+          mc('Which radiation is stopped by a sheet of paper?', ['Alpha', 'Beta', 'Gamma', 'Beta and gamma'], 'Alpha has very low penetration.', { d: 1 }),
           num('A radioactive source has an activity of 1600 Bq and a half-life of 3 days. What is its activity after 9 days?', 200, '9 ÷ 3 = 3 half-lives: 1600 → 800 → 400 → 200.', { d: 2, unit: 'Bq' }),
           mc('In beta decay, what happens to the atomic number?', ['Increases by 1', 'Decreases by 2', 'Stays the same', 'Decreases by 1'], 'A neutron changes into a proton.', { d: 3 }),
           tf('Being irradiated by gamma rays makes you radioactive.', false, 'Irradiation does not make objects radioactive.', { d: 2 }),

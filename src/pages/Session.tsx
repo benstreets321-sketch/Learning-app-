@@ -92,15 +92,15 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
 
   return (
     <div className="page narrow session">
-      <div className="session-head">
-        <button className="btn link small" onClick={() => setDone(true)}>End session</button>
-        <span className="small">{planned}-minute session</span>
-        <span className={`mono small ${left < 60 ? 'timer over' : ''}`}><Icon name="clock" size={14} /> {Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')}</span>
+      <div className="session-head mono-head">
+        <button className="btn link small" onClick={() => setDone(true)}>End</button>
+        <span>{planned}-minute session</span>
+        <span className={left < 60 ? 'timer over' : ''}>{Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')} left</span>
       </div>
-      <ProgressBar value={1 - left / (planned * 60)} color={ref?.subject.color} />
+      <ProgressBar value={1 - left / (planned * 60)} />
       <div className="source-line">
         <span className={`pill src-${burst ? 'review' : pick.source}`}>{burst ? 'Flashcards' : lessonFor ? 'Quick lesson' : SOURCE_LABEL[pick.source]}</span>
-        <span className="muted small">{burst ? 'Cards due for review – a quick burst of recall between questions.' : lessonFor ? 'A brand-new topic: the key idea first, then a question on it.' : <>{SOURCE_HELP[pick.source]}{pick.note ? <> <strong>{pick.note}.</strong></> : null}</>}</span>
+        <span className="muted small">{burst ? 'Cards due for review. A quick burst of recall between questions.' : lessonFor ? 'A brand-new topic: the key idea first, then a question on it.' : <>{SOURCE_HELP[pick.source]}{pick.note ? <> <strong>{pick.note}.</strong></> : null}</>}</span>
         <span className="muted small mono push">{answers.length} done · {answers.filter((a) => a.correct).length} correct</span>
       </div>
       {answers.length === 0 && !burst && (() => {
@@ -110,12 +110,12 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
       })()}
       {timeUp && (
         <div className="banner support row gap wrap">
-          <span>Time's up – well done. Finish this question to see your summary, or keep going.</span>
+          <span>Time's up. Well done. Finish this question to see your summary, or keep going.</span>
           <button className="btn small primary" onClick={() => extend(10)}>Keep going: 10 more minutes</button>
         </div>
       )}
       {burst ? (
-        <CardBurst cards={burst} title={answers.length ? 'Quick flashcard burst' : 'Warm-up: flashcards due today'} intro="Say each answer before you flip – recalling it is what makes it stick." color={ref?.subject.color} onDone={() => { setBurst(null); shownAt.current = Date.now(); }} />
+        <CardBurst cards={burst} title={answers.length ? 'Quick flashcard burst' : 'Warm-up: flashcards due today'} intro="Say each answer before you flip. Recalling it is what makes it stick." color={ref?.subject.color} onDone={() => { setBurst(null); shownAt.current = Date.now(); }} />
       ) : reteach ? (
         <Reteach topicId={reteach} onContinue={() => setReteach('')} />
       ) : lessonFor && ref ? (
@@ -150,7 +150,7 @@ function QuickLesson({ topic, onDone }: { topic: Topic; onDone: () => void }) {
         </div>
       )}
       <details className="example"><summary>Read the full notes</summary><Markdown text={topic.notes} /></details>
-      <div className="row end"><button className="btn primary" onClick={onDone}>Got it – ask me</button></div>
+      <div className="row end"><button className="btn primary" onClick={onDone}>Ask me a question</button></div>
     </div>
   );
 }
@@ -181,7 +181,7 @@ function Summary({ answers, mins, fixedBefore, startMastery, subjectIds }: { ans
       </div>
       <p className="small muted" style={{ marginTop: '0.8rem' }}>
         {fixedNow > 0 ? `${fixedNow} mistake${fixedNow === 1 ? '' : 's'} cleared from your Fix-it list. ` : ''}
-        {halfway > 0 ? `${halfway} more ${halfway === 1 ? 'is' : 'are'} halfway – answer ${halfway === 1 ? 'it' : 'them'} correctly again in a later session to clear ${halfway === 1 ? 'it' : 'them'}.` : ''}
+        {halfway > 0 ? `${halfway} more ${halfway === 1 ? 'is' : 'are'} halfway. Answer ${halfway === 1 ? 'it' : 'them'} correctly again in a later session to clear ${halfway === 1 ? 'it' : 'them'}.` : ''}
       </p>
 
       {wrongTopics.length > 0 && (

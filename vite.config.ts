@@ -20,8 +20,8 @@ const pwa = VitePWA({
     scope: './',
     display: 'standalone',
     orientation: 'any',
-    background_color: '#F4F6F8',
-    theme_color: '#0F6B63',
+    background_color: '#0F1420',
+    theme_color: '#0F1420',
     categories: ['education'],
     icons: [
       { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },

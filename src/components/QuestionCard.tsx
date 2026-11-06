@@ -199,8 +199,8 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         const r = checkNumber(text, item.answer, item.tol);
         correct = r.ok;
         close = r.close;
-        if (r.parsed === null) detail = "I couldn't read that as a number – try digits like 12.5, -3 or 3/4.";
-        else if (close) detail = 'Very close – check your rounding, units or place value (powers of 10).';
+        if (r.parsed === null) detail = "I couldn't read that as a number. Try digits like 12.5, -3 or 3/4.";
+        else if (close) detail = 'Very close. Check your rounding, units or place value (powers of 10).';
         break;
       }
       case 'text': {
@@ -211,7 +211,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
           // name the correct spelling now that they've answered (nothing was underlined while typing)
           const typed = normalise(text).replace(/\s/g, '');
           const best = [...item.accept].sort((a, b) => levenshtein(typed, normalise(a).replace(/\s/g, '')) - levenshtein(typed, normalise(b).replace(/\s/g, '')))[0];
-          detail = `Accepted – but it's spelt "${best}" (you wrote "${text.trim()}"). Spelling key terms correctly matters in the exam.`;
+          detail = `Accepted, but it's spelt "${best}" (you wrote "${text.trim()}"). Spelling key terms correctly matters in the exam.`;
         }
         else if (close) detail = 'Close. Check the spelling or the exact term.';
         break;
@@ -307,7 +307,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
 
       {item.ctx && (
         <details className="source" open>
-          <summary><Icon name="learn" size={16} /> Source – read this first</summary>
+          <summary><Icon name="learn" size={16} /> Read the source first</summary>
           <div className="source-body"><Markdown text={item.ctx} /></div>
         </details>
       )}
@@ -357,6 +357,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
               <button key={i} data-i={i} className={cls} disabled={answered || gone} aria-pressed={choice === i} onClick={() => setChoice(i)}>
                 <span className="opt-key mono" aria-hidden="true">{answered && isAns ? <Icon name="check" size={14} /> : answered && i === choice ? <Icon name="close" size={14} /> : order.indexOf(i) + 1}</span>
                 <Markdown text={item.options[i]} inline />
+                {answered && (isAns || i === choice) && <span className="opt-tag">{isAns ? 'Correct' : 'Yours'}</span>}
               </button>
             );
           })}
@@ -498,7 +499,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       )}
 
       {item.type === 'select' && (
-        <div className="select-text" aria-label="Passage – tap words to select them">
+        <div className="select-text" aria-label="Passage: tap words to select them">
           {tokens.map((t, i) => {
             if (!t.pickable) return <span key={i}>{t.text}</span>;
             const on = picked.has(i);
@@ -560,9 +561,9 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         <div className={`feedback ${result!.correct ? 'good' : 'bad'}`} aria-live="polite">
           <div className="fb-head">
             {result!.correct ? (
-              <strong>{hints > 0 ? 'Correct, with help.' : conf === 'guess' ? 'Correct. You said you were guessing, so it will come back soon.' : 'Correct.'}</strong>
+              <strong>{hints > 0 ? 'Correct, with help.' : conf === 'guess' ? 'Correct. You were guessing, so it will come back soon.' : 'Correct.'}</strong>
             ) : (
-              <strong>{conf === 'sure' ? 'Not quite – and you were sure. Mistakes you were confident about are the most useful ones to fix.' : 'Not quite.'}</strong>
+              <strong>{conf === 'sure' ? 'Not quite, and you were sure. Those are the best mistakes to fix.' : 'Not quite.'}</strong>
             )}
           </div>
           {result!.detail && <p className="fb-detail">{result!.detail}</p>}
@@ -577,10 +578,10 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
           )}
           <div className="fb-why"><Markdown text={item.why} /></div>
           {(item.type === 'mcq' || item.type === 'tf' || item.type === 'multi') && (explain || (result!.correct && conf === 'guess')) && item.why.length > 30 && (
-            <ExplainWhy why={item.why} answer={correctAnswerText ?? ''} question={item.q} reason={result!.correct && conf === 'guess' ? 'You guessed – check you know the reason.' : result!.correct ? 'Right – now check you know the reason.' : 'Now you have seen the answer, can you give the reason?'} />
+            <ExplainWhy why={item.why} answer={correctAnswerText ?? ''} question={item.q} reason={result!.correct && conf === 'guess' ? 'You guessed. Check you know the reason.' : result!.correct ? 'Right. Now check you know the reason.' : 'Now you have seen the answer, can you give the reason?'} />
           )}
           {!result!.correct && (item.type === 'text' || item.type === 'cloze') && !overridden && (
-            <button className="btn link small" onClick={overrideCorrect}>My answer means the same – mark it correct</button>
+            <button className="btn link small" onClick={overrideCorrect}>My answer means the same. Mark it correct</button>
           )}
           {!result!.correct && (
             <p className="muted small">Added to your <strong>Fix-it list</strong>. You'll see it again shortly, then in a few days, to lock it in.</p>
