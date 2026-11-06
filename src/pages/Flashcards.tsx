@@ -33,8 +33,11 @@ function buildDeck(query: URLSearchParams): { title: string; cards: Card[]; tota
     const s = getSubject(id);
     if (s) { topics = visibleTopics(s, profile).map((t) => ({ id: t.id, cards: t.flashcards, color: s.color })); title = s.name; }
   } else {
-    title = scope === 'mixed' ? 'Mixed flashcards' : 'Flashcards due';
-    for (const s of activeSubjects(profile)) topics.push(...visibleTopics(s, profile).map((t) => ({ id: t.id, cards: t.flashcards, color: s.color })));
+    const only = query.get('subjects')?.split(',').filter(Boolean);
+    const subs = activeSubjects(profile).filter((s) => !only?.length || only.includes(s.id));
+    const label = only?.length && subs.length ? `: ${subs.map((s) => s.short).join(', ')}` : '';
+    title = `${scope === 'mixed' ? 'Mixed flashcards' : 'Flashcards due'}${label}`;
+    for (const s of (subs.length ? subs : activeSubjects(profile))) topics.push(...visibleTopics(s, profile).map((t) => ({ id: t.id, cards: t.flashcards, color: s.color })));
   }
 
   const all: Card[] = topics.flatMap((t) => t.cards.map((c) => ({ ...c, id: cardId(t.id, c.front), topicId: t.id, color: t.color })));
@@ -80,8 +83,9 @@ export function FlashcardsPage({ query }: { query: URLSearchParams }) {
         <h1>Deck complete</h1>
         <p>You reviewed <strong>{done}</strong> cards{again ? `, and re-learned ${again} you'd forgotten` : ''}. They'll come back just before you're likely to forget them.</p>
         <div className="row gap">
-          <a className="btn primary" href="#/">Home</a>
-          <a className="btn" href={href('/quiz', { scope: 'smart', n: 10 })}>Now quiz me</a>
+          <a className="btn primary" href={href('/quiz', { scope: 'smart', n: 10, subjects: query.get('subjects') ?? undefined })}>Now quiz me</a>
+          <a className="btn" href={href('/cards', { scope: 'mixed', subjects: query.get('subjects') ?? undefined, _: Date.now() })}>More cards</a>
+          <a className="btn ghost" href="#/">Home</a>
         </div>
       </div>
     );

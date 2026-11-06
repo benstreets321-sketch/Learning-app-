@@ -3,6 +3,7 @@ import { activeSubjects } from '../content/registry';
 import { getProfile, updateProfile, useProfile } from '../lib/store';
 import { SESSION_LENGTHS, sessionPreview } from '../lib/session';
 import { go } from '../lib/router';
+import { focusFor } from '../lib/week';
 import { Icon } from './Icon';
 import { SubjectMark } from './SubjectMark';
 
@@ -11,9 +12,12 @@ export function StartSession({ compact = false }: { compact?: boolean }) {
   const profile = useProfile();
   const [open, setOpen] = useState(false);
   const [mins, setMins] = useState(profile.sessionMins ?? profile.dailyGoal ?? 30);
-  const [picked, setPicked] = useState<string[]>(profile.sessionSubjects ?? []);
+  const focus = focusFor(profile);
+  // a session starts on today's subject from the weekly timetable; any other choice is one tap away
+  const [picked, setPicked] = useState<string[]>(focus.ids ?? profile.sessionSubjects ?? []);
   const box = useRef<HTMLDivElement>(null);
   const subjects = activeSubjects(profile);
+  const isToday = !!focus.ids && focus.ids.length === picked.length && focus.ids.every((id) => picked.includes(id));
 
   useEffect(() => {
     if (!open) return;
@@ -34,7 +38,7 @@ export function StartSession({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className="start-session" ref={box}>
-      <button className={`btn primary start-btn ${compact ? 'compact' : ''}`} onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="dialog">
+      <button className={`btn primary start-btn ${compact ? 'compact' : ''}`} onClick={() => { if (!open) setPicked(focus.ids ?? profile.sessionSubjects ?? []); setOpen((o) => !o); }} aria-expanded={open} aria-haspopup="dialog">
         <Icon name="target" size={18} /> <span>Start session</span>
       </button>
       {open && (
@@ -49,7 +53,9 @@ export function StartSession({ compact = false }: { compact?: boolean }) {
           </div>
           <div className="start-row">
             <strong>Subjects</strong>
+            {focus.group && <span className="muted small">{focus.dayName} is {focus.group.short} day on your timetable.</span>}
             <div className="chips wrap">
+              {focus.ids && <button className={`chip ${isToday ? 'on' : ''}`} onClick={() => setPicked(focus.ids!)}>Today: {focus.label}</button>}
               <button className={`chip ${picked.length === 0 ? 'on' : ''}`} onClick={() => setPicked([])}>All my subjects</button>
               {subjects.map((s) => (
                 <button key={s.id} className={`chip ${picked.includes(s.id) ? 'on' : ''}`} onClick={() => toggle(s.id)}>
@@ -71,7 +77,8 @@ export function StartSession({ compact = false }: { compact?: boolean }) {
 }
 
 /** For other components that want to launch a session directly */
-export function launchSession(mins?: number) {
+export function launchSession(mins?: number, subjectIds?: string[]) {
   const p = getProfile();
-  go('/session', { mins: mins ?? p.sessionMins ?? p.dailyGoal ?? 30, subjects: (p.sessionSubjects ?? []).join(',') || undefined, _: Date.now() });
+  const ids = subjectIds ?? focusFor(p).ids ?? p.sessionSubjects ?? [];
+  go('/session', { mins: mins ?? p.sessionMins ?? p.dailyGoal ?? 30, subjects: ids.join(',') || undefined, _: Date.now() });
 }

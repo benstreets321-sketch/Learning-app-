@@ -6,6 +6,7 @@ import { href } from '../lib/router';
 import { savePlan, useProfile, useProgress, type PlanWeek, type Profile, type Progress } from '../lib/store';
 import { daysToExam } from '../lib/insights';
 import { DAY, todayKey } from '../lib/util';
+import { WEEK_DAYS, daysForSubject, effectiveWeek, groupById } from '../lib/week';
 import { Empty, Section } from '../components/ui';
 
 function mondayOf(d: Date): Date {
@@ -104,6 +105,20 @@ export function PlannerPage() {
       </div>
       <p className="muted small">Rebuild every few weeks – it uses your latest mastery data.</p>
 
+      {profile.weekOn !== false && (
+        <Section title="Your week" right={<a className="small" href={href('/setup', { tab: 'week' })}>Change</a>}>
+          <p className="muted small">One subject a day. Each week's topics below are labelled with the day you'll do them.</p>
+          <div className="week-strip">
+            {WEEK_DAYS.map((d) => (
+              <span key={d.n} className={`wk ${d.n === new Date().getDay() ? 'on' : ''}`} title={`${d.name}: ${groupById(effectiveWeek(profile)[d.n])?.name ?? 'All my subjects'}`}>
+                <span className="wk-d">{d.short}</span>
+                <span className="wk-s">{groupById(effectiveWeek(profile)[d.n])?.short ?? 'Mixed'}</span>
+              </span>
+            ))}
+          </div>
+        </Section>
+      )}
+
       {!plan ? (
         <Empty title="No plan yet">Build one above – it takes a second.</Empty>
       ) : (
@@ -126,7 +141,7 @@ export function PlannerPage() {
                       style={{ borderLeftColor: subj?.color }}
                       href={t ? (f.reason === 'Learn' ? href(`/t/${f.topicId}`) : href('/quiz', { scope: 'topic', id: f.topicId, n: 8 })) : href(`/s/${f.subjectId}`, { tab: 'exam' })}
                     >
-                      <span className="small row gap">{subj && <SubjectMark subject={subj} size="sm" />} {subj?.short}</span>
+                      <span className="small row gap">{subj && <SubjectMark subject={subj} size="sm" />} {subj?.short}{daysForSubject(profile, f.subjectId).length ? <span className="muted"> · {daysForSubject(profile, f.subjectId).map((d) => d.slice(0, 3)).join('/')}</span> : null}</span>
                       <span>{t ? t.topic.title : f.reason}</span>
                       <span className="muted small">{t ? f.reason : ''}{done ? ' · done' : ''}</span>
                     </a>

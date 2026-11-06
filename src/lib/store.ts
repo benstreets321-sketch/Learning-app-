@@ -29,6 +29,10 @@ export interface Profile {
   /** last choices in the Start session panel */
   sessionMins?: number;
   sessionSubjects?: string[];
+  /** weekly timetable: one subject group (or 'mixed') per JavaScript weekday, 0 = Sunday */
+  week?: string[];
+  /** false = no timetable, every day mixes all subjects */
+  weekOn?: boolean;
 }
 
 export interface MistakeEntry {

@@ -77,6 +77,15 @@ export function HelpPage() {
           </ul>
         </details>
         <details>
+          <summary>Why is there one subject each day?</summary>
+          <ul>
+            <li>Your weekly timetable gives each day one subject – for example Monday is History and Thursday is Maths. Spending a whole session on one subject lets you go deeper and remember more than doing a few minutes of everything.</li>
+            <li>English (Language and Literature) and Science (Biology, Chemistry and Physics) each count as one subject, so there's one for every day of the week.</li>
+            <li>You can change any day, or switch the timetable off, in <a href={href('/setup', { tab: 'week' })}>Settings → My week</a>. Start session lets you pick any other subject whenever you want.</li>
+            <li>Finished your daily minutes? Keep going as long as you like – <em>Keep going: 10 more minutes</em> appears on the home page and when a timed session ends, and everything you do still counts.</li>
+          </ul>
+        </details>
+        <details>
           <summary>How does it adapt to me?</summary>
           <ul>
             <li>Each topic has an ability score that rises and falls with your answers (harder questions count for more).</li>

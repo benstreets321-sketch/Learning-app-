@@ -50,11 +50,12 @@ export interface Recommendation {
 }
 
 /** What should I do next? Weak + due + not started, spread across subjects */
-export function recommendations(profile: Profile, progress: Progress, limit = 6, subjectId?: string): Recommendation[] {
+export function recommendations(profile: Profile, progress: Progress, limit = 6, subjectId?: string | string[]): Recommendation[] {
   const now = Date.now();
   const recs: Recommendation[] = [];
+  const only = subjectId === undefined ? null : Array.isArray(subjectId) ? subjectId : [subjectId];
   for (const subject of activeSubjects(profile)) {
-    if (subjectId && subject.id !== subjectId) continue;
+    if (only && !only.includes(subject.id)) continue;
     visibleTopics(subject, profile).forEach((topic, idx) => {
       const ts = progress.topics[topic.id];
       const m = mastery(ts, now);
@@ -105,10 +106,11 @@ export function recommendations(profile: Profile, progress: Progress, limit = 6,
   return out;
 }
 
-export function dueCardCount(profile: Profile, progress: Progress): number {
+export function dueCardCount(profile: Profile, progress: Progress, subjectIds?: string[]): number {
   const now = Date.now();
   let n = 0;
   for (const subject of activeSubjects(profile)) {
+    if (subjectIds && !subjectIds.includes(subject.id)) continue;
     for (const t of visibleTopics(subject, profile)) {
       for (const c of t.flashcards) {
         const s = progress.cards[cardId(t.id, c.front)];

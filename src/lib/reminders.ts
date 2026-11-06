@@ -3,6 +3,7 @@
 // 2) Installed app on Chrome/Edge/Android: periodic background sync lets the service worker remind you even when closed.
 // 3) Everywhere (including iPhone): add a repeating event to your calendar.
 import { saveFile } from './files';
+import { focusFor } from './week';
 import { getProfile, getProgress, updateProfile } from './store';
 import { todayKey } from './util';
 
@@ -106,9 +107,12 @@ export function schedule() {
 
 export function reminderText() {
   const p = getProgress();
-  const mistakes = Object.keys(p.mistakes).length;
-  const goal = getProfile().dailyGoal;
-  return { body: mistakes ? `${goal} minutes today. You have ${mistakes} question${mistakes === 1 ? '' : 's'} waiting on your Fix-it list.` : `${goal} minutes today keeps your revision on track.` };
+  const profile = getProfile();
+  const focus = focusFor(profile);
+  const mistakes = Object.values(p.mistakes).filter((m) => !focus.ids || focus.ids.includes(m.subjectId)).length;
+  const goal = profile.dailyGoal;
+  const day = focus.group ? `It's ${focus.group.short} day: ` : '';
+  return { body: mistakes ? `${day}${goal} minutes today. You have ${mistakes} question${mistakes === 1 ? '' : 's'} waiting on your Fix-it list.` : `${day}${goal} minutes today keeps your revision on track.` };
 }
 
 /** A repeating calendar event (.ics) - works on every phone and computer */

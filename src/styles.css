@@ -911,3 +911,22 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 0.05rem 0.35rem; bo
 .main > .page { animation: pageIn 0.16s ease-out; }
 @keyframes pageIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .main > .page { animation: none; } }
+
+/* ---------- weekly timetable + keep going ---------- */
+.today-subject { color: var(--accent-text); }
+.keep-going { display: flex; flex-direction: column; gap: 0.55rem; margin: 0.4rem 0 0.2rem; padding: 0.8rem 0.9rem; border-radius: var(--radius-sm); background: var(--accent-tint); }
+.week-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) auto; gap: 0.3rem; align-items: stretch; margin: 0.7rem 0 0.6rem; }
+.wk { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; padding: 0.35rem 0.15rem; border: 1px solid var(--line); border-radius: var(--radius-sm); min-width: 0; }
+.wk-d { font-size: 0.72rem; color: var(--faint); text-transform: uppercase; letter-spacing: 0.04em; }
+.wk-s { font-size: 0.76rem; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wk.on { border-color: var(--accent); background: var(--accent-tint); }
+.wk.on .wk-s { color: var(--accent-text); font-weight: 600; }
+.wk-edit { align-self: center; padding: 0 0.2rem; }
+.week-table { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.5rem 0.9rem; align-items: center; }
+.week-table select { max-width: 100%; }
+@media (max-width: 560px) {
+  .week-strip { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .wk-edit { grid-column: 1 / -1; justify-self: end; }
+  .wk-s { font-size: 0.68rem; }
+}
+.week-table .contents { display: contents; }

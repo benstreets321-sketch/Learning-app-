@@ -36,6 +36,9 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
   const [reteach, setReteach] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
   const [done, setDone] = useState(false);
+  // total minutes, including any "keep going" extensions
+  const [planned, setPlanned] = useState(mins);
+  const extend = (m: number) => { endAt.current = Math.max(Date.now(), endAt.current) + m * 60_000; setPlanned((p) => p + m); setNow(Date.now()); };
 
   useEffect(() => {
     if (done) return;
@@ -46,7 +49,7 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
   const left = Math.max(0, Math.round((endAt.current - now) / 1000));
   const timeUp = left === 0;
 
-  if (done || !pick) return <Summary answers={answers} mins={Math.round((Date.now() - startedAt.current) / 60000)} fixedBefore={startFixed.current} startMastery={startMastery.current} />;
+  if (done || !pick) return <Summary answers={answers} mins={Math.round((Date.now() - startedAt.current) / 60000)} fixedBefore={startFixed.current} startMastery={startMastery.current} subjectIds={subjectIds} />;
 
   const ref = getTopic(pick.item.topicId);
   const onChecked = (r: { correct: boolean; conf?: Confidence; hints: number }) => {
@@ -75,16 +78,21 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
     <div className="page narrow session">
       <div className="session-head">
         <button className="btn link small" onClick={() => setDone(true)}>End session</button>
-        <span className="small">{mins}-minute session</span>
+        <span className="small">{planned}-minute session</span>
         <span className={`mono small ${left < 60 ? 'timer over' : ''}`}><Icon name="clock" size={14} /> {Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')}</span>
       </div>
-      <ProgressBar value={1 - left / (mins * 60)} color={ref?.subject.color} />
+      <ProgressBar value={1 - left / (planned * 60)} color={ref?.subject.color} />
       <div className="source-line">
         <span className={`pill src-${pick.source}`}>{SOURCE_LABEL[pick.source]}</span>
         <span className="muted small">{SOURCE_HELP[pick.source]}</span>
         <span className="muted small mono push">{answers.length} done · {answers.filter((a) => a.correct).length} correct</span>
       </div>
-      {timeUp && <div className="banner support">Time's up – finish this question to see your summary.</div>}
+      {timeUp && (
+        <div className="banner support row gap wrap">
+          <span>Time's up – well done. Finish this question to see your summary, or keep going.</span>
+          <button className="btn small primary" onClick={() => extend(10)}>Keep going: 10 more minutes</button>
+        </div>
+      )}
       {reteach ? (
         <Reteach topicId={reteach} onContinue={() => setReteach('')} />
       ) : (
@@ -102,7 +110,7 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
   );
 }
 
-function Summary({ answers, mins, fixedBefore, startMastery }: { answers: Answered[]; mins: number; fixedBefore: number; startMastery: Record<string, number> }) {
+function Summary({ answers, mins, fixedBefore, startMastery, subjectIds }: { answers: Answered[]; mins: number; fixedBefore: number; startMastery: Record<string, number>; subjectIds: string[] | null }) {
   const progress = useProgress();
   const right = answers.filter((a) => a.correct).length;
   const fixedNow = (progress.days[todayKey()]?.fixed ?? 0) - fixedBefore;
@@ -180,7 +188,8 @@ function Summary({ answers, mins, fixedBefore, startMastery }: { answers: Answer
       )}
 
       <div className="row gap wrap">
-        <button className="btn primary" onClick={() => refresh()}>Another session</button>
+        <a className="btn primary" href={href('/session', { mins: 10, subjects: subjectIds?.join(',') || undefined, _: Date.now() })}>Keep going: 10 more minutes</a>
+        <button className="btn" onClick={() => refresh()}>Another session</button>
         <a className="btn" href={href('/fix')}>Fix-it list</a>
         <a className="btn ghost" href={href('/')}>Today</a>
       </div>

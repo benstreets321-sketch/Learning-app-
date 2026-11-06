@@ -5,7 +5,8 @@ import { SubjectMark } from '../components/SubjectMark';
 import { useEffect, useRef, useState } from 'react';
 import { canSaveFiles, saveFile } from '../lib/files';
 import { SUBJECTS } from '../content/registry';
-import { go } from '../lib/router';
+import { go, useRoute } from '../lib/router';
+import { DEFAULT_WEEK, MIXED, WEEK_DAYS, effectiveWeek, myGroups } from '../lib/week';
 import { exportData, importData, resetAll, updateProfile, useProfile } from '../lib/store';
 import { Section } from '../components/ui';
 
@@ -18,6 +19,12 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
   const [canExport, setCanExport] = useState(import.meta.env.MODE !== 'single');
   useEffect(() => { let on = true; void canSaveFiles().then((ok) => { if (on) setCanExport(ok); }); return () => { on = false; }; }, []);
   const fileRef = useRef<HTMLInputElement>(null);
+  const route = useRoute();
+  const weekRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (route.query.get('tab') === 'week') weekRef.current?.scrollIntoView({ block: 'start' }); }, [route.query]);
+  const week = effectiveWeek(profile);
+  const groups = myGroups(profile);
+  const setDay = (n: number, id: string) => { const w = [...week]; w[n] = id; updateProfile({ week: w }); };
 
   const toggleSubject = (id: string) => {
     const has = profile.subjects.includes(id);
@@ -97,6 +104,29 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
           ))}
         </div>
       </Section>
+
+      <div ref={weekRef} id="week">
+        <Section title="My week" right={profile.weekOn !== false ? <button className="btn small ghost" onClick={() => updateProfile({ week: [...DEFAULT_WEEK] })}>Reset</button> : undefined}>
+          <p className="muted small">Each day focuses on <strong>one subject</strong>, so you go deep instead of spreading 30 minutes thinly. Today's plan, flashcards, practice and Start session all use that day's subject – you can still pick anything else whenever you like. English (Language and Literature) and Science (Biology, Chemistry and Physics) each count as one subject.</p>
+          <label className="row gap">
+            <input type="checkbox" checked={profile.weekOn !== false} onChange={(e) => updateProfile({ weekOn: e.target.checked })} />
+            Use a weekly timetable (one subject a day)
+          </label>
+          {profile.weekOn !== false && (
+            <div className="week-table">
+              {WEEK_DAYS.map((d) => (
+                <label key={d.n} className="contents">
+                  <span>{d.name}</span>
+                  <select aria-label={`${d.name} subject`} value={week[d.n]} onChange={(e) => setDay(d.n, e.target.value)}>
+                    {groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+                    <option value={MIXED}>Mixed – all my subjects</option>
+                  </select>
+                </label>
+              ))}
+            </div>
+          )}
+        </Section>
+      </div>
 
       <Section title="Tiers">
         <p className="muted small">Higher tier shows grade 4-9 content including the hardest topics. Foundation hides higher-only topics (grades 1-5). Not sure? Ask your teacher – choose Higher if you're aiming for a 6+.</p>

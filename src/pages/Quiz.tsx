@@ -23,6 +23,8 @@ function buildScope(query: URLSearchParams) {
   const progress = getProgress();
   const scope = query.get('scope') ?? 'smart';
   const id = query.get('id') ?? '';
+  // optional list of subjects (today's subject on the timetable)
+  const only = query.get('subjects')?.split(',').filter(Boolean) ?? null;
   let topicIds: string[] = [];
   let title = 'Revision session';
   let fixed: QItem[] | null = null;
@@ -52,9 +54,9 @@ function buildScope(query: URLSearchParams) {
       }
     }
   } else if (scope === 'mistakes') {
-    title = id ? `Fix-it: ${getSubject(id)?.name ?? ''}` : 'Fix-it list';
+    title = id ? `Fix-it: ${getSubject(id)?.name ?? ''}` : only ? `Fix-it: ${only.map((s) => getSubject(s)?.short ?? s).join(', ')}` : 'Fix-it list';
     fixed = Object.values(progress.mistakes)
-      .filter((m) => !id || m.subjectId === id)
+      .filter((m) => (!id || m.subjectId === id) && (!only || only.includes(m.subjectId)))
       .sort((a, b) => Number(b.confidentWrong) - Number(a.confidentWrong) || b.count - a.count)
       .map((m) => {
         if (m.snapshot) {
@@ -64,9 +66,10 @@ function buildScope(query: URLSearchParams) {
       })
       .filter((x): x is QItem => !!x);
   } else {
-    // smart: every active subject; started topics weighted in, plus some new material
-    title = 'Smart revision';
-    for (const s of activeSubjects(profile)) topicIds.push(...visibleTopics(s, profile).map((t) => t.id));
+    // smart: every active subject (or just today's), started topics weighted in, plus some new material
+    const subs = activeSubjects(profile).filter((s) => !only || only.includes(s.id));
+    title = only && subs.length ? `Smart revision: ${subs.map((s) => s.short).join(', ')}` : 'Smart revision';
+    for (const s of (subs.length ? subs : activeSubjects(profile))) topicIds.push(...visibleTopics(s, profile).map((t) => t.id));
     const started = topicIds.filter((t) => (progress.topics[t]?.n ?? 0) > 0 || progress.topics[t]?.notesRead);
     if (started.length >= 4) {
       // keep all started topics + a handful of new ones from the start of each subject's course

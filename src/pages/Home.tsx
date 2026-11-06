@@ -11,6 +11,7 @@ import { Icon } from '../components/Icon';
 import { InstallCard } from '../components/Install';
 import { STRATEGY_TIPS } from '../content/strategies';
 import { specCoverage, uncovered } from '../lib/coverage';
+import { WEEK_DAYS, effectiveWeek, focusFor, groupById } from '../lib/week';
 
 const HomeMocks = lazyNamed(() => import('../components/MockCards'), (m) => m.HomeMocks);
 
@@ -24,8 +25,13 @@ export function Home() {
   const mins = Math.round(today.secs / 60);
   const days = daysToExam(profile);
   const st = streak(progress);
-  const dueCards = dueCardCount(profile, progress);
-  const mistakes = Object.keys(progress.mistakes).length;
+  // one subject a day from the weekly timetable (e.g. Monday History, Thursday Maths)
+  const focus = focusFor(profile);
+  const onlyQ = focus.ids?.join(',');
+  const week = effectiveWeek(profile);
+  const todayN = new Date().getDay();
+  const dueCards = dueCardCount(profile, progress, focus.ids);
+  const mistakes = Object.values(progress.mistakes).filter((m) => !focus.ids || focus.ids.includes(m.subjectId)).length;
   const tip = STRATEGY_TIPS[new Date().getDate() % STRATEGY_TIPS.length];
   const counts = totalCounts();
   const goal = profile.dailyGoal;
@@ -35,37 +41,40 @@ export function Home() {
   const cardTarget = Math.max(5, Math.round(12 * scale));
   const qTarget = Math.max(5, Math.round(15 * scale));
   const fixTarget = Math.max(2, Math.round(5 * scale));
-  const weakest = recs.find((r) => r.action !== 'learn') ?? recs[0];
+  const todayRecs = focus.ids ? recommendations(profile, progress, 6, focus.ids) : recs;
+  const weakest = todayRecs.find((r) => r.action !== 'learn') ?? todayRecs[0];
+  const inFocus = focus.group ? ` in ${focus.group.short}` : '';
   const plan = [
     {
       key: 'cards', mins: Math.round(5 * scale), title: 'Warm up with flashcards',
-      sub: dueCards ? `${dueCards} card${dueCards === 1 ? '' : 's'} due for review` : 'Nothing due – a quick mixed set',
+      sub: dueCards ? `${dueCards} card${dueCards === 1 ? '' : 's'} due for review${inFocus}` : `Nothing due – a quick mixed set${inFocus}`,
       done: today.cards >= cardTarget || (dueCards === 0 && today.cards > 0), progress: Math.min(1, today.cards / cardTarget),
       count: `${Math.min(today.cards, cardTarget)}/${cardTarget}`,
-      link: href('/cards', { scope: dueCards ? 'due' : 'mixed' }), icon: 'cards',
+      link: href('/cards', { scope: dueCards ? 'due' : 'mixed', subjects: onlyQ }), icon: 'cards',
     },
     {
       key: 'smart', mins: Math.round(15 * scale), title: 'Smart practice',
-      sub: 'Reviews that are due, weak topics and some new material, mixed across subjects',
+      sub: focus.group ? `Reviews that are due, weak topics and some new material${inFocus}` : 'Reviews that are due, weak topics and some new material, mixed across subjects',
       done: today.q >= qTarget, progress: Math.min(1, today.q / qTarget), count: `${Math.min(today.q, qTarget)}/${qTarget}`,
-      link: href('/quiz', { scope: 'smart', n: qTarget }), icon: 'target',
+      link: href('/quiz', { scope: 'smart', n: qTarget, subjects: onlyQ }), icon: 'target',
     },
     mistakes > 0
       ? {
-          key: 'fix', mins: Math.round(10 * scale), title: 'Fix yesterday\'s mistakes',
-          sub: `${mistakes} question${mistakes === 1 ? '' : 's'} on your Fix-it list`,
+          key: 'fix', mins: Math.round(10 * scale), title: focus.group ? `Fix your ${focus.group.short} mistakes` : 'Fix yesterday\'s mistakes',
+          sub: `${mistakes} question${mistakes === 1 ? '' : 's'} on your Fix-it list${inFocus}`,
           done: (today.fixed ?? 0) >= Math.min(fixTarget, mistakes), progress: Math.min(1, (today.fixed ?? 0) / Math.min(fixTarget, mistakes)),
           count: `${Math.min(today.fixed ?? 0, fixTarget)}/${Math.min(fixTarget, mistakes)} fixed`,
-          link: href('/quiz', { scope: 'mistakes', n: Math.min(10, mistakes) }), icon: 'fix',
+          link: href('/quiz', { scope: 'mistakes', n: Math.min(10, mistakes), subjects: onlyQ }), icon: 'fix',
         }
       : {
           key: 'fix', mins: Math.round(10 * scale), title: weakest ? `Strengthen: ${weakest.topic.title}` : 'Learn something new',
-          sub: weakest ? `${weakest.subject.short} · ${weakest.reason}` : 'Pick a topic from one of your subjects',
+          sub: weakest ? `${weakest.subject.short} · ${weakest.reason}` : `Pick a topic${inFocus || ' from one of your subjects'}`,
           done: false, progress: 0, count: '',
           link: weakest ? (weakest.action === 'learn' ? href(`/t/${weakest.topic.id}`) : href('/quiz', { scope: 'topic', id: weakest.topic.id, n: 8 })) : href('/'), icon: 'learn',
         },
   ];
   const doneCount = plan.filter((p) => p.done).length;
+  const goalDone = doneCount === plan.length || mins >= goal;
 
   return (
     <div className="page">
@@ -87,15 +96,21 @@ export function Home() {
         <div className="notice">
           <Icon name="flame" size={18} />
           <span>You haven't studied today yet. Ten minutes keeps your {st}-day streak going.</span>
-          <a className="btn small primary" href={href('/quiz', { scope: 'smart', n: 8 })}>Ten minutes now</a>
+          <a className="btn small primary" href={href('/quiz', { scope: 'smart', n: 8, subjects: onlyQ })}>Ten minutes now</a>
         </div>
       )}
 
       <section className="today card">
         <div className="today-head">
           <div>
-            <h2>Today's {goal} minutes</h2>
-            <p className="muted small">{doneCount === 3 ? 'Done for today. Anything extra is a bonus.' : 'Three short blocks. Do them in order – each one makes the next more effective.'}</p>
+            <h2>Today's {goal} minutes{focus.group ? <>: <span className="today-subject">{focus.group.short}</span></> : null}</h2>
+            <p className="muted small">
+              {goalDone
+                ? 'Done for today – you can keep going as long as you like, and it all still counts.'
+                : focus.group
+                  ? `${focus.dayName} is ${focus.group.short} day: one subject, done properly. Three short blocks – do them in order.`
+                  : 'Three short blocks. Do them in order – each one makes the next more effective.'}
+            </p>
           </div>
           <Ring value={mins / goal} label={`${Math.min(100, Math.round((mins / goal) * 100))}%`} size={64} />
         </div>
@@ -117,6 +132,27 @@ export function Home() {
             </li>
           ))}
         </ol>
+        {goalDone && (
+          <div className="keep-going">
+            <span className="small"><strong>Goal reached.</strong> Want more? Extra practice still updates your progress and Fix-it list.</span>
+            <div className="row gap wrap">
+              <a className="btn small primary" href={href('/session', { mins: 10, subjects: onlyQ, _: Date.now() })}>Keep going: 10 more minutes{focus.group ? ` of ${focus.group.short}` : ''}</a>
+              <a className="btn small" href={href('/session', { mins: 20, subjects: onlyQ, _: Date.now() })}>20 more minutes</a>
+              {focus.group && <a className="btn small ghost" href={href('/session', { mins: 15, _: Date.now() })}>15 minutes, all subjects</a>}
+            </div>
+          </div>
+        )}
+        {profile.weekOn !== false && (
+          <div className="week-strip" aria-label="Your weekly timetable">
+            {WEEK_DAYS.map((d) => (
+              <span key={d.n} className={`wk ${d.n === todayN ? 'on' : ''}`} title={`${d.name}: ${groupById(week[d.n])?.name ?? 'All my subjects'}`}>
+                <span className="wk-d">{d.short}</span>
+                <span className="wk-s">{groupById(week[d.n])?.short ?? 'Mixed'}</span>
+              </span>
+            ))}
+            <a className="small wk-edit" href={href('/setup', { tab: 'week' })}>Change</a>
+          </div>
+        )}
       </section>
 
       <div className="split three">
