@@ -54,16 +54,38 @@ export function HelpPage() {
       <div className="faq">
         <details>
           <summary>What should I do each day?</summary>
-          <p>Press <strong>Start session</strong> at the top of any screen, choose how long you have, and the app decides what to practise. Or follow <strong>Today's plan</strong> on the home page: flashcards (5 min), smart practice (15 min), then fix your mistakes (10 min). It adjusts to the daily goal you set in Settings.</p>
+          <p>Two buttons, both on today's subject: <strong>Learn</strong> teaches your next topic (a quick check, the lesson in short parts with a question after each, a worked example, practice that adapts to you, then flashcards). Then press <strong>30-minute session</strong> (or whatever daily goal you set) – there are no options to choose: the app decides every question and mode for you.</p>
         </details>
         <details>
-          <summary>How does Start session choose my questions?</summary>
+          <summary>How does the session choose my questions?</summary>
           <ul>
             <li><strong>Fix a mistake</strong>: questions you got wrong come back first, until you have got each one right twice, at least 6 hours apart, without hints.</li>
             <li><strong>Retry</strong>: a question you get wrong comes back again about three questions later in the same session, and a similar question follows a few questions after that.</li>
             <li><strong>Keep it fresh</strong>: questions you got right return on a spaced schedule, and topics you know well get a <em>similar</em> (not identical) question so you remember the idea, not just the answer.</li>
-            <li><strong>Weak spot</strong> and <strong>new</strong>: your weakest topics, and parts of the specification you haven't practised yet.</li>
+            <li><strong>Target grade</strong>: the topics that would add the most marks towards your target grade (set targets on the Progress page).</li>
+            <li><strong>Question type</strong>: the kind of question you find hardest in that subject – for example reading diagrams, typed algebra or plotting graphs – gets its own practice.</li>
+            <li><strong>Weak spot</strong> and <strong>new</strong>: your weakest topics, and parts of the specification you haven't practised yet (at most three new topics a session, each with a quick lesson first).</li>
+            <li>It also chooses the mode: a short flashcard burst when cards are due, a quick lesson before a new topic, a reset after two misses in a row, and sometimes <em>explain why</em> after an answer – saying the reason makes it stick. When you are struggling it eases off new material.</li>
+            <li>The "AI" here is the app's own adaptive engine. It runs on your device, is free and works offline – it doesn't send your work anywhere.</li>
             <li>The summary at the end shows what you got right and wrong, which mistakes are cleared, and what to revise next.</li>
+          </ul>
+        </details>
+        <details>
+          <summary>How is my grade predicted?</summary>
+          <ul>
+            <li>The prediction answers "if you sat the exam today": it combines how well you know every topic on the course (topics you haven't started count low) with any marked mock papers, which count most.</li>
+            <li>It uses approximate grade boundaries from recent years for that kind of paper – Higher or Foundation, and Level 1/Level 2 grades for Creative iMedia and BTEC Enterprise. Real boundaries change every year, so treat it as a guide.</li>
+            <li>It shows a range that narrows as you answer more and take more mocks, and appears after about 20 answers in a subject.</li>
+            <li>Set a <strong>target grade</strong> on the Progress page to see how far you have to go and <em>where the marks are</em> – the topics worth the most. Learn and your sessions then lean towards them.</li>
+          </ul>
+        </details>
+        <details>
+          <summary>How do I type maths answers and draw graphs?</summary>
+          <ul>
+            <li>Typed algebra is marked by checking your expression is equal to the answer, so <em>6x² + 15x</em> and <em>15x + 6x²</em> both count – unless the question asks for a form, such as "factorise fully" or "simplest surd form". Then an equal answer in the wrong form is shown as "not yet" with the reason (and earns a method mark in mocks).</li>
+            <li>Type powers as x^2 or with the ² key, and use brackets for multiplying. On phones the maths keyboard has x, y, n, a, ², ³, √, π and brackets.</li>
+            <li>Plotting questions: tap the grid to plot a point and tap it again to remove it, or type coordinates such as (2, 3) (−1, 4).</li>
+            <li>Diagrams are drawn from the question's own numbers, but – as in the exam – are not drawn accurately, so work it out rather than measure.</li>
           </ul>
         </details>
         <details>
@@ -82,7 +104,7 @@ export function HelpPage() {
           <ul>
             <li>Your weekly timetable gives each day one subject – for example Monday is History and Thursday is Maths. Spending a whole session on one subject lets you go deeper and remember more than doing a few minutes of everything.</li>
             <li>English (Language and Literature) and Science (Biology, Chemistry and Physics) each count as one subject, so there's one for every day of the week.</li>
-            <li>You can change any day, or switch the timetable off, in <a href={href('/setup', { tab: 'week' })}>Settings → My week</a>. Start session lets you pick any other subject whenever you want.</li>
+            <li>You can change any day in <a href={href('/setup', { tab: 'week' })}>Settings → My week</a>. Each subject's page also has its own Learn and session buttons, for an extra subject whenever you want.</li>
             <li>Finished your daily minutes? Keep going as long as you like – <em>Keep going: 10 more minutes</em> appears on the home page and when a timed session ends, and everything you do still counts.</li>
           </ul>
         </details>

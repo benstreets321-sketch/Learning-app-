@@ -40,7 +40,7 @@ export function StuckPanel({ item, topic, hintsUsed, onHint, onEliminate, elimin
   if (item.type === 'cloze') hintList.push('Read the sentence aloud with a gap-filler like "blank" - which key term from the lesson fits the meaning?');
   if (hintList.length === 0) hintList.push(genericHint(item));
 
-  const steps = (item.type === 'num' || item.type === 'text') && item.steps?.length ? item.steps : [];
+  const steps = (item.type === 'num' || item.type === 'text' || item.type === 'algebra' || item.type === 'plot') && item.steps?.length ? item.steps : [];
   const guided = steps.length > 1 ? steps.slice(0, -1) : [];
   const shown = hintList.slice(0, hintsUsed);
   const examples = topic?.workedExamples ?? [];
@@ -176,5 +176,7 @@ function genericHint(item: QItem): string {
     case 'sort': return 'Do the ones you are sure of first. For the rest, ask what the groups have in common.';
     case 'select': return 'Read the instruction again, then read the passage slowly one sentence at a time.';
     case 'spot': return 'Check each line on its own: does it follow correctly from the line before? Redo each calculation.';
+    case 'algebra': return 'Work it out on the working pad first. Check your answer by putting in a number for x on both your answer and the question – they should match. Then check it is in the form asked for.';
+    case 'plot': return 'For each point, go across to the x-value first, then up or down to the y-value ("along the corridor, then up the stairs"). For a line, work out y for two or three easy x-values.';
   }
 }

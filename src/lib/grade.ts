@@ -1,5 +1,7 @@
 // Marking for auto-marked questions in mock exams, with exam-board style partial credit.
-import type { QItem } from '../content/types';
+import type { Pt, QItem } from '../content/types';
+import { checkAlgebra } from './algebra';
+import { checkPlot } from './plot';
 import { checkNumber, checkText, isSpellingQ, parseCloze } from './answer';
 
 export interface AutoAnswer {
@@ -9,6 +11,7 @@ export interface AutoAnswer {
   order?: string[];
   match?: Record<number, string>;
   blanks?: string[];
+  plot?: Pt[];
 }
 
 export interface AutoMark { got: number; max: number; correct: boolean; detail?: string }
@@ -21,6 +24,8 @@ export function defaultMarks(item: QItem): number {
     case 'order': return item.items.length >= 4 ? 2 : 1;
     case 'cloze': return Math.min(3, parseCloze(item.text).blanks.length);
     case 'num': return item.generated ? Math.max(1, Math.min(4, item.d <= 1 ? 1 : item.d === 2 ? 2 : item.d <= 4 ? 3 : 4)) : 2;
+    case 'algebra': return item.d <= 2 ? 1 : 2;
+    case 'plot': return 2;
     default: return 1;
   }
 }
@@ -30,10 +35,11 @@ export function isAnswered(item: QItem, a: AutoAnswer | undefined): boolean {
   switch (item.type) {
     case 'mcq': case 'tf': return a.choice !== undefined && a.choice !== null;
     case 'multi': return !!a.multi?.length;
-    case 'num': case 'text': return !!a.text?.trim();
+    case 'num': case 'text': case 'algebra': return !!a.text?.trim();
     case 'order': return !!a.order?.length;
     case 'match': return Object.keys(a.match ?? {}).length > 0;
     case 'cloze': return (a.blanks ?? []).some((b) => b?.trim());
+    case 'plot': return !!a.plot?.length;
     default: return false;
   }
 }
@@ -83,6 +89,18 @@ export function gradeAuto(item: QItem, a: AutoAnswer | undefined, max = defaultM
       const right = c.blanks.filter((acc, i) => checkText(a.blanks?.[i] ?? '', acc).ok).length;
       const got = Math.floor((right * max) / c.blanks.length);
       return { got, max, correct: right === c.blanks.length, detail: right === c.blanks.length ? undefined : `${right} of ${c.blanks.length} gaps correct.` };
+    }
+    case 'algebra': {
+      // equal but not in the form asked for (e.g. not fully factorised) earns a method mark, as in the exam
+      const r = checkAlgebra(a.text ?? '', item.answer, item.form ?? 'any');
+      const got = r.ok ? max : r.equal && max > 1 ? max - 1 : 0;
+      return { got, max, correct: r.ok, detail: r.message };
+    }
+    case 'plot': {
+      // all points right = full marks; at least half right with at most one wrong = 1 mark (B1), as on a real paper
+      const r = checkPlot(item, a.plot ?? []);
+      const got = r.ok ? max : max > 1 && r.right * 2 >= r.need && r.wrong.length <= 1 ? 1 : 0;
+      return { got, max, correct: r.ok, detail: r.detail };
     }
     default:
       return { got: 0, max, correct: false };

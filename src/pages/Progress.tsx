@@ -7,6 +7,7 @@ import { subjectStats } from '../lib/insights';
 import { specCoverage } from '../lib/coverage';
 import { todayKey } from '../lib/util';
 import { ProgressBar, Section } from '../components/ui';
+import { GradePredictor } from '../components/GradePredictor';
 
 export function ProgressPage() {
   const profile = useProfile();
@@ -59,6 +60,10 @@ export function ProgressPage() {
   return (
     <div className="page">
       <h1>Your progress</h1>
+
+      <Section title="Predicted grades and targets">
+        <div className="card pad"><GradePredictor /></div>
+      </Section>
 
       <Section title="This week">
         <div className="week-grid">

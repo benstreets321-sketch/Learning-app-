@@ -42,7 +42,8 @@ export function effectiveWeek(profile: Profile): string[] {
   const mine = myGroups(profile);
   const plan = profile.week?.length === 7 ? [...profile.week] : [...DEFAULT_WEEK];
   if (!mine.length) return plan.map(() => MIXED);
-  const ok = (id: string) => id === MIXED || mine.some((g) => g.id === id);
+  // every day has ONE dedicated subject: an old "mixed" day (or a subject not taken) is given one of theirs
+  const ok = (id: string) => mine.some((g) => g.id === id);
   const week = plan.map((id) => (ok(id) ? id : ''));
   // fill gaps in Monday-first order so the result is predictable
   for (const { n } of WEEK_DAYS) {
@@ -69,7 +70,6 @@ export function focusFor(profile: Profile, date = new Date()): DayFocus {
   const n = date.getDay();
   const dayName = WEEK_DAYS.find((d) => d.n === n)!.name;
   const all = activeSubjects(profile);
-  if (profile.weekOn === false) return { group: null, subjects: all, ids: undefined, dayName, label: 'All my subjects' };
   const g = groupById(effectiveWeek(profile)[n]);
   const subjects = g ? all.filter((s) => g.subjects.includes(s.id)) : all;
   if (!g || !subjects.length) return { group: null, subjects: all, ids: undefined, dayName, label: 'All my subjects' };
@@ -78,7 +78,6 @@ export function focusFor(profile: Profile, date = new Date()): DayFocus {
 
 /** The day(s) of the week a subject is studied, e.g. "Thursday" */
 export function daysForSubject(profile: Profile, subjectId: string): string[] {
-  if (profile.weekOn === false) return [];
   const week = effectiveWeek(profile);
   return WEEK_DAYS.filter((d) => groupById(week[d.n])?.subjects.includes(subjectId)).map((d) => d.name);
 }

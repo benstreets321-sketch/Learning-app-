@@ -292,8 +292,15 @@ function padSteps(gq: GeneratedQuestion): GeneratedQuestion {
 }
 
 export function generatedToQuestion(raw: GeneratedQuestion): Question {
+  const q = baseGeneratedToQuestion(raw);
+  return raw.diagram ? { ...q, diagram: raw.diagram } : q;
+}
+
+function baseGeneratedToQuestion(raw: GeneratedQuestion): Question {
   const gq = padSteps(raw);
   const why = gq.steps.join('\n\n');
+  if (gq.algebra) return { type: 'algebra', q: gq.q, answer: String(gq.answer), form: gq.algebra.form, steps: gq.steps, why, hints: gq.hints, d: gq.d };
+  if (gq.plot) return { type: 'plot', q: gq.q, ...gq.plot, steps: gq.steps, why, hints: gq.hints, d: gq.d };
   if (gq.spot) {
     return { type: 'spot', q: gq.q, steps: gq.spot.lines, wrong: gq.spot.wrong, fix: gq.spot.fix, why, hints: gq.hints, d: gq.d };
   }

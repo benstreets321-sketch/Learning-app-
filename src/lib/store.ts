@@ -37,6 +37,8 @@ export interface Profile {
   mockAllTiers?: boolean;
   /** typed answers use the app's own keyboard on touch screens: auto (touch devices), on or off */
   appKeyboard?: 'auto' | 'on' | 'off';
+  /** target grade per subject id ('7', 'L2 Merit', ...) for the gap analysis */
+  targets?: Record<string, string>;
 }
 
 export interface MistakeEntry {
@@ -103,6 +105,10 @@ export interface Progress {
   topicSrs?: Record<string, SrsState>;
   /** mock exam attempts keyed by test id */
   mocks?: Record<string, MockAttempt[]>;
+  /** accuracy by kind of question per subject ("maths|algebra"), so practice targets the kinds a student finds hard */
+  skills?: Record<string, { n: number; c: number; at: number }>;
+  /** "explain why" follow-ups: how many were tried and how many hit the key idea */
+  explains?: { n: number; good: number };
 }
 
 export interface PlanWeek {
@@ -292,6 +298,13 @@ export interface AnswerRecord {
   hints: number;
   snapshot?: string;
   generated?: boolean;
+  /** kind of question (see skillOf), for the per-subject skill stats */
+  skill?: string;
+}
+
+/** Record a "why" explanation attempt */
+export function recordExplain(good: boolean) {
+  mutate((p) => { const e = p.explains ?? { n: 0, good: 0 }; p.explains = { n: e.n + 1, good: e.good + (good ? 1 : 0) }; });
 }
 
 /** Record a question attempt: updates SRS, ability, mistakes bank, daily log, XP */
@@ -305,6 +318,11 @@ export function recordAnswer(r: AnswerRecord) {
     const day = today(p);
     day.q += 1;
     if (r.correct) day.c += 1;
+    if (r.skill) {
+      const k = `${r.subjectId}|${r.skill}`;
+      const s = p.skills?.[k] ?? { n: 0, c: 0, at: 0 };
+      p.skills = { ...p.skills, [k]: { n: s.n + 1, c: s.c + (r.correct ? 1 : 0), at: now } };
+    }
     if (r.conf && r.hints === 0) {
       const prev = p.calib?.[r.conf] ?? [0, 0];
       p.calib = { ...p.calib, [r.conf]: [prev[0] + 1, prev[1] + (r.correct ? 1 : 0)] };

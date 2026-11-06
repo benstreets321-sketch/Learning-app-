@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState, type InputHTMLAttributes, type PointerEvent as RPointerEvent } from 'react';
 import { useProfile } from '../lib/store';
 
-export type KbKind = 'text' | 'num' | 'long';
+export type KbKind = 'text' | 'num' | 'long' | 'algebra';
 type Field = HTMLInputElement | HTMLTextAreaElement;
 
 const touchScreen = () => typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches && (navigator.maxTouchPoints ?? 0) > 0;
@@ -33,6 +33,8 @@ export function answerProps(kind: KbKind, appKb: boolean, enter: 'check' | 'next
 
 const LETTERS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 const SYMBOLS = ['1234567890', '-/:;()£&@"', '.,?!\'%+='];
+// maths layer for algebra answers: digits, letters used in algebra, brackets, powers, roots
+const MATHPAD = [['7', '8', '9', 'x', 'y', '('], ['4', '5', '6', 'n', 'a', ')'], ['1', '2', '3', '²', '³', '^'], ['0', '.', '+', '−', '×', '/']];
 const NUMPAD = [['7', '8', '9', '/'], ['4', '5', '6', '−'], ['1', '2', '3', '^'], ['0', '.', '×10^', '%']];
 
 function insert(el: Field, text: string) {
@@ -70,7 +72,7 @@ export function AppKeyboard() {
       if (!el || !k || (el as HTMLInputElement).disabled || (el as HTMLInputElement).readOnly) return;
       if (fieldRef.current !== el) {
         setKind(k);
-        setLayer(k === 'num' ? '123' : 'abc');
+        setLayer(k === 'num' || k === 'algebra' ? '123' : 'abc');
         setShift(k === 'long' && !el.value.trim());
       }
       fieldRef.current = el;
@@ -133,7 +135,7 @@ export function AppKeyboard() {
       if (form) form.requestSubmit();
       return;
     }
-    const map: Record<string, string> = { space: ' ', '−': '-', '×10^': ' x 10^' };
+    const map: Record<string, string> = { space: ' ', '−': '-', '×10^': ' x 10^', '×': kind === 'algebra' ? '×' : '*' };
     let ch = map[key] ?? key;
     if (shift && /^[a-z]$/.test(ch)) { ch = ch.toUpperCase(); setShift(false); }
     insert(field, ch);
@@ -164,7 +166,23 @@ export function AppKeyboard() {
         <span className="muted small">App keyboard – no autocorrect, like the real exam</span>
         <button {...keyProps('hide', 'Hide keyboard', 'kb-hide')}>Hide ▾</button>
       </div>
-      {kind === 'num' && layer === '123' ? (
+      {kind === 'algebra' && layer === '123' ? (
+        <div className="kb-num kb-maths">
+          {MATHPAD.map((row, r) => (
+            <div key={r} className="kb-row">
+              {row.map((k) => <button {...keyProps(k, k === '^' ? 'power' : k === '²' ? 'squared' : k === '³' ? 'cubed' : k === '−' ? 'minus' : k === '×' ? 'times' : k)}>{k}</button>)}
+            </div>
+          ))}
+          <div className="kb-row">
+            <button {...keyProps('layer', 'Letters', 'kb-fn')}>ABC</button>
+            <button {...keyProps('√', 'square root', 'kb-fn')}>√</button>
+            <button {...keyProps('π', 'pi', 'kb-fn')}>π</button>
+            <button {...keyProps('space', 'Space', 'kb-space')}>space</button>
+            <button {...keyProps('⌫', 'Delete', 'kb-fn')}>⌫</button>
+            <button {...keyProps('enter', enterLabel, 'kb-enter')}>{enterLabel}</button>
+          </div>
+        </div>
+      ) : kind === 'num' && layer === '123' ? (
         <div className="kb-num">
           {NUMPAD.map((row, r) => (
             <div key={r} className="kb-row">

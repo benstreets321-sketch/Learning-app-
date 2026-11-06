@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { skillOf } from '../lib/skills';
 import { activeSubjects, easyQuestions, getTopic, visibleTopics } from '../content/registry';
 import { getProfile, getProgress, recordAnswer, useProgress } from '../lib/store';
 import { level, mastery } from '../lib/engine';
@@ -185,7 +186,7 @@ function Rescue({ topicId }: { topicId: string }) {
               key={qs[qi].id + qi}
               item={qs[qi]}
               topic={topic}
-              onChecked={(r) => recordAnswer({ id: qs[qi].id, topicId, subjectId: subject.id, d: qs[qi].d, correct: r.correct, conf: r.conf, hints: r.hints, generated: qs[qi].generated })}
+              onChecked={(r) => recordAnswer({ skill: skillOf(qs[qi]), id: qs[qi].id, topicId, subjectId: subject.id, d: qs[qi].d, correct: r.correct, conf: r.conf, hints: r.hints, generated: qs[qi].generated })}
               onDone={(r) => {
                 setResults((x) => [...x, r.correct]);
                 if (qi + 1 >= qs.length) setStep('check'); else setQi(qi + 1);

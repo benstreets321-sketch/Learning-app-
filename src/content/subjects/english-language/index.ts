@@ -1,5 +1,24 @@
 import type { Subject } from '../../types';
 import { paper1Unit, paper2Unit, skillsUnitLang } from './units';
+import { topic } from '../../dsl';
+import { VOCAB, vocabNotes } from '../../vocab';
+
+// Ambitious vocabulary: a full topic, so it gets lessons, flashcards, reviews and session practice like any other
+if (!skillsUnitLang.topics.some((t) => t.id === 'el-vocab')) {
+  skillsUnitLang.topics.push(topic({
+    id: 'el-vocab', title: 'Ambitious vocabulary', summary: 'Precise, ambitious words for description, argument and analysis – with meanings, examples and spelling.',
+    notes: vocabNotes(),
+    keyPoints: [
+      'Precise beats fancy: choose the word that says exactly what you mean.',
+      'Upgrade plain words ("scary", "big", "sad") with a more exact one ("ominous", "cavernous", "despondent").',
+      'One precise verb ("trudged", "hurtled") beats a verb plus an adverb ("walked slowly").',
+      'In analysis, vary your verbs: conveys, evokes, implies, emphasises, foreshadows, juxtaposes.',
+      'Learn a few words a day, say the meaning, and use each in a sentence of your own.',
+    ],
+    flashcards: VOCAB.map((v) => ({ front: `**${v.w}** (${v.pos === 'adj' ? 'adjective' : v.pos === 'adv' ? 'adverb' : v.pos})`, back: `${v.def}\n\n*${v.ex}*` })),
+    tags: ['AO5', 'AO6'],
+  }));
+}
 
 const subject: Subject = {
   id: 'english-language',

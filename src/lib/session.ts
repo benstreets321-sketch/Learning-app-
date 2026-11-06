@@ -1,12 +1,16 @@
-// The timed "Start session" engine: decides what to practise, question by question.
+// The timed session engine (the app's built-in adaptive "AI"): decides what to practise, and how, question by question.
 //
-// Each pick comes from one of five sources, interleaved:
+// Each pick comes from one of seven sources, interleaved:
 //   fix      - questions on the Fix-it list (wrong before) - they keep coming back until cleared twice
 //   review   - questions whose spaced-repetition review is due (often served as a *similar* question)
 //   similar  - topics answered correctly before whose topic review is due: a different question on the same idea
 //   weak     - the weakest topics the student has started
+//   target   - the topics that would add the most marks towards the target grade (the gap analysis)
+//   skill    - the KIND of question the student finds hardest in this subject (e.g. diagrams, typed algebra, graphs)
 //   new      - specification points not started yet, so nothing in the exam is missed
-// Inside a session a wrong answer comes back after 3 questions, and a similar question on the same topic after 7.
+// It also chooses the mode: a quick lesson before a brand-new topic, an "explain why" after some answers, and short
+// flashcard bursts (see dueCards) when cards are due. Inside a session a wrong answer comes back after 3 questions,
+// and a similar question on the same topic after 7.
 import type { QItem, Subject } from '../content/types';
 import {
   activeSubjects, getQuestion, makeGenerated, questionPool, randomGenerated, topicQuestions, visibleTopics, getTopic, type GenSnapshot,
@@ -14,10 +18,14 @@ import {
 import { effectiveTheta, isStale, level, mastery, newTopicState, pCorrect, pickNext } from './engine';
 import { getProfile, getProgress, type Profile, type Progress } from './store';
 import { uncovered } from './coverage';
+import { gapTopics } from './predict';
+import { SKILL_NAME, skillOf, weakSkills, type Skill } from './skills';
+import { cardId } from './insights';
+import type { Flashcard } from '../content/types';
 
-export type Source = 'fix' | 'review' | 'similar' | 'weak' | 'new' | 'retry' | 'follow' | 'mixed';
+export type Source = 'fix' | 'review' | 'similar' | 'weak' | 'target' | 'skill' | 'new' | 'retry' | 'follow' | 'mixed';
 export const SOURCE_LABEL: Record<Source, string> = {
-  fix: 'Fix-it', review: 'Review', similar: 'Similar question', weak: 'Weak spot', new: 'New topic',
+  fix: 'Fix-it', review: 'Review', similar: 'Similar question', weak: 'Weak spot', target: 'Target grade', skill: 'Question type', new: 'New topic',
   retry: 'Try again', follow: 'Similar question', mixed: 'Practice',
 };
 export const SOURCE_HELP: Record<Source, string> = {
@@ -25,16 +33,31 @@ export const SOURCE_HELP: Record<Source, string> = {
   review: 'Due for review – just before you would forget it.',
   similar: 'You answered this topic correctly before. A different question checks it has stuck.',
   weak: 'One of your weakest topics.',
+  target: 'One of the topics that would add the most marks towards your target grade.',
+  skill: 'The kind of question you find hardest in this subject – practice on the format itself.',
   new: 'A part of the specification you have not started yet.',
   retry: 'You missed this a few questions ago. Have another go.',
   follow: 'A similar question to one you missed earlier.',
   mixed: 'Mixed practice.',
 };
 
-export interface Pick { item: QItem; source: Source }
+export interface Pick {
+  item: QItem;
+  source: Source;
+  /** ask the student to explain their answer in a sentence afterwards */
+  explain?: boolean;
+  /** a brand-new topic: show a short lesson first */
+  lesson?: boolean;
+  /** extra words for the "why this question" line, e.g. the question type being practised */
+  note?: string;
+}
 
-const ROTATION: Source[] = ['fix', 'review', 'similar', 'weak', 'fix', 'new', 'review', 'weak', 'similar', 'fix', 'review', 'new'];
+const ROTATION: Source[] = ['fix', 'review', 'target', 'similar', 'weak', 'skill', 'fix', 'new', 'review', 'target', 'weak', 'similar', 'fix', 'skill', 'review', 'new'];
+// skills worth steering towards: the formats with their own exam technique
+const STEERABLE: Skill[] = ['diagram', 'algebra', 'plot', 'calc', 'recall', 'spot', 'sort'];
 const MIN = 60_000;
+/** brand-new topics introduced in one session, at most */
+const MAX_NEW = 3;
 
 function asItem(id: string, snapshot?: string): QItem | undefined {
   if (snapshot) { try { return makeGenerated(JSON.parse(snapshot) as GenSnapshot); } catch { return undefined; } }
@@ -51,6 +74,13 @@ export class SessionEngine {
   private queue: { at: number; item: QItem; source: Source }[] = [];
   private turn = 0;
   private rot = 0;
+  private explained = 0;
+  private lessons = new Set<string>();
+  /** topics worth the most marks towards the target grades, best first */
+  private targetTopics: string[];
+  /** this subject's question kinds, weakest first, below 65% accuracy */
+  private weakKinds: Skill[];
+  private recent: boolean[] = [];
 
   constructor(subjectIds: string[] | null) {
     this.profile = getProfile();
@@ -59,11 +89,30 @@ export class SessionEngine {
     if (!this.subjects.length) this.subjects = all;
     this.topicIds = this.subjects.flatMap((s) => visibleTopics(s, this.profile).map((t) => t.id));
     this.pool = questionPool(this.topicIds, this.profile).filter((q) => !q.ctx || q.subjectId === 'english-language');
+    const progress = getProgress();
+    this.targetTopics = this.subjects.flatMap((s) => gapTopics(s, this.profile, progress, 6).map((g) => g.topic.id));
+    this.weakKinds = weakSkills(progress.skills, this.subjects.map((s) => s.id)).filter((w) => w.acc < 0.65 && STEERABLE.includes(w.skill)).map((w) => w.skill);
+  }
+
+  /** Flashcards due for review in this session's subjects (for short warm-up bursts between questions) */
+  dueCards(max = 6): { id: string; card: Flashcard; topicId: string }[] {
+    const progress = getProgress();
+    const now = Date.now();
+    const out: { id: string; card: Flashcard; topicId: string; due: number }[] = [];
+    for (const t of this.topicIds) {
+      for (const c of getTopic(t)?.topic.flashcards ?? []) {
+        const id = cardId(t, c.front);
+        const st = progress.cards[id];
+        if (st && st.due <= now) out.push({ id, card: c, topicId: t, due: st.due });
+      }
+    }
+    return out.sort((a, b) => a.due - b.due).slice(0, max);
   }
 
   /** Inside the session: after an answer, schedule a retry and a similar follow-up for anything wrong */
   answered(item: QItem, correct: boolean) {
     this.turn += 1;
+    this.recent = [...this.recent.slice(-5), correct];
     if (correct) return;
     if (!this.queue.some((q) => q.item.id === item.id && q.source === 'retry')) this.queue.push({ at: this.turn + 3, item, source: 'retry' });
     const similar = this.similarTo(item);
@@ -76,21 +125,34 @@ export class SessionEngine {
     const due = this.queue.findIndex((q) => q.at <= this.turn);
     if (due >= 0) {
       const [q] = this.queue.splice(due, 1);
-      return this.take(q.item, q.source);
+      return this.take(q.item, q.source, progress);
     }
+    // struggling (3 of the last 4 wrong): lean on fixing and strengthening rather than new material
+    const struggling = this.recent.slice(-4).filter((c) => !c).length >= 3;
     for (let i = 0; i < ROTATION.length; i++) {
       const source = ROTATION[(this.rot + i) % ROTATION.length];
+      if (struggling && (source === 'new' || source === 'skill')) continue;
       const item = this.fromSource(source, progress, now);
-      if (item) { this.rot = (this.rot + i + 1) % ROTATION.length; return this.take(item, source); }
+      if (item) { this.rot = (this.rot + i + 1) % ROTATION.length; return this.take(item, source, progress); }
     }
     const item = this.best(this.pool.filter((q) => !this.asked.has(q.id)), progress, now) ?? this.generatedFor(this.topicIds[Math.floor(Math.random() * this.topicIds.length)]);
-    return item ? this.take(item, 'mixed') : undefined;
+    return item ? this.take(item, 'mixed', progress) : undefined;
   }
 
-  private take(item: QItem, source: Source): Pick {
+  private take(item: QItem, source: Source, progress: Progress): Pick {
     this.asked.add(item.id);
     this.askedTopicsTurn = [...this.askedTopicsTurn.slice(-2), item.topicId];
-    return { item, source };
+    const ts = progress.topics[item.topicId];
+    // a short lesson before the first question on a topic never studied (once per topic per session)
+    const lesson = (source === 'new' || source === 'target') && !(ts?.n) && !ts?.notesRead && !this.lessons.has(item.topicId);
+    if (lesson) this.lessons.add(item.topicId);
+    // "explain why" on some choice questions: where understanding matters most (mistakes, weak topics), never twice running
+    const choice = item.type === 'mcq' || item.type === 'tf' || item.type === 'multi';
+    const keen = source === 'fix' || source === 'weak' || source === 'retry' || source === 'follow' || source === 'target';
+    const explain = choice && item.why.length > 30 && this.turn - this.explained >= 3 && (keen ? Math.random() < 0.6 : Math.random() < 0.2);
+    if (explain) this.explained = this.turn;
+    const note = source === 'skill' ? SKILL_NAME[skillOf(item)] : undefined;
+    return { item, source, explain, lesson, note };
   }
 
   private recentTopic(t: string) { return this.askedTopicsTurn[this.askedTopicsTurn.length - 1] === t; }
@@ -173,10 +235,41 @@ export class SessionEngine {
         }
         return undefined;
       }
+      case 'target': {
+        for (const t of this.targetTopics) {
+          if (!inScope(t) || this.recentTopic(t)) continue;
+          const lv = level(progress.topics[t], now);
+          // at most three brand-new topics in one session (the Learn button is for new material)
+          if (lv === 'new' && !this.lessons.has(t) && this.lessons.size >= MAX_NEW) continue;
+          const cands = this.pool.filter((q) => q.topicId === t && !this.asked.has(q.id) && (lv !== 'new' || q.d <= 2));
+          const pick = getTopic(t)?.topic.generators?.length && Math.random() < 0.35 ? this.generatedFor(t) : this.best(cands, progress, now) ?? this.generatedFor(t);
+          if (pick) return pick;
+        }
+        return undefined;
+      }
+      case 'skill': {
+        // practise the weakest kind of question, on topics already started (the format is the point, not new content)
+        for (const sk of this.weakKinds) {
+          const started = (t: string) => (progress.topics[t]?.n ?? 0) > 0;
+          const cands = this.pool.filter((q) => skillOf(q) === sk && started(q.topicId) && !this.asked.has(q.id) && !this.recentTopic(q.topicId));
+          const fromBank = cands.length ? this.best(cands, progress, now) : undefined;
+          if (fromBank && Math.random() < 0.5) return fromBank;
+          // generated questions of that kind (diagrams, typed algebra and plotting mostly come from generators)
+          const topics = this.topicIds.filter((t) => started(t) && !this.recentTopic(t) && (getTopic(t)?.topic.generators?.length ?? 0) > 0);
+          for (let k = 0; k < 12 && topics.length; k++) {
+            const t = topics[Math.floor(Math.random() * topics.length)];
+            const g = this.generatedFor(t);
+            if (g && skillOf(g) === sk) return g;
+          }
+          if (fromBank) return fromBank;
+        }
+        return undefined;
+      }
       case 'new': {
         const gaps = uncovered(this.subjects, this.profile, progress, 6);
         for (const g of gaps) {
           if (!inScope(g.topicId) || this.recentTopic(g.topicId)) continue;
+          if (!this.lessons.has(g.topicId) && this.lessons.size >= MAX_NEW) continue;
           const easy = this.pool.filter((q) => q.topicId === g.topicId && q.d <= 2 && !this.asked.has(q.id));
           const pick = easy[Math.floor(Math.random() * easy.length)] ?? this.generatedFor(g.topicId);
           if (pick) return pick;

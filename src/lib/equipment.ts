@@ -50,7 +50,9 @@ const itemText = (q: QItem): string => {
 };
 
 export function equipmentForQuestion(q: QItem): Equipment[] {
-  return equipmentFor(q.subjectId, itemText(q), { numeric: q.type === 'num' || (q.type === 'spot' && QUANT.has(q.subjectId)) });
+  const eq = equipmentFor(q.subjectId, itemText(q), { numeric: q.type === 'num' || (q.type === 'spot' && QUANT.has(q.subjectId)) });
+  // algebra and plotting are worked out on paper first: always offer the working pad
+  return (q.type === 'algebra' || q.type === 'plot') && !eq.includes('working') ? [...eq, 'working'] : eq;
 }
 
 export function equipmentForExam(subjectId: string, eq: ExamQuestion): Equipment[] {

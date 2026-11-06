@@ -6,7 +6,7 @@ import { Home } from './pages/Home';
 import { SubjectPage } from './pages/Subject';
 import { TopicPage } from './pages/Topic';
 import { QuizPage } from './pages/Quiz';
-import { StartSession } from './components/StartSession';
+import { LearnButton, StartSession } from './components/StartSession';
 import { Icon } from './components/Icon';
 import { ToolDrawer, resetTools, useTools } from './components/Tools';
 import { AppKeyboard } from './components/AppKeyboard';
@@ -23,7 +23,7 @@ const loaders = {
   fix: () => import('./pages/Mistakes'), progress: () => import('./pages/Progress'), plan: () => import('./pages/Planner'),
   how: () => import('./pages/Strategies'), tools: () => import('./pages/Tools'), help: () => import('./pages/Help'),
   rescue: () => import('./pages/Rescue'), session: () => import('./pages/Session'), mocks: () => import('./pages/Mocks'),
-  sprint: () => import('./pages/Sprint'), search: () => import('./pages/Search'),
+  sprint: () => import('./pages/Sprint'), search: () => import('./pages/Search'), learn: () => import('./pages/Learn'), vocab: () => import('./pages/Vocab'),
 };
 const Setup = lazyNamed(loaders.setup, (m) => m.Setup);
 const FlashcardsPage = lazyNamed(loaders.cards, (m) => m.FlashcardsPage);
@@ -42,6 +42,8 @@ const MockTakePage = lazyNamed(loaders.mocks, (m) => m.MockTakePage);
 const MockReviewPage = lazyNamed(loaders.mocks, (m) => m.MockReviewPage);
 const SprintPage = lazyNamed(loaders.sprint, (m) => m.SprintPage);
 const SearchPage = lazyNamed(loaders.search, (m) => m.SearchPage);
+const LearnPage = lazyNamed(loaders.learn, (m) => m.LearnPage);
+const VocabPage = lazyNamed(loaders.vocab, (m) => m.VocabPage);
 let prefetched = false;
 function prefetchPages() {
   if (prefetched) return;
@@ -123,6 +125,8 @@ export function App() {
       case 'search': page = <SearchPage key={route.raw} query={route.query} />; break;
       case 'sprint': page = <SprintPage key={route.raw} query={route.query} />; break;
       case 'session': page = <SessionPage key={route.raw} query={route.query} />; break;
+      case 'learn': page = <LearnPage key={route.raw} query={route.query} />; break;
+      case 'vocab': page = <VocabPage />; break;
       case 'mocks': page = second ? <MockPaperPage key={route.raw} paperId={second} /> : <MocksPage />; break;
       case 'mock': page = route.query.get('review') ? <MockReviewPage key={route.raw} testId={second} attemptId={route.query.get('review')!} /> : <MockTakePage key={route.raw} testId={second} attemptId={route.query.get('a') ?? undefined} />; break;
       case 'rescue': page = <RescuePage key={route.raw} query={route.query} />; break;
@@ -137,7 +141,7 @@ export function App() {
   }
 
   const takingMock = first === 'mock' && !route.query.get('review');
-  const inSession = first === 'quiz' || first === 'cards' || first === 'exam' || first === 'sprint' || first === 'session' || takingMock || (first === 'rescue' && !!route.query.get('topic'));
+  const inSession = first === 'quiz' || first === 'cards' || first === 'exam' || first === 'sprint' || first === 'session' || first === 'learn' || takingMock || (first === 'rescue' && !!route.query.get('topic'));
   const isActive = (p: string) => (p === '/' ? !first : '/' + (first ?? '') === p || (p === '/mocks' && first === 'mock'));
   const subjects = profile.onboarded ? activeSubjects(profile) : [];
 
@@ -184,6 +188,7 @@ export function App() {
           <span className="brand-text">GCSE Revision Hub</span>
         </a>
         <span className="row top-tools">
+          {!inSession && profile.onboarded && <LearnButton compact />}
           {!inSession && profile.onboarded && <StartSession compact />}
           <a href={href('/search')} className="icon-btn" aria-label="Search"><Icon name="search" /></a>
           <a href={href('/setup')} className="icon-btn" aria-label="Settings"><Icon name="settings" /></a>
@@ -194,6 +199,7 @@ export function App() {
         {!inSession && profile.onboarded && (
           <div className="top-actions">
             <a className="btn ghost small" href={href('/mocks')}><Icon name="formula" size={16} /> Mock exams</a>
+            <LearnButton />
             <StartSession />
           </div>
         )}

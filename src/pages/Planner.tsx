@@ -105,7 +105,7 @@ export function PlannerPage() {
       </div>
       <p className="muted small">Rebuild every few weeks – it uses your latest mastery data.</p>
 
-      {profile.weekOn !== false && (
+      {(
         <Section title="Your week" right={<a className="small" href={href('/setup', { tab: 'week' })}>Change</a>}>
           <p className="muted small">One subject a day. Each week's topics below are labelled with the day you'll do them.</p>
           <div className="week-strip">

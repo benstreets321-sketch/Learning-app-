@@ -232,7 +232,7 @@ const ENGLISH_LANGUAGE: SubjectSpec = {
   sections: [
     { title: 'Skills across both papers', points: [
       P('AO2', 'Language and structure methods and terminology', ['el-methods']),
-      P('AO6', 'Technical accuracy: vocabulary, sentences, spelling and punctuation', ['el-spag']),
+      P('AO6', 'Technical accuracy: vocabulary, sentences, spelling and punctuation', ['el-spag', 'el-vocab']),
     ] },
     { title: 'Paper 1: Explorations in creative reading and writing', points: [
       P('P1 Q1', 'List four things (AO1)', ['el-p1q1']),

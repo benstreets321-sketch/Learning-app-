@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { skillOf } from '../lib/skills';
 import { answerProps, useAppKeyboard } from '../components/AppKeyboard';
 import { activeSubjects, getSubject, questionPool, randomGenerated, visibleTopics } from '../content/registry';
 import type { QItem } from '../content/types';
@@ -104,7 +105,7 @@ function Run({ deck, sprintKey, best, title }: { deck: QItem[]; sprintKey: strin
 
   const answer = (correct: boolean, given: string) => {
     if (flash || done) return;
-    recordAnswer({ id: q.id, topicId: q.topicId, subjectId: q.subjectId, d: q.d, correct, conf: 'unsure', hints: 0, generated: q.generated, snapshot: q.generated ? JSON.stringify({ g: q.id.split(':')[1], s: Number(q.id.split(':')[2]), l: q.d, t: q.topicId }) : undefined });
+    recordAnswer({ skill: skillOf(q), id: q.id, topicId: q.topicId, subjectId: q.subjectId, d: q.d, correct, conf: 'unsure', hints: 0, generated: q.generated, snapshot: q.generated ? JSON.stringify({ g: q.id.split(':')[1], s: Number(q.id.split(':')[2]), l: q.d, t: q.topicId }) : undefined });
     if (correct) setScore((s) => s + 1); else setMissed((m) => [...m, { q, given }]);
     setFlash(correct ? 'ok' : 'bad');
     setTimeout(() => { setFlash(null); setText(''); setI((x) => x + 1); shownAt.current = Date.now(); }, correct ? 350 : 900);

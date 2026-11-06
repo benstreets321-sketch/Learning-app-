@@ -29,6 +29,8 @@ export function answerText(item: QItem): string {
     case 'sort': return item.groups.map((g, i) => `${g}: ${item.items.filter(([, x]) => x === i).map(([t]) => t).join(', ')}`).join(' | ');
     case 'select': return (item.text.match(/\[\[([^\]]+)\]\]/g) ?? []).map((m) => m.slice(2, -2)).join('; ');
     case 'spot': return `Line ${item.wrong + 1} is wrong; it should be: ${item.fix ?? ''}`;
+    case 'algebra': return item.answer;
+    case 'plot': return item.points ? item.points.map((p) => `(${p[0]}, ${p[1]})`).join(' ') : `points on y = ${item.line!.m}x + ${item.line!.c}`;
   }
 }
 
@@ -41,7 +43,7 @@ function questionText(item: QItem): string {
     item.type === 'sort' ? `\nGroups: ${item.groups.join(', ')}\nItems: ${item.items.map((i) => i[0]).join('; ')}` :
     item.type === 'spot' ? `\nWorked solution:\n${item.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}` :
     item.type === 'num' && item.unit ? `\n(answer in ${item.unit})` : '';
-  return q + extra;
+  return q + extra + (item.diagram ? `\nDiagram: ${item.diagram.alt}` : '');
 }
 
 const RULES = `You are a GCSE tutor inside a revision app, talking to a UK student in Year 10 or 11.

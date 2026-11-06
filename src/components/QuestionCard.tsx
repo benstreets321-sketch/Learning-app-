@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { answerProps, useAppKeyboard } from './AppKeyboard';
-import type { QItem, Topic } from '../content/types';
+import type { Pt, QItem, Topic } from '../content/types';
+import { DiagramView } from './Diagram';
+import { PlotInput, checkPlot, ptText } from './PlotInput';
+import { ExplainWhy } from './ExplainWhy';
+import { checkAlgebra, parseExpr, prettyExpr } from '../lib/algebra';
 import type { Confidence } from '../lib/engine';
 import { answerWithUnit, checkNumber, checkSelect, checkText, isSpellingQ, levenshtein, normalise, parseCloze, parseSelect } from '../lib/answer';
 import { shuffle } from '../lib/util';
@@ -29,6 +33,8 @@ interface Props {
   nextLabel?: string;
   /** Show "Try a similar, easier question" after a wrong answer */
   canEasier?: boolean;
+  /** the session engine asks for an "explain why" after this answer */
+  explain?: boolean;
 }
 
 const CONF: { id: Confidence; label: string; title: string }[] = [
@@ -37,7 +43,7 @@ const CONF: { id: Confidence; label: string; title: string }[] = [
   { id: 'guess', label: 'Guessing', title: 'Not really sure' },
 ];
 
-export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next question', canEasier = false }: Props) {
+export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next question', canEasier = false, explain = false }: Props) {
   const appKb = useAppKeyboard();
   // Shuffle presentation order once per question
   // only the equipment this question needs (calculator, periodic table, formula sheet...)
@@ -63,6 +69,8 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
   const [sorted, setSorted] = useState<Record<number, number>>({});
   const [picked, setPicked] = useState<Set<number>>(new Set());
   const [spotChoice, setSpotChoice] = useState<number | null>(null);
+  const [plotted, setPlotted] = useState<Pt[]>([]);
+  const [plotWrong, setPlotWrong] = useState<Pt[]>([]);
   const [conf, setConf] = useState<Confidence>('unsure');
   const [hints, setHints] = useState(0);
   const [stuckOpen, setStuckOpen] = useState(false);
@@ -76,7 +84,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
     const onInsert = (e: Event) => {
       if (result !== null) return;
       const v = (e as CustomEvent<string>).detail;
-      if (item.type === 'num' || item.type === 'text') setText(v);
+      if (item.type === 'num' || item.type === 'text' || item.type === 'algebra') setText(v);
     };
     window.addEventListener('tool-insert', onInsert);
     return () => window.removeEventListener('tool-insert', onInsert);
@@ -88,7 +96,8 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       case 'mcq': return choice !== null ? item.options[choice] : '';
       case 'multi': return [...multiSel].map((i) => item.options[i]).join('; ');
       case 'tf': return tfChoice === null ? '' : tfChoice ? 'True' : 'False';
-      case 'num': case 'text': return text;
+      case 'num': case 'text': case 'algebra': return text;
+      case 'plot': return plotted.map(ptText).join(' ');
       case 'order': return seq.join(' → ');
       case 'match': return item.pairs.map((p, i) => `${p[0]} = ${matches[i] ?? '?'}`).join('; ');
       case 'cloze': return blanks.join(', ');
@@ -152,7 +161,9 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       case 'multi': return multiSel.size > 0;
       case 'tf': return tfChoice !== null;
       case 'num':
-      case 'text': return text.trim().length > 0;
+      case 'text':
+      case 'algebra': return text.trim().length > 0;
+      case 'plot': return plotted.length > 0;
       case 'order': return true;
       case 'match': return Object.keys(matches).length === item.pairs.length;
       case 'cloze': return blanks.every((b) => b.trim().length > 0);
@@ -205,6 +216,20 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
         else if (close) detail = 'Close. Check the spelling or the exact term.';
         break;
       }
+      case 'algebra': {
+        const r = checkAlgebra(text, item.answer, item.form ?? 'any');
+        correct = r.ok;
+        close = r.equal && !r.ok;
+        detail = r.message ?? (r.parsed && !r.ok ? `You wrote ${prettyExpr(text)}.` : undefined);
+        break;
+      }
+      case 'plot': {
+        const r = checkPlot(item, plotted);
+        correct = r.ok;
+        detail = r.detail;
+        setPlotWrong(r.wrong);
+        break;
+      }
       case 'order':
         correct = seq.every((s, i) => s === item.items[i]);
         if (!correct) detail = `${seq.filter((s, i) => s === item.items[i]).length} of ${item.items.length} in the right place.`;
@@ -253,6 +278,8 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       case 'tf': return item.answer ? 'True' : 'False';
       case 'num': return answerWithUnit(item.answer, item.q, item.unit);
       case 'text': return item.accept[0];
+      case 'algebra': return prettyExpr(item.answer);
+      case 'plot': return item.points ? item.points.map(ptText).join(' ') : `any ${item.line!.min ?? 2} points on the line y = ${prettyExpr(`${item.line!.m}x + ${item.line!.c}`).replace('+ −', '− ')}`;
       case 'order': return item.items.map((s, i) => `${i + 1}. ${s}`).join('  ');
       case 'match': return item.pairs.map(([l, r]) => `${l} → ${r}`).join('; ');
       case 'cloze': return cloze!.blanks.map((b) => b[0]).join(', ');
@@ -317,6 +344,7 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
       ) : (
         <div className="qtext"><Markdown text={item.q} /></div>
       )}
+      {item.diagram && <DiagramView d={item.diagram} />}
 
       {/* ---------- inputs ---------- */}
       {item.type === 'mcq' && (
@@ -383,6 +411,31 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
           {item.type === 'num' && item.unit && <span className="unit">{item.unit}</span>}
         </div>
       )}
+
+      {item.type === 'algebra' && (
+        <div>
+          <div className="answer-row">
+            <input
+              className="answer-input"
+              value={text}
+              disabled={answered}
+              {...answerProps('algebra', appKb)}
+              placeholder="Type your answer, e.g. 3x(2x + 5) or x^2 + 5x + 6"
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !answered && canCheck()) check(); }}
+              aria-label="Your answer"
+              autoFocus
+            />
+          </div>
+          {!answered && text.trim() && (
+            <p className="small muted algebra-preview">
+              {parseExpr(text) ? <>Reads as: <span className="expr">{prettyExpr(text)}</span></> : 'Keep going… (use ^ or ² for powers and brackets for multiplying)'}
+            </p>
+          )}
+        </div>
+      )}
+
+      {item.type === 'plot' && <PlotInput item={item} value={plotted} onChange={setPlotted} answered={answered} wrong={plotWrong} />}
 
       {item.type === 'order' && (
         <ol className="order-list">
@@ -519,10 +572,13 @@ export function QuestionCard({ item, topic, onDone, onChecked, nextLabel = 'Next
               <Markdown text={correctAnswerText ?? ''} inline />
             </p>
           )}
-          {(item.type === 'num' || item.type === 'text') && item.steps && item.steps.length > 0 && !item.generated && (
+          {(item.type === 'num' || item.type === 'text' || item.type === 'algebra' || item.type === 'plot') && item.steps && item.steps.length > 0 && !item.generated && (
             <ol className="steps">{item.steps.map((s, i) => <li key={i}><Markdown text={s} inline /></li>)}</ol>
           )}
           <div className="fb-why"><Markdown text={item.why} /></div>
+          {(item.type === 'mcq' || item.type === 'tf' || item.type === 'multi') && (explain || (result!.correct && conf === 'guess')) && item.why.length > 30 && (
+            <ExplainWhy why={item.why} answer={correctAnswerText ?? ''} question={item.q} reason={result!.correct && conf === 'guess' ? 'You guessed – check you know the reason.' : result!.correct ? 'Right – now check you know the reason.' : 'Now you have seen the answer, can you give the reason?'} />
+          )}
           {!result!.correct && (item.type === 'text' || item.type === 'cloze') && !overridden && (
             <button className="btn link small" onClick={overrideCorrect}>My answer means the same – mark it correct</button>
           )}

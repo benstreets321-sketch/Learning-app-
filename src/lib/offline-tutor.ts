@@ -77,6 +77,8 @@ const TYPE_HELP: Record<QItem['type'], string> = {
   sort: 'Put each item into the **group** it belongs to.',
   select: 'Tap the **words in the passage** that the question asks for.',
   spot: 'One line of the working is **wrong** – find it.',
+  algebra: 'Type an **algebraic expression** – any equal form is accepted, but it must be in the form the question asks for (e.g. fully factorised).',
+  plot: '**Plot points** on the grid by tapping (or type the coordinates).',
 };
 
 interface Practice { item: QItem }
@@ -133,7 +135,7 @@ export function offlineReply(c: NonNullable<TutorContext>, prompt: string, step:
     if (/clue|hint|stuck|help me start|nudge/.test(p)) {
       const ladder = [
         ...(it.hints ?? []),
-        ...(it.type === 'num' || it.type === 'text' ? (it.steps ?? []).slice(0, 1).map((s) => `First step: ${s}`) : []),
+        ...(it.type === 'num' || it.type === 'text' || it.type === 'algebra' || it.type === 'plot' ? (it.steps ?? []).slice(0, 1).map((s) => `First step: ${s}`) : []),
         ...(topic?.keyPoints ?? []).slice(0, 3).map((k) => `Remember: ${k}`),
       ];
       return ladder.length ? `**Clue ${Math.min(step + 1, ladder.length)}:** ${ladder[Math.min(step, ladder.length - 1)]}${step + 1 < ladder.length ? '\n\n*Ask for another clue if you need one.*' : '\n\n*That was the last clue – have a go!*'}` : 'Rule out anything you know is wrong first, then look at what is left.';
@@ -144,7 +146,7 @@ export function offlineReply(c: NonNullable<TutorContext>, prompt: string, step:
       return [`${TYPE_HELP[it.type]}`, terms.length ? `Key words in the question:\n${terms.map((t) => `- ${t}`).join('\n')}` : '', topic ? `This question is about **${topic.title}**.` : ''].filter(Boolean).join('\n\n');
     }
     if (/method|formula|how do|first step|start|steps/.test(p)) {
-      if ((it.type === 'num' || it.type === 'text') && it.steps?.length) return `**First step:** ${it.steps[0]}\n\n*Ask "how do I start" again after you've done this step.*`;
+      if ((it.type === 'num' || it.type === 'text' || it.type === 'algebra' || it.type === 'plot') && it.steps?.length) return `**First step:** ${it.steps[0]}\n\n*Ask "how do I start" again after you've done this step.*`;
       const ex = topic?.workedExamples?.[0];
       if (ex) return `Here's the method on a different example – **${ex.title}**:\n\n${ex.problem}\n\n${ex.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}`;
     }
@@ -159,7 +161,7 @@ export function offlineReply(c: NonNullable<TutorContext>, prompt: string, step:
     if (/simpl|another way/.test(p) && topic?.simpler) return topic.simpler;
     if (/my (answer|mistake|thinking)|where (my|i) went wrong|why (is|was) (that|this|it|my answer) (right|wrong|the answer)|explain (the|my) (answer|mistake)|why.*\b(right|wrong)\b\??$/.test(p) || !p.trim()) {
       const mis = topic?.misconceptions?.length ? `\n\n**Watch out:** ${topic.misconceptions[0].wrong} – actually, ${topic.misconceptions[0].right}` : '';
-      const steps = (it.type === 'num' || it.type === 'text') && it.steps?.length ? `\n\n${it.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}` : '';
+      const steps = (it.type === 'num' || it.type === 'text' || it.type === 'algebra' || it.type === 'plot') && it.steps?.length ? `\n\n${it.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}` : '';
       return `${c.correct ? '**You got it right.** Here is why:' : `**The answer is ${answerText(it)}.**`}\n\n${it.why}${steps}${c.correct ? '' : mis}`;
     }
     if (/simpl|another way/.test(p) && topic?.simpler) return topic.simpler;

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { canSaveFiles, saveFile } from '../lib/files';
 import { SUBJECTS } from '../content/registry';
 import { go, useRoute } from '../lib/router';
-import { DEFAULT_WEEK, MIXED, WEEK_DAYS, effectiveWeek, myGroups } from '../lib/week';
+import { DEFAULT_WEEK, WEEK_DAYS, effectiveWeek, myGroups } from '../lib/week';
 import { exportData, importData, resetAll, updateProfile, useProfile } from '../lib/store';
 import { Section } from '../components/ui';
 
@@ -115,25 +115,18 @@ export function Setup({ firstRun }: { firstRun: boolean }) {
       </Section>
 
       <div ref={weekRef} id="week">
-        <Section title="My week" right={profile.weekOn !== false ? <button className="btn small ghost" onClick={() => updateProfile({ week: [...DEFAULT_WEEK] })}>Reset</button> : undefined}>
-          <p className="muted small">Each day focuses on <strong>one subject</strong>, so you go deep instead of spreading 30 minutes thinly. Today's plan, flashcards, practice and Start session all use that day's subject – you can still pick anything else whenever you like. English (Language and Literature) and Science (Biology, Chemistry and Physics) each count as one subject.</p>
-          <label className="row gap">
-            <input type="checkbox" checked={profile.weekOn !== false} onChange={(e) => updateProfile({ weekOn: e.target.checked })} />
-            Use a weekly timetable (one subject a day)
-          </label>
-          {profile.weekOn !== false && (
-            <div className="week-table">
-              {WEEK_DAYS.map((d) => (
-                <label key={d.n} className="contents">
-                  <span>{d.name}</span>
-                  <select aria-label={`${d.name} subject`} value={week[d.n]} onChange={(e) => setDay(d.n, e.target.value)}>
-                    {groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
-                    <option value={MIXED}>Mixed – all my subjects</option>
-                  </select>
-                </label>
-              ))}
-            </div>
-          )}
+        <Section title="My week" right={<button className="btn small ghost" onClick={() => updateProfile({ week: [...DEFAULT_WEEK] })}>Reset</button>}>
+          <p className="muted small">Every day has <strong>one dedicated subject</strong>, so you go deep instead of spreading 30 minutes thinly. Learn, your 30-minute session, flashcards and the Fix-it list all use that day's subject. English (Language and Literature) and Science (Biology, Chemistry and Physics) each count as one subject.</p>
+          <div className="week-table">
+            {WEEK_DAYS.map((d) => (
+              <label key={d.n} className="contents">
+                <span>{d.name}</span>
+                <select aria-label={`${d.name} subject`} value={week[d.n]} onChange={(e) => setDay(d.n, e.target.value)}>
+                  {groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+                </select>
+              </label>
+            ))}
+          </div>
         </Section>
       </div>
 

@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { skillOf } from '../lib/skills';
 import {
   activeSubjects, easierQuestion, getQuestion, getSubject, getTopic, makeGenerated, questionPool, randomGenerated, visibleTopics, visibleUnits,
   type GenSnapshot,
@@ -156,7 +157,7 @@ export function QuizPage({ query }: { query: URLSearchParams }) {
     checkedFor.current = item.id + answers.length;
     if (!(item.topicId in startMastery.current)) startMastery.current[item.topicId] = mastery(getProgress().topics[item.topicId]);
     const snapshot = item.generated ? JSON.stringify(snapFromId(item)) : undefined;
-    recordAnswer({ id: item.id, topicId: item.topicId, subjectId: item.subjectId, d: item.d, correct: r.correct, conf: r.conf, hints: r.hints, snapshot, generated: item.generated });
+    recordAnswer({ skill: skillOf(item), id: item.id, topicId: item.topicId, subjectId: item.subjectId, d: item.d, correct: r.correct, conf: r.conf, hints: r.hints, snapshot, generated: item.generated });
     addStudyTime(Math.min(180, (Date.now() - shownAt.current) / 1000));
   }
 

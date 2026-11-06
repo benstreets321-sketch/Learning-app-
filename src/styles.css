@@ -833,17 +833,8 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 0.05rem 0.35rem; bo
 
 /* ---------- start session ---------- */
 .top-actions { display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem; margin: -0.8rem 0 0.6rem; }
-.start-session { position: relative; }
 .start-btn { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); }
-.start-btn.compact { min-height: 36px; padding: 0.35rem 0.7rem; font-size: 0.88rem; }
-.start-panel {
-  position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: min(420px, calc(100vw - 2rem)); background: var(--surface);
-  border: 1px solid var(--line-strong); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 1rem 1.05rem;
-}
-.start-row { margin-bottom: 0.8rem; }
-.start-row .chips { margin: 0.4rem 0 0; }
-.start-preview { margin: 0.2rem 0 0.8rem; }
-.start-go { width: 100%; }
+.start-btn.compact, .learn-btn.compact { min-height: 36px; padding: 0.35rem 0.7rem; font-size: 0.88rem; }
 .top-tools { gap: 0.25rem; }
 .source-line { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.6rem; }
 .src-fix, .src-retry { background: var(--bad-bg); color: var(--bad); border-color: transparent; }
@@ -853,8 +844,45 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 0.05rem 0.35rem; bo
 @media (max-width: 900px) {
   .top-actions { display: none; }
   .topbar .brand-text { display: none; }
-  .start-panel { position: fixed; left: 1rem; right: 1rem; top: calc(56px + env(safe-area-inset-top)); width: auto; }
 }
+.src-target { background: var(--good-bg); color: var(--good); border-color: transparent; }
+.src-skill { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
+
+/* ---------- Today: two buttons ---------- */
+.today-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0 0.4rem; }
+.today-btn {
+  display: flex; align-items: center; gap: 0.85rem; text-align: left; padding: 1rem 1.05rem; border-radius: var(--radius);
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--text); cursor: pointer; font: inherit; min-height: 92px;
+  transition: transform 0.08s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.today-btn:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+.today-btn:active { transform: scale(0.99); }
+.today-btn.session { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.today-btn.session:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.today-btn.session .muted { color: inherit; opacity: 0.85; }
+.today-ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--accent-tint); color: var(--accent-text); flex: none; }
+.today-btn.session .today-ic { background: rgba(255, 255, 255, 0.18); color: inherit; }
+.today-txt { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.today-txt strong { font-size: 1.08rem; }
+.today-grades { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0 0.2rem; }
+.grade-chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.35rem 0.7rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); text-decoration: none; }
+.grade-chip:hover { border-color: var(--accent); }
+@media (max-width: 640px) { .today-actions { grid-template-columns: 1fr; } }
+
+/* ---------- Learn ---------- */
+.learn-steps { display: flex; flex-wrap: wrap; gap: 0.35rem; list-style: none; padding: 0; margin: 0.6rem 0 0.5rem; }
+.learn-steps li { font-size: 0.78rem; padding: 0.2rem 0.6rem; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.learn-steps li.on { border-color: var(--subj, var(--accent)); color: var(--text); font-weight: 600; }
+.learn-steps li.done { color: var(--good); border-color: transparent; background: var(--good-bg); }
+.lesson-chunk, .worked, .quick-lesson, .learn-done { margin-top: 1rem; }
+.lesson-chunk .row.end, .worked .row.end, .quick-lesson .row.end { margin-top: 1rem; }
+.learn-done .kpis { display: flex; gap: 1.5rem; margin: 0.8rem 0; }
+.learn-done .kpi { display: flex; flex-direction: column; }
+.learn-done .big { font-size: 1.6rem; font-weight: 700; }
+.learn-next { list-style: none; padding: 0; margin: 0.6rem 0 1rem; display: grid; gap: 0.45rem; }
+.learn-next li { display: flex; gap: 0.5rem; align-items: flex-start; }
+.card-burst { margin-top: 1rem; display: grid; gap: 0.7rem; }
+.grade-row.two { grid-template-columns: 1fr 1fr; }
 
 /* ---------- Mock exams ---------- */
 .paper-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem; margin: 1.1rem 0 0.6rem; }
@@ -965,3 +993,73 @@ body.kb-open .bottomnav { display: none; }
 .spell-wrong { text-decoration: line-through; color: var(--bad); }
 .spell-ok { color: var(--good); margin: 0.3rem 0 0.6rem; }
 .credits { margin-top: 2rem; color: var(--muted); } .credits .notice { white-space: pre-wrap; font-size: 0.75rem; background: var(--bg); padding: 0.6rem; border-radius: var(--radius-sm); overflow-x: auto; }
+
+/* ---------- explain why ---------- */
+.explain-why { border: 1px dashed var(--accent); border-radius: var(--radius-sm); padding: 0.7rem 0.8rem; margin: 0.7rem 0; display: flex; flex-direction: column; gap: 0.4rem; background: var(--surface); }
+.explain-why .answer-input { flex: 1; min-width: 0; }
+.explain-res.good p { color: var(--good); }
+.explain-res.meh p { color: var(--warn); }
+
+/* ---------- diagrams and plotting ---------- */
+.diagram { margin: 0.6rem 0 0.8rem; max-width: 460px; }
+.dg-svg { width: 100%; height: auto; display: block; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.dg-grid { stroke: var(--line); stroke-width: 0.8; }
+.dg-axis { stroke: var(--muted); stroke-width: 1.4; }
+.dg-tick { fill: var(--muted); font: 10.5px var(--mono); }
+.dg-label { fill: var(--muted); font: 11px var(--font); }
+.dg-text { fill: var(--text); font: 13px var(--font); }
+.dg-text.angle { font-weight: 600; }
+.dg-shape { fill: none; stroke: var(--text); stroke-width: 1.8; stroke-linejoin: round; }
+.dg-shape.fill { fill: var(--accent-tint); }
+.dg-line { stroke: var(--text); stroke-width: 1.6; }
+.dg-line.thin { stroke-width: 1; }
+.dg-line.dash { stroke-dasharray: 5 4; }
+.dg-line.strong { stroke-width: 2.6; }
+.dg-arc { fill: none; stroke: var(--accent); stroke-width: 1.6; }
+.dg-dot { fill: var(--text); }
+.dg-dot.given { fill: var(--info); }
+.dg-plot { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+.dg-plot.ok { stroke: var(--good); stroke-dasharray: 6 4; }
+.dg-bar { fill: var(--accent-tint); stroke: var(--accent); stroke-width: 1.4; }
+.dg-box { fill: var(--accent-tint); stroke: var(--text); stroke-width: 1.6; }
+.dg-slice { stroke: var(--surface); stroke-width: 2; }
+.dg-slice.s0 { fill: #4F8FC0; } .dg-slice.s1 { fill: #E0A050; } .dg-slice.s2 { fill: #6BAF7B; } .dg-slice.s3 { fill: #C2697A; } .dg-slice.s4 { fill: #8A79C2; } .dg-slice.s5 { fill: #9AA5AE; }
+.dg-note { display: block; margin-top: 0.2rem; }
+.plot { max-width: 460px; }
+.plot-svg.live { cursor: crosshair; touch-action: manipulation; }
+.plot-x { stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; }
+.plot-x.bad { stroke: var(--bad); }
+.plot-expected { fill: none; stroke: var(--good); stroke-width: 2.2; }
+.plot-image { fill: color-mix(in srgb, var(--good) 14%, transparent); stroke: var(--good); stroke-width: 1.6; stroke-dasharray: 5 3; }
+.plot-bar { margin: 0.4rem 0; align-items: center; }
+.plot-type .answer-input { flex: 1; min-width: 0; font-size: 0.95rem; }
+.algebra-preview { margin: 0.35rem 0 0; }
+.algebra-preview .expr { font-family: var(--mono); color: var(--text); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- grade predictor ---------- */
+.grade-table { display: grid; gap: 1rem; }
+.grade-row-card { display: grid; gap: 0.35rem; }
+.grade-line { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+.grade-subj { min-width: 7.5rem; font-weight: 600; }
+.grade-pred strong { font-size: 1.05rem; }
+.grade-target { display: inline-flex; align-items: center; gap: 0.35rem; }
+.grade-target select { padding: 0.2rem 0.4rem; border-radius: 6px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--text); font: inherit; }
+.grade-gap.behind { color: var(--warn); font-weight: 600; }
+.grade-gap.ok { color: var(--good); font-weight: 600; }
+.grade-line .btn.link { margin-left: auto; }
+.grade-row-card .evidence { margin: 0; }
+.gaps { margin-top: 0.4rem; padding: 0.7rem 0.8rem; border-radius: var(--radius-sm); background: var(--surface-2); }
+.gaps .list { margin-top: 0.4rem; }
+.subject-actions { margin: 0.6rem 0 0.2rem; }
+.subject-actions .today-btn { min-height: 64px; }
+
+/* ---------- vocabulary ---------- */
+.wotd { margin: 1rem 0; }
+.wotd h2 { margin: 0.2rem 0 0.4rem; }
+.vocab-actions { margin: 0.4rem 0 1rem; }
+.vocab-filter { margin-bottom: 0.4rem; }
+.vocab-filter .answer-input { flex: 1 1 260px; }
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.6rem; }
+.vocab-card { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.7rem 0.8rem; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); }
+.vocab-card .pill { font-size: 0.72rem; }

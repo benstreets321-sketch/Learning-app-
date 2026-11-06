@@ -41,6 +41,13 @@ function correctAnswer(item: QItem): AutoAnswer {
     case 'text': return { text: item.accept[0] };
     case 'order': return { order: item.items };
     case 'match': return { match: Object.fromEntries(item.pairs.map((p, i) => [i, p[1]])) };
+    case 'algebra': return { text: item.answer };
+    case 'plot': {
+      if (item.points) return { plot: item.points };
+      const pts: [number, number][] = [];
+      for (let x = item.grid.x[0]; x <= item.grid.x[1] && pts.length < (item.line!.min ?? 2); x++) { const y = item.line!.m * x + item.line!.c; if (Number.isInteger(y) && y >= item.grid.y[0] && y <= item.grid.y[1]) pts.push([x, y]); }
+      return { plot: pts };
+    }
     default: throw new Error(`unexpected type ${item.type}`);
   }
 }

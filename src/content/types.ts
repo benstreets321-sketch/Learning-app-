@@ -3,6 +3,34 @@
 
 export type Tier = 'F' | 'H' | 'both';
 
+// ---------- diagrams drawn with a question (SVG) ----------
+export type Pt = [number, number];
+/** Geometry shapes, in the diagram's own units (0,0 top-left, y down) */
+export type GeoShape =
+  | { t: 'poly'; pts: Pt[]; fill?: boolean }
+  | { t: 'line'; a: Pt; b: Pt; dash?: boolean; thin?: boolean }
+  | { t: 'circle'; c: Pt; r: number }
+  | { t: 'dot'; p: Pt; label?: string; at?: 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw' }
+  | { t: 'text'; p: Pt; s: string; size?: number }
+  /** an angle arc at `at` between the rays towards `from` and `to`, with a label */
+  | { t: 'angle'; at: Pt; from: Pt; to: Pt; label?: string; r?: number }
+  | { t: 'right'; at: Pt; from: Pt; to: Pt }
+  /** equal-length marks on a side */
+  | { t: 'ticks'; a: Pt; b: Pt; n?: number }
+  /** parallel-line arrows on a side */
+  | { t: 'arrows'; a: Pt; b: Pt; n?: number }
+  /** a length written beside a side (outside the shape: side 1 or -1) */
+  | { t: 'side'; a: Pt; b: Pt; s: string; side?: 1 | -1 };
+export type Diagram = { alt: string } & (
+  | { kind: 'geo'; w: number; h: number; shapes: GeoShape[] }
+  | { kind: 'bar'; labels: string[]; values: number[]; x?: string; y?: string; step?: number }
+  | { kind: 'pie'; labels: string[]; values: number[]; angles?: boolean }
+  | { kind: 'histogram'; bounds: number[]; fd: number[]; x: string }
+  | { kind: 'boxplot'; boxes: { label?: string; v: [number, number, number, number, number] }[]; axis: [number, number, number]; x?: string }
+  | { kind: 'graph'; x: [number, number, number]; y: [number, number, number]; xl?: string; yl?: string;
+      lines?: { m: number; c: number; label?: string }[]; quads?: { a: number; b: number; c: number }[]; poly?: Pt[]; points?: { p: Pt; label?: string }[] }
+);
+
 export interface Hinted {
   /** Progressive hints: nudge -> strategy -> nearly the answer */
   hints?: string[];
@@ -14,6 +42,8 @@ export interface Hinted {
   tier?: Tier;
   /** Source text, data or table the question depends on (shown above the question) */
   ctx?: string;
+  /** a drawn diagram (angles, triangles, charts, graphs) shown with the question */
+  diagram?: Diagram;
 }
 
 export interface McqQ extends Hinted {
@@ -106,7 +136,31 @@ export interface SpotQ extends Hinted {
   fix?: string;
 }
 
-export type Question = McqQ | MultiQ | TfQ | NumQ | TextQ | OrderQ | MatchQ | ClozeQ | SortQ | SelectQ | SpotQ;
+/** A typed algebra answer: marked correct if it is EQUAL to `answer` and in the required form */
+export interface AlgebraQ extends Hinted {
+  type: 'algebra';
+  q: string;
+  answer: string;
+  /** any equivalent form, fully factorised, expanded and simplified, or simplest surd form */
+  form?: 'any' | 'factorised' | 'expanded' | 'surd';
+  steps?: string[];
+}
+
+/** Plot points (or draw a straight line through points) by tapping a grid */
+export interface PlotQ extends Hinted {
+  type: 'plot';
+  q: string;
+  grid: { x: [number, number]; y: [number, number]; snap?: number; xl?: string; yl?: string };
+  /** exactly these points (any order) */
+  points?: Pt[];
+  /** or: at least `min` points, all on y = mx + c */
+  line?: { m: number; c: number; min?: number };
+  /** shown on the grid for reference (e.g. the shape to reflect) */
+  given?: { p: Pt; label?: string }[];
+  steps?: string[];
+}
+
+export type Question = McqQ | MultiQ | TfQ | NumQ | TextQ | OrderQ | MatchQ | ClozeQ | SortQ | SelectQ | SpotQ | AlgebraQ | PlotQ;
 
 /** A question with identity attached at load time */
 export type QItem = Question & { id: string; topicId: string; subjectId: string; generated?: boolean };
@@ -270,6 +324,12 @@ export interface GeneratedQuestion {
   d: number;
   /** spot-the-error variant: a worked solution with one wrong line */
   spot?: { lines: string[]; wrong: number; fix: string };
+  /** drawn with the question */
+  diagram?: Diagram;
+  /** typed algebra: `answer` is the expression; marked by equivalence plus this form */
+  algebra?: { form: 'any' | 'factorised' | 'expanded' | 'surd' };
+  /** plotting on a grid */
+  plot?: Omit<PlotQ, 'type' | 'q' | 'why' | 'd' | 'hints' | 'steps'>;
 }
 
 export interface Generator {

@@ -8,6 +8,9 @@ import { level, mastery } from '../lib/engine';
 import { recommendations, subjectStats } from '../lib/insights';
 import { Empty, LevelBadge, ProgressBar, Section, Tabs } from '../components/ui';
 import { Markdown } from '../components/Markdown';
+import { Icon } from '../components/Icon';
+import { GradePredictor } from '../components/GradePredictor';
+import { launchSession } from '../components/StartSession';
 import { TOOL_INFO } from './Tools';
 import { specCoverage } from '../lib/coverage';
 
@@ -55,6 +58,24 @@ export function SubjectPage({ id, tab }: { id: string; tab: string }) {
 
       {t === 'overview' && (
         <>
+          <div className="today-actions subject-actions">
+            <button className="today-btn learn" onClick={() => go('/learn', { subjects: subject.id, _: Date.now() })}>
+              <span className="today-txt"><strong>Learn</strong><span className="muted small">The next {subject.short} topic: lesson, practice, flashcards</span></span>
+            </button>
+            <button className="today-btn session" onClick={() => launchSession(profile.dailyGoal, [subject.id])}>
+              <span className="today-txt"><strong>{profile.dailyGoal}-minute {subject.short} session</strong><span className="muted small">The app chooses every question</span></span>
+            </button>
+          </div>
+          {(subject.id === 'english-language' || subject.id === 'english-literature') && (
+            <a className="card link-card" href={href('/vocab')}>
+              <Icon name="learn" size={22} />
+              <span><strong>Ambitious vocabulary</strong><span className="muted small block">Precise words for description, argument and analysis – with a word of the day.</span></span>
+              <Icon name="arrow" size={18} className="push" />
+            </a>
+          )}
+          <Section title="Your grade">
+            <div className="card pad"><GradePredictor only={subject.id} /></div>
+          </Section>
           {recs.length > 0 && (
             <Section title="Do this next">
               <div className="rec-list">

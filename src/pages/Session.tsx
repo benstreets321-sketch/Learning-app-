@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { skillOf } from '../lib/skills';
 import type { QItem } from '../content/types';
 import { getTopic } from '../content/registry';
 import { SessionEngine, SOURCE_HELP, SOURCE_LABEL, type Source } from '../lib/session';
@@ -12,6 +13,8 @@ import { ProgressBar } from '../components/ui';
 import { Icon } from '../components/Icon';
 import { SubjectMark } from '../components/SubjectMark';
 import { Reteach } from './Quiz';
+import { CardBurst, type BurstCard } from '../components/CardBurst';
+import type { Topic } from '../content/types';
 
 interface Answered { item: QItem; source: Source; correct: boolean; conf?: Confidence; hints: number }
 
@@ -32,6 +35,11 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
   const startMastery = useRef<Record<string, number>>({});
   const checked = useRef<string | null>(null);
   const [pick, setPick] = useState(() => engine.next());
+  // modes the engine mixes in: a flashcard warm-up when cards are due (and again every 10 questions), and a quick
+  // lesson before the first question on a brand-new topic
+  const [burst, setBurst] = useState<BurstCard[] | null>(() => { const c = engine.dueCards(6); return c.length >= 3 ? c : null; });
+  const [lessonFor, setLessonFor] = useState<string | null>(() => (pick?.lesson ? pick.item.topicId : null));
+  const lastBurstAt = useRef(0);
   const [answers, setAnswers] = useState<Answered[]>([]);
   const [reteach, setReteach] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
@@ -57,7 +65,7 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
     if (checked.current === key) return;
     checked.current = key;
     if (!(pick.item.topicId in startMastery.current)) startMastery.current[pick.item.topicId] = mastery(getProgress().topics[pick.item.topicId]);
-    recordAnswer({ id: pick.item.id, topicId: pick.item.topicId, subjectId: pick.item.subjectId, d: pick.item.d, correct: r.correct, conf: r.conf, hints: r.hints, generated: pick.item.generated, snapshot: pick.item.generated ? snapshotOf(pick.item) : undefined });
+    recordAnswer({ skill: skillOf(pick.item), id: pick.item.id, topicId: pick.item.topicId, subjectId: pick.item.subjectId, d: pick.item.d, correct: r.correct, conf: r.conf, hints: r.hints, generated: pick.item.generated, snapshot: pick.item.generated ? snapshotOf(pick.item) : undefined });
     addStudyTime(Math.min(240, (Date.now() - shownAt.current) / 1000));
   };
   const onDone = (r: { correct: boolean; conf?: Confidence; hints: number; easier?: boolean }) => {
@@ -72,6 +80,12 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
     shownAt.current = Date.now();
     if (!next) { setDone(true); return; }
     setPick(next);
+    setLessonFor(next.lesson ? next.item.topicId : null);
+    const n = history.length;
+    if (n - lastBurstAt.current >= 10) {
+      const c = engine.dueCards(4);
+      if (c.length >= 3) { lastBurstAt.current = n; setBurst(c); }
+    }
   };
 
   return (
@@ -83,8 +97,8 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
       </div>
       <ProgressBar value={1 - left / (planned * 60)} color={ref?.subject.color} />
       <div className="source-line">
-        <span className={`pill src-${pick.source}`}>{SOURCE_LABEL[pick.source]}</span>
-        <span className="muted small">{SOURCE_HELP[pick.source]}</span>
+        <span className={`pill src-${burst ? 'review' : pick.source}`}>{burst ? 'Flashcards' : lessonFor ? 'Quick lesson' : SOURCE_LABEL[pick.source]}</span>
+        <span className="muted small">{burst ? 'Cards due for review – a quick burst of recall between questions.' : lessonFor ? 'A brand-new topic: the key idea first, then a question on it.' : <>{SOURCE_HELP[pick.source]}{pick.note ? <> <strong>{pick.note}.</strong></> : null}</>}</span>
         <span className="muted small mono push">{answers.length} done · {answers.filter((a) => a.correct).length} correct</span>
       </div>
       {timeUp && (
@@ -93,8 +107,12 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
           <button className="btn small primary" onClick={() => extend(10)}>Keep going: 10 more minutes</button>
         </div>
       )}
-      {reteach ? (
+      {burst ? (
+        <CardBurst cards={burst} title={answers.length ? 'Quick flashcard burst' : 'Warm-up: flashcards due today'} intro="Say each answer before you flip – recalling it is what makes it stick." color={ref?.subject.color} onDone={() => { setBurst(null); shownAt.current = Date.now(); }} />
+      ) : reteach ? (
         <Reteach topicId={reteach} onContinue={() => setReteach('')} />
+      ) : lessonFor && ref ? (
+        <QuickLesson topic={ref.topic} onDone={() => { setLessonFor(null); shownAt.current = Date.now(); }} />
       ) : (
         <QuestionCard
           key={pick.item.id + answers.length}
@@ -104,8 +122,28 @@ export function SessionPage({ query }: { query: URLSearchParams }) {
           onDone={onDone}
           nextLabel={timeUp ? 'See summary' : 'Next question'}
           canEasier
+          explain={pick.explain}
         />
       )}
+    </div>
+  );
+}
+
+/** The key idea of a topic never studied, before the first question on it */
+function QuickLesson({ topic, onDone }: { topic: Topic; onDone: () => void }) {
+  return (
+    <div className="card pad quick-lesson">
+      <p className="eyebrow">New topic</p>
+      <h2>{topic.title}</h2>
+      {topic.summary && <p>{topic.summary}</p>}
+      {topic.keyPoints.length > 0 && (
+        <div className="callout callout-key">
+          <div className="callout-title">Key points</div>
+          <ul>{topic.keyPoints.slice(0, 5).map((k, i) => <li key={i}><Markdown text={k} inline /></li>)}</ul>
+        </div>
+      )}
+      <details className="example"><summary>Read the full notes</summary><Markdown text={topic.notes} /></details>
+      <div className="row end"><button className="btn primary" onClick={onDone}>Got it – ask me</button></div>
     </div>
   );
 }

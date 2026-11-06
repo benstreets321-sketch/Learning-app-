@@ -12,6 +12,11 @@ import { InstallCard } from '../components/Install';
 import { STRATEGY_TIPS } from '../content/strategies';
 import { specCoverage, uncovered } from '../lib/coverage';
 import { WEEK_DAYS, effectiveWeek, focusFor, groupById } from '../lib/week';
+import { go } from '../lib/router';
+import { pickLearnTopic } from '../lib/learn';
+import { sessionPreview } from '../lib/session';
+import { predictSubject, rangeText, shortGrade } from '../lib/predict';
+import { launchSession } from '../components/StartSession';
 
 const HomeMocks = lazyNamed(() => import('../components/MockCards'), (m) => m.HomeMocks);
 
@@ -36,45 +41,17 @@ export function Home() {
   const counts = totalCounts();
   const goal = profile.dailyGoal;
 
-  // Today's plan, scaled to the daily goal (30 min = 5 + 15 + 10)
-  const scale = goal / 30;
-  const cardTarget = Math.max(5, Math.round(12 * scale));
-  const qTarget = Math.max(5, Math.round(15 * scale));
-  const fixTarget = Math.max(2, Math.round(5 * scale));
-  const todayRecs = focus.ids ? recommendations(profile, progress, 6, focus.ids) : recs;
-  const weakest = todayRecs.find((r) => r.action !== 'learn') ?? todayRecs[0];
-  const inFocus = focus.group ? ` in ${focus.group.short}` : '';
-  const plan = [
-    {
-      key: 'cards', mins: Math.round(5 * scale), title: 'Warm up with flashcards',
-      sub: dueCards ? `${dueCards} card${dueCards === 1 ? '' : 's'} due for review${inFocus}` : `Nothing due – a quick mixed set${inFocus}`,
-      done: today.cards >= cardTarget || (dueCards === 0 && today.cards > 0), progress: Math.min(1, today.cards / cardTarget),
-      count: `${Math.min(today.cards, cardTarget)}/${cardTarget}`,
-      link: href('/cards', { scope: dueCards ? 'due' : 'mixed', subjects: onlyQ }), icon: 'cards',
-    },
-    {
-      key: 'smart', mins: Math.round(15 * scale), title: 'Smart practice',
-      sub: focus.group ? `Reviews that are due, weak topics and some new material${inFocus}` : 'Reviews that are due, weak topics and some new material, mixed across subjects',
-      done: today.q >= qTarget, progress: Math.min(1, today.q / qTarget), count: `${Math.min(today.q, qTarget)}/${qTarget}`,
-      link: href('/quiz', { scope: 'smart', n: qTarget, subjects: onlyQ }), icon: 'target',
-    },
-    mistakes > 0
-      ? {
-          key: 'fix', mins: Math.round(10 * scale), title: focus.group ? `Fix your ${focus.group.short} mistakes` : 'Fix yesterday\'s mistakes',
-          sub: `${mistakes} question${mistakes === 1 ? '' : 's'} on your Fix-it list${inFocus}`,
-          done: (today.fixed ?? 0) >= Math.min(fixTarget, mistakes), progress: Math.min(1, (today.fixed ?? 0) / Math.min(fixTarget, mistakes)),
-          count: `${Math.min(today.fixed ?? 0, fixTarget)}/${Math.min(fixTarget, mistakes)} fixed`,
-          link: href('/quiz', { scope: 'mistakes', n: Math.min(10, mistakes), subjects: onlyQ }), icon: 'fix',
-        }
-      : {
-          key: 'fix', mins: Math.round(10 * scale), title: weakest ? `Strengthen: ${weakest.topic.title}` : 'Learn something new',
-          sub: weakest ? `${weakest.subject.short} · ${weakest.reason}` : `Pick a topic${inFocus || ' from one of your subjects'}`,
-          done: false, progress: 0, count: '',
-          link: weakest ? (weakest.action === 'learn' ? href(`/t/${weakest.topic.id}`) : href('/quiz', { scope: 'topic', id: weakest.topic.id, n: 8 })) : href('/'), icon: 'learn',
-        },
-  ];
-  const doneCount = plan.filter((p) => p.done).length;
-  const goalDone = doneCount === plan.length || mins >= goal;
+  // Two buttons, no options: Learn (the next topic, taught) and the session (everything else, chosen by the engine)
+  const learnNext = pickLearnTopic(profile, progress, focus.ids);
+  const preview = sessionPreview(focus.ids ?? null);
+  const goalDone = mins >= goal;
+  const preds = (focus.ids ? subjects.filter((x) => focus.ids!.includes(x.id)) : []).map((x) => predictSubject(x, profile, progress));
+  const sessionBits = [
+    mistakes ? `${mistakes} to fix` : '',
+    dueCards ? `${dueCards} card${dueCards === 1 ? '' : 's'} due` : '',
+    preview.due ? `${preview.due} review${preview.due === 1 ? '' : 's'}` : '',
+    preview.weak ? `${preview.weak} weak spot${preview.weak === 1 ? '' : 's'}` : '',
+  ].filter(Boolean);
 
   return (
     <div className="page">
@@ -103,35 +80,47 @@ export function Home() {
       <section className="today card">
         <div className="today-head">
           <div>
-            <h2>Today's {goal} minutes{focus.group ? <>: <span className="today-subject">{focus.group.short}</span></> : null}</h2>
+            <h2>Today{focus.group ? <>: <span className="today-subject">{focus.group.short}</span></> : null}</h2>
             <p className="muted small">
               {goalDone
                 ? 'Done for today – you can keep going as long as you like, and it all still counts.'
                 : focus.group
-                  ? `${focus.dayName} is ${focus.group.short} day: one subject, done properly. Three short blocks – do them in order.`
-                  : 'Three short blocks. Do them in order – each one makes the next more effective.'}
+                  ? `${focus.dayName} is ${focus.group.short} day. Learn something new, then do your ${goal}-minute session – the app chooses everything in it from your mistakes, reviews, weak spots and target grade.`
+                  : `Learn something new, then do your ${goal}-minute session – the app chooses everything in it.`}
             </p>
           </div>
           <Ring value={mins / goal} label={`${Math.min(100, Math.round((mins / goal) * 100))}%`} size={64} />
         </div>
-        <ol className="plan-steps">
-          {plan.map((p, i) => (
-            <li key={p.key} className={p.done ? 'done' : ''}>
-              <a href={p.link} className="plan-step">
-                <span className="plan-n">{p.done ? <Icon name="check" size={16} /> : i + 1}</span>
-                <span className="plan-main">
-                  <span className="plan-title">{p.title}</span>
-                  <span className="muted small">{p.sub}</span>
-                  {p.count && <ProgressBar value={p.progress} label={p.title} />}
-                </span>
-                <span className="plan-side">
-                  <span className="mono small">{p.mins} min</span>
-                  {p.count && <span className="muted small mono">{p.count}</span>}
-                </span>
+        <div className="today-actions">
+          <button className="today-btn learn" onClick={() => go('/learn', { _: Date.now() })}>
+            <span className="today-ic"><Icon name="learn" size={24} /></span>
+            <span className="today-txt">
+              <strong>Learn</strong>
+              <span className="small">{learnNext ? <>Next: <b>{learnNext.topic.title}</b></> : 'Your next topic'}</span>
+              <span className="muted small">Lesson, practice and flashcards · about 15 minutes</span>
+            </span>
+            <Icon name="arrow" size={18} className="push" />
+          </button>
+          <button className="today-btn session" onClick={() => launchSession(goal, focus.ids ?? undefined)}>
+            <span className="today-ic"><Icon name="target" size={24} /></span>
+            <span className="today-txt">
+              <strong>{goal}-minute session</strong>
+              <span className="small">{sessionBits.length ? sessionBits.join(' · ') : 'Practice, reviews and new questions'}</span>
+              <span className="muted small">The app picks every question and mode for you</span>
+            </span>
+            <Icon name="arrow" size={18} className="push" />
+          </button>
+        </div>
+        {preds.length > 0 && (
+          <div className="today-grades">
+            {preds.map((p) => (
+              <a key={p.subject.id} className="grade-chip" href={href('/progress', { tab: 'grades' })} title="Predicted grade if you sat the exam today">
+                <SubjectMark subject={p.subject} size="sm" />
+                <span className="small">{p.subject.short}: {p.ready ? <>predicted <strong className="mono">{rangeText(p)}</strong></> : 'grade prediction after ~20 answers'}{p.target ? <> · target <strong className="mono">{shortGrade(p.target)}</strong>{p.ready ? (p.gap ? ` (${Math.ceil(p.gap)}% to go)` : ' – on track') : ''}</> : ' · set a target'}</span>
               </a>
-            </li>
-          ))}
-        </ol>
+            ))}
+          </div>
+        )}
         {goalDone && (
           <div className="keep-going">
             <span className="small"><strong>Goal reached.</strong> Want more? Extra practice still updates your progress and Fix-it list.</span>
@@ -142,7 +131,7 @@ export function Home() {
             </div>
           </div>
         )}
-        {profile.weekOn !== false && (
+        {(
           <div className="week-strip" aria-label="Your weekly timetable">
             {WEEK_DAYS.map((d) => (
               <span key={d.n} className={`wk ${d.n === todayN ? 'on' : ''}`} title={`${d.name}: ${groupById(week[d.n])?.name ?? 'All my subjects'}`}>

@@ -5,6 +5,8 @@ import { mulberry32 } from '../src/lib/util';
 import { checkNumber, checkText } from '../src/lib/answer';
 import { equipmentFor, equipmentForQuestion } from '../src/lib/equipment';
 import { FACT_TOPICS } from '../src/content/generators';
+import { checkAlgebra, prettyExpr } from '../src/lib/algebra';
+import { checkPlot } from '../src/components/PlotInput';
 
 describe('fact-table and per-topic generators', () => {
   it('every generator (including per-topic timeline and quotation ones) makes valid, fair questions', () => {
@@ -12,7 +14,7 @@ describe('fact-table and per-topic generators', () => {
     expect(ids.filter((i) => i.startsWith('tl-')).length).toBeGreaterThan(30);
     expect(ids.filter((i) => i.startsWith('qt-')).length).toBeGreaterThan(30);
     for (const [id, g] of Object.entries(GENERATORS)) {
-      if (!/^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-)/.test(id)) continue;
+      if (!/^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-|vz-|al-|pl-|vb-)/.test(id)) continue;
       for (let seed = 1; seed <= 120; seed++) {
         const lvl = (seed % 5) + 1;
         const q = g.make(mulberry32(seed * 104729 + id.length), lvl);
@@ -27,7 +29,29 @@ describe('fact-table and per-topic generators', () => {
           q.options.forEach((o) => expect(o, ctx).not.toMatch(/undefined|\bNaN\b/));
         }
         if (q.accept) expect(checkText(String(q.answer), q.accept, q.exact).ok, ctx).toBe(true);
-        if (typeof q.answer === 'number') expect(checkNumber(String(q.answer), q.answer, q.tol).ok, ctx).toBe(true);
+        if (typeof q.answer === 'number' && !q.plot) expect(checkNumber(String(q.answer), q.answer, q.tol).ok, ctx).toBe(true);
+        if (q.algebra) {
+          // the answer key reads, marks itself right in the required form, and still marks right when shown back pretty
+          expect(checkAlgebra(String(q.answer), String(q.answer), q.algebra.form).ok, ctx).toBe(true);
+          expect(checkAlgebra(prettyExpr(String(q.answer)), String(q.answer), q.algebra.form).ok, ctx).toBe(true);
+        }
+        if (q.plot) {
+          const g = q.plot.grid, inGrid = (p: [number, number]) => p[0] >= g.x[0] && p[0] <= g.x[1] && p[1] >= g.y[0] && p[1] <= g.y[1];
+          if (q.plot.points) {
+            q.plot.points.forEach((p) => expect(inGrid(p), `${ctx} ${p}`).toBe(true));
+            expect(new Set(q.plot.points.map((p) => p.join())).size, ctx).toBe(q.plot.points.length);
+            expect(checkPlot(q.plot, q.plot.points).ok, ctx).toBe(true);
+            expect(checkPlot(q.plot, q.plot.points.slice(1)).ok, ctx).toBe(false);
+          } else {
+            const l = q.plot.line!;
+            const on: [number, number][] = [];
+            for (let x = g.x[0]; x <= g.x[1]; x++) { const y = l.m * x + l.c; if (Number.isInteger(y) && y >= g.y[0] && y <= g.y[1]) on.push([x, y]); }
+            expect(on.length, ctx).toBeGreaterThanOrEqual(l.min ?? 2);
+            expect(checkPlot(q.plot, on).ok, ctx).toBe(true);
+          }
+        }
+        if (q.diagram) expect(q.diagram.alt.length, ctx).toBeGreaterThan(10);
+        if (q.diagram) expect(JSON.stringify(q.diagram), ctx).not.toMatch(/NaN|null|undefined|Infinity/);
       }
     }
   });
@@ -51,7 +75,7 @@ describe('fact-table and per-topic generators', () => {
 
   it('generated questions rebuild exactly from their snapshot (so mistakes on them can come back)', () => {
     for (const s of SUBJECTS) for (const u of s.units) for (const t of u.topics) {
-      for (const g of (t.generators ?? []).filter((x) => /^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-)/.test(x)).slice(0, 2)) {
+      for (const g of (t.generators ?? []).filter((x) => /^(f-|tl-|qt-|pm-|lo-|mm-|sb-|em-|vz-|al-|pl-|vb-)/.test(x)).slice(0, 2)) {
         const a = makeGenerated({ g, s: 12345, l: 3, t: t.id });
         const b = makeGenerated({ g, s: 12345, l: 3, t: t.id });
         expect(a, `${t.id} ${g}`).toBeTruthy();

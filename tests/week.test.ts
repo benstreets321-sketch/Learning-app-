@@ -32,13 +32,14 @@ describe('one subject a day', () => {
     expect(focusFor(p, on(3)).ids).toEqual(['biology']);
   });
 
-  it('follows your own timetable, mixed days and switching it off', () => {
+  it('follows your own timetable, and every day always has one dedicated subject', () => {
     const p = { ...defaultProfile(), week: [...DEFAULT_WEEK] };
     p.week[5] = 'maths';
-    p.week[6] = MIXED;
+    p.week[6] = MIXED; // an old "mixed" day is given one of your subjects
     expect(focusFor(p, on(5)).label).toBe('Maths');
-    expect(focusFor(p, on(6)).ids).toBeUndefined();
-    expect(daysForSubject(p, 'maths')).toEqual(['Thursday', 'Friday']);
-    expect(focusFor({ ...p, weekOn: false }, on(4)).ids).toBeUndefined();
+    expect(focusFor(p, on(6)).ids?.length).toBeGreaterThan(0);
+    expect(daysForSubject(p, 'maths')).toContain('Thursday');
+    expect(daysForSubject(p, 'maths')).toContain('Friday');
+    for (let d = 0; d < 7; d++) expect(focusFor({ ...p, weekOn: false }, on(d)).group).not.toBeNull();
   });
 });

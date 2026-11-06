@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { skillOf } from '../lib/skills';
 import { SpellingNotes } from '../components/SpellingNotes';
 import { answerProps, useAppKeyboard } from '../components/AppKeyboard';
 import type { QItem } from '../content/types';
@@ -19,6 +20,10 @@ import { SubjectMark } from '../components/SubjectMark';
 import { Empty, ProgressBar } from '../components/ui';
 import { ToolBar, openTool, resetTools, toolsFor, type ToolId } from '../components/Tools';
 import { answerText } from '../lib/tutor';
+import { DiagramView } from '../components/Diagram';
+import { PlotInput } from '../components/PlotInput';
+import { checkPlot, ptText } from '../lib/plot';
+import { prettyExpr } from '../lib/algebra';
 
 const TOOL_NAME: Record<MockTool, string> = { calc: 'Calculator', formula: 'Formulae sheet', table: 'Periodic table', equations: 'Physics equations sheet', working: 'Rough working space' };
 const toToolIds = (t: MockTool[]): ToolId[] => [...new Set(t.map((x) => (x === 'equations' ? 'formula' : x) as ToolId))];
@@ -217,7 +222,7 @@ export function MockTakePage({ testId, attemptId }: { testId: string; attemptId?
       if (q.kind === 'auto') {
         const g = gradeAuto(q.item, a.answers[q.n] as AutoAnswer, q.marks);
         marks[q.n] = g.got;
-        recordAnswer({ id: q.item.id, topicId: q.item.topicId, subjectId: q.item.subjectId, d: q.item.d, correct: g.correct, hints: 0, generated: q.item.generated, snapshot: q.item.generated ? JSON.stringify({ g: q.item.id.split(':')[1], s: Number(q.item.id.split(':')[2]), l: q.item.d, t: q.item.topicId }) : undefined });
+        recordAnswer({ skill: skillOf(q.item), id: q.item.id, topicId: q.item.topicId, subjectId: q.item.subjectId, d: q.item.d, correct: g.correct, hints: 0, generated: q.item.generated, snapshot: q.item.generated ? JSON.stringify({ g: q.item.id.split(':')[1], s: Number(q.item.id.split(':')[2]), l: q.item.d, t: q.item.topicId }) : undefined });
       } else {
         const text = String(a.answers[q.n] ?? '');
         const r = text.trim() ? keywordCheck(q.eq, text) : null;
@@ -290,6 +295,7 @@ function MockAutoInput({ item, value, onChange, marks, disabled = false }: { ite
   return (
     <div>
       <div className="qtext"><Markdown text={qText} /></div>
+      {item.diagram && <DiagramView d={item.diagram} />}
       {item.type === 'mcq' && (
         <div className="options">
           <p className="muted small">Tick one box.</p>
@@ -318,6 +324,12 @@ function MockAutoInput({ item, value, onChange, marks, disabled = false }: { ite
           {['True', 'False'].map((t, i) => <button key={t} className={`opt ${v.choice === i ? 'sel' : ''}`} disabled={disabled} onClick={() => onChange({ choice: i })}>{t}</button>)}
         </div>
       )}
+      {item.type === 'algebra' && (
+        <div className="answer-row">
+          <input className="answer-input" value={v.text ?? ''} disabled={disabled} {...answerProps('algebra', appKb, 'next')} onChange={(e) => onChange({ text: e.target.value })} aria-label="Your answer" placeholder="e.g. 3x(2x + 5)" />
+        </div>
+      )}
+      {item.type === 'plot' && <PlotInput item={item} value={v.plot ?? []} onChange={(pts) => onChange({ plot: pts })} answered={disabled} wrong={[]} />}
       {(item.type === 'num' || item.type === 'text') && (
         <div className="answer-row">
           <input className="answer-input" value={v.text ?? ''} disabled={disabled} {...answerProps(item.type === 'num' ? 'num' : 'text', appKb, 'next')} onChange={(e) => onChange({ text: e.target.value })} aria-label="Your answer" placeholder={item.type === 'num' ? 'Answer' : 'Your answer'} />
@@ -541,15 +553,19 @@ function AutoReview({ q, answer, got, onMethod }: { q: Extract<MockQ, { kind: 'a
       case 'tf': return answer.choice === 0 ? 'True' : 'False';
       case 'multi': return (answer.multi ?? []).map((i) => item.options[i]).join('; ');
       case 'num': case 'text': return answer.text ?? '';
+      case 'algebra': return prettyExpr(answer.text ?? '');
+      case 'plot': return (answer.plot ?? []).map(ptText).join(' ');
       case 'order': return (answer.order ?? []).join(' → ');
       case 'match': return item.pairs.map(([l], i) => `${l} = ${answer.match?.[i] ?? '?'}`).join('; ');
       default: return '';
     }
   })();
-  const steps = (item.type === 'num' || item.type === 'text') && item.steps?.length ? item.steps : [];
+  const steps = (item.type === 'num' || item.type === 'text' || item.type === 'algebra' || item.type === 'plot') && item.steps?.length ? item.steps : [];
   return (
     <div>
       <div className="qtext"><Markdown text={item.type === 'cloze' ? item.q ?? '' : item.q} /></div>
+      {item.diagram && <DiagramView d={item.diagram} />}
+      {item.type === 'plot' && <PlotInput item={item} value={answer?.plot ?? []} onChange={() => {}} answered wrong={checkPlot(item, answer?.plot ?? []).wrong} />}
       <p className="small"><span className="muted">Your answer:</span> <Markdown text={given} inline /></p>
       {!g.correct && <p className="small"><span className="muted">Correct answer:</span> <strong><Markdown text={answerText(item)} inline /></strong></p>}
       {g.detail && !g.correct && <p className="small muted">{g.detail}</p>}
@@ -565,7 +581,7 @@ function AutoReview({ q, answer, got, onMethod }: { q: Extract<MockQ, { kind: 'a
         <details className="model" open={!g.correct}>
           <summary>Why</summary>
           <Markdown text={item.why} />
-          {steps.length > 0 && !item.generated && <ol className="steps">{steps.map((s, i) => <li key={i}><Markdown text={s} inline /></li>)}</ol>}
+          {steps.length > 0 && (!item.generated || item.type === 'algebra' || item.type === 'plot' || !!item.diagram) && <ol className="steps">{steps.map((s, i) => <li key={i}><Markdown text={s} inline /></li>)}</ol>}
         </details>
       )}
     </div>
