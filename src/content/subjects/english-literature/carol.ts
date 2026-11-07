@@ -93,6 +93,12 @@ Scrooge represents the **selfish, wealthy middle and upper classes**. If even Sc
         quote('The happiness he gives is quite as great as if it cost a fortune', 'Scrooge recognises Fezziwig\'s kindness costs little - the first sign of his moral awakening.', { who: 'Scrooge', where: 'Stave 2', themes: ['kindness', 'redemption'] }),
         quote('I am not the man I was', 'Short declarative sentence - a clear, decisive turning point.', { who: 'Scrooge', where: 'Stave 4', themes: ['redemption'] }),
         quote('I am as light as a feather, I am as happy as an angel, I am as merry as a school-boy', 'Tricolon of similes and anaphora ("I am") show childlike, spiritual joy - he is reborn.', { who: 'Scrooge', where: 'Stave 5', themes: ['redemption', 'Christmas'] }),
+        quote('Marley was dead: to begin with', 'The blunt opening line establishes death, guilt and the ghost story.', { who: 'Narrator', where: 'Stave 1', themes: ['redemption'] }),
+        quote('darkness is cheap, and Scrooge liked it', 'Scrooge\'s meanness extends even to light - darkness also suggests his cold soul.', { who: 'Narrator', where: 'Stave 1', themes: ['greed'] }),
+        quote('The cold within him froze his old features', 'Pathetic fallacy turned inward: Scrooge\'s coldness comes from inside.', { who: 'Narrator', where: 'Stave 1', themes: ['greed', 'isolation'] }),
+        quote('Spirit, tell me if Tiny Tim will live', 'Scrooge\'s first selfless concern - the start of his change.', { who: 'Scrooge', where: 'Stave 3', themes: ['redemption', 'poverty'] }),
+        quote('I will honour Christmas in my heart, and try to keep it all the year', 'Scrooge\'s promise to change for good, not just for one day.', { who: 'Scrooge', where: 'Stave 4', themes: ['redemption', 'Christmas'] }),
+        quote('He had no further intercourse with Spirits, but lived upon the Total Abstinence Principle, ever afterwards', 'Dickens\'s joke: Scrooge no longer needs ghosts because he now lives generously.', { who: 'Narrator', where: 'Stave 5', themes: ['redemption'] }),
       ],
       flashcards: cards([
         ['What is Malthusian theory?', 'Thomas Malthus argued population growth would outstrip food, implying the poor should be allowed to die - echoed in "surplus population".'],
@@ -209,6 +215,7 @@ Themes asked recently include greed (2023), lessons Scrooge learns (2024) and ki
         { year: 'Jun 2024', focus: 'The **lessons Scrooge learns** about life', extract: 'Stave 4' },
         { year: 'Jun 2025', focus: 'The importance of **kindness**', extract: 'Stave 3' },
       ],
+      flashcards: cards([['How is the A Christmas Carol question set?', 'An extract from the novella, then a question about the whole novella.'], ['How many marks is the 19th-century novel question worth?', '30. There are no extra marks for spelling, punctuation and grammar on this question.'], ['How long should you spend on the 19th-century novel question?', 'About 50 minutes, including a few minutes to plan.']]),
       questions: [
         mc('Is SPaG (AO4) assessed on the 19th-century novel question?', ['No', 'Yes, 4 marks', 'Yes, 8 marks', 'Only for Higher tier'], 'AO4 is only on the Shakespeare and modern text questions.', { d: 1 }),
       ],

@@ -331,6 +331,7 @@ Use the exam practice below to write one essay a week.
         { year: 'Jun 2024', focus: 'How far **Lady Macbeth** is presented as a **strong female character**', extract: 'Act 1 Scene 7' },
         { year: 'Jun 2025', focus: 'How far Macbeth is presented as an **ambitious** character', extract: 'Act 1 Scene 7' },
       ],
+      flashcards: cards([['How is the Macbeth question set?', 'An extract from the play, then a question about the whole play. Start with the extract, then move out to the rest of the play.'], ['How many marks is the Shakespeare question worth?', '34: 30 for your answer plus 4 for spelling, punctuation and grammar.'], ['How long should you spend on the Shakespeare question?', 'About 50 minutes, including a few minutes to plan.']]),
       questions: [
         mc('How many marks is the AQA Shakespeare question worth in total?', ['34 (30 + 4 SPaG)', '30 (26 + 4 SPaG)', '40 (36 + 4 SPaG)', '24 (20 + 4 SPaG)'], '30 for AO1-3 and 4 for AO4.', { d: 1 }),
         mc('Which of these has NOT been the main focus of a recent AQA Macbeth question?', ['Guilt and conscience', 'Ambition', 'The supernatural', 'Violence'], 'Guilt hasn\'t been the headline focus recently - but it is just as examinable, so prepare it.', { d: 2 }),

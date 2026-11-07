@@ -114,6 +114,11 @@ export interface Progress {
   explains?: { n: number; good: number };
   /** predicted percentage per subject, one entry per day: [day number, percentage] */
   predHist?: Record<string, [number, number][]>;
+  /**
+   * the wording of recently asked generated questions (a short hash, with the day number it was asked), so a fresh
+   * question is never one the student saw in the last fortnight in other words; pruned after three weeks
+   */
+  recentQ?: Record<string, number>;
 }
 
 export interface PlanWeek {
@@ -310,6 +315,18 @@ export interface AnswerRecord {
 /** Store the daily snapshot of predicted percentages */
 export function savePredHist(hist: Record<string, [number, number][]>) {
   mutate((p) => { p.predHist = hist; });
+}
+
+/** Remember the wording of a generated question that was just asked (see Progress.recentQ) */
+export function noteAsked(key: string, now = Date.now()) {
+  const day = Math.floor(now / 86_400_000);
+  mutate((p) => {
+    const r = { ...(p.recentQ ?? {}) };
+    r[key] = day;
+    const keys = Object.keys(r);
+    if (keys.length > 4000 || keys.length % 200 === 0) for (const k of keys) if (day - r[k] > 21) delete r[k];
+    p.recentQ = r;
+  });
 }
 
 /** Record a "why" explanation attempt */

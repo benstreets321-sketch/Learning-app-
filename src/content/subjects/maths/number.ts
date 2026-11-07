@@ -117,7 +117,7 @@ Divide by the denominator, multiply by the numerator: 3/8 of 64 = 64 ÷ 8 × 3 =
       flashcards: cards([['How do you divide fractions?', 'Keep the first, change ÷ to ×, flip the second.'], ['Convert 3 2/5 to an improper fraction', '17/5'], ['Simplify 18/24', '3/4']]),
       questions: [
         mc('What is 1/2 + 1/3?', ['5/6', '2/5', '2/6', '1/5'], '3/6 + 2/6 = 5/6.', { d: 1, fb: { 1: 'You added tops and bottoms - denominators must be made the same first.' } }),
-        txt('Work out 2/3 × 9/10, in simplest form.', ['3/5'], '18/30 = 3/5.', { d: 2 }),
+        txt('Work out 2/3 × 9/10, in simplest form.', ['3/5'], 'Multiply the tops and the bottoms: 18/30. Divide both by 6 to simplify: 3/5.', { d: 2 }),
         txt('Work out 1 1/2 ÷ 3/4. Give your answer as a whole number or fraction.', ['2', '2/1'], '3/2 × 4/3 = 12/6 = 2.', { d: 3 }),
         num('Find 5/6 of 72.', 60, '72 ÷ 6 = 12; 12 × 5 = 60.', { d: 1 }),
         tf('Multiplying by a fraction less than 1 makes a positive number smaller.', true, 'e.g. 10 × 1/2 = 5.', { d: 2 }),
@@ -249,10 +249,10 @@ Do the **root first** (bottom number), then the **power** (top number). 16^(3/4)
       generators: ['m-indices'],
       flashcards: cards([['aᵐ × aⁿ = ?', 'aᵐ⁺ⁿ'], ['(aᵐ)ⁿ = ?', 'aᵐⁿ'], ['a⁰ = ?', '1'], ['5⁻² = ?', '1/25'], ['64^(1/3) = ?', '4'], ['13² = ?', '169']]),
       questions: [
-        num('Write 7³ × 7⁵ ÷ 7² as a power of 7. What is the power?', 6, '3 + 5 − 2 = 6.', { d: 2 }),
+        num('Write 7³ × 7⁵ ÷ 7² as a power of 7. What is the power?', 6, 'Multiplying adds the powers and dividing subtracts them: 3 + 5 − 2 = 6, so the answer is 7⁶.', { d: 2 }),
         txt('Evaluate 4⁻² as a fraction.', ['1/16'], '4⁻² = 1/4² = 1/16.', { d: 3, tier: 'H' }),
         num('Evaluate 27^(2/3).', 9, '∛27 = 3, then 3² = 9.', { d: 4, tier: 'H', h: ['Root first (the 3), then power (the 2).'] }),
-        tf('Any non-zero number to the power 0 is 0.', false, 'It is 1.', { d: 1 }),
+        tf('Any non-zero number to the power 0 is 0.', false, 'False: any non-zero number to the power 0 is 1 (for example 5⁰ = 1).', { d: 1 }),
         num('Work out √144 + 2³', 20, '12 + 8 = 20.', { d: 1 }),
       ],
     }),
@@ -328,7 +328,7 @@ A **surd** is an irrational root like √2. Leave answers in surd form when aske
       flashcards: cards([['Simplify √72', '6√2'], ['Rationalise 10/√5', '2√5'], ['(√3)² = ?', '3']]),
       questions: [
         mc('Simplify √48', ['4√3', '2√12', '16√3', '3√4'], '48 = 16 × 3, √16 = 4.', { d: 3 }),
-        mc('Rationalise 8/√2', ['4√2', '8√2', '√2/8', '2√8'], '8√2/2 = 4√2.', { d: 4 }),
+        mc('Rationalise 8/√2', ['4√2', '8√2', '√2/8', '2√8'], 'Multiply the top and bottom by √2: 8√2/2. Then divide 8 by 2: 4√2.', { d: 4 }),
         num('Expand (√5 + 1)(√5 − 1)', 4, 'Difference of two squares: 5 − 1 = 4.', { d: 4 }),
       ],
     }),

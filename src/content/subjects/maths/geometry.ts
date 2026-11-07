@@ -147,7 +147,7 @@ Angles of **elevation** (looking up) and **depression** (looking down) are measu
       prerequisites: ['m-geo-pythag'],
       flashcards: cards([['sin 30° = ?', '1/2'], ['cos 60° = ?', '1/2'], ['tan 45° = ?', '1'], ['sin 60° = ?', '√3/2'], ['What does SOHCAHTOA stand for?', 'sin = O/H, cos = A/H, tan = O/A']]),
       questions: [
-        mc('Which ratio do you use if you know the hypotenuse and want the opposite?', ['sin', 'cos', 'tan', 'Pythagoras'], 'O and H → SOH.', { d: 1 }),
+        mc('Which ratio do you use if you know the hypotenuse and want the opposite?', ['sin', 'cos', 'tan', 'Pythagoras'], 'You have the Opposite and the Hypotenuse, so use SOH: sin θ = opposite ÷ hypotenuse.', { d: 1 }),
         num('Find x if sin 30° = x/16.', 8, 'sin 30° = 0.5 → x = 8.', { d: 2 }),
         num('A ramp rises 1.2 m over a horizontal distance of 4 m. Find the angle of the ramp to 1 d.p.', 16.7, 'tan θ = 1.2/4 → θ = 16.7°.', { d: 3, unit: '°', tol: 0.06 }),
         match('Match the exact values.', [['sin 30°', '1/2'], ['tan 45°', '1'], ['cos 30°', '√3/2'], ['tan 60°', '√3']], 'Learn these for the non-calculator paper.', { d: 3 }),
@@ -246,7 +246,7 @@ Write the theorem in full: "Opposite angles in a cyclic quadrilateral add up to 
       keyPoints: ['Backwards = negative vector', 'Find routes using known vectors', 'Parallel = scalar multiple', 'Collinear = parallel + shared point', 'Midpoint = ½ of the vector'],
       flashcards: cards([['How do you show two vectors are parallel?', 'Show one is a scalar multiple of the other.'], ['If AB = a, what is BA?', '−a']]),
       questions: [
-        mc('OA = a, OB = b. What is AB?', ['b − a', 'a − b', 'a + b', '−a − b'], 'A → O → B: −a + b.', { d: 3, tier: 'H' }),
+        mc('OA = a, OB = b. What is AB?', ['b − a', 'a − b', 'a + b', '−a − b'], 'Go from A back to O (that is −a), then from O to B (+b): AB = −a + b = b − a.', { d: 3, tier: 'H' }),
         tf('The vectors 3a − 6b and a − 2b are parallel.', true, '3a − 6b = 3(a − 2b).', { d: 3, tier: 'H' }),
       ],
     }),

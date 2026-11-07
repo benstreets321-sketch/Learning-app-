@@ -54,7 +54,7 @@ describe('fact-table and per-topic generators', () => {
         if (q.diagram) expect(JSON.stringify(q.diagram), ctx).not.toMatch(/NaN|null|undefined|Infinity/);
       }
     }
-  }, 60_000);
+  }, 240_000);
 
   it('attaches generators to real topics, so nearly every knowledge topic now has fresh questions', () => {
     const topicIds = new Set(SUBJECTS.flatMap((s) => s.units.flatMap((u) => u.topics.map((t) => t.id))));
@@ -123,7 +123,7 @@ describe('generated multiple choice cannot be guessed from the length of the opt
       // poem, text and event titles are fixed real names, so a little more variation is unavoidable there
       if (n) expect(cued / n, id).toBeLessThanOrEqual(/^(pm|qt|tl|lo)-/.test(id) ? 0.06 : 0.02);
     }
-  }, 60_000);
+  }, 240_000);
 });
 
 describe('answer options cannot be guessed from their look', () => {

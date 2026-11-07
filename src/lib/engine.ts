@@ -186,11 +186,20 @@ export function recentPenalty(s: SrsState | undefined, now: number): number {
   if (ago < DAY) return 4 + exposure;
   if (ago < 3 * DAY) return 2.5 + exposure;
   if (ago < 7 * DAY) return 1.2 + exposure;
+  // each subject usually comes round once a week, so last week's question is still "last time" for the student
+  if (ago < 15 * DAY) return 0.9 + exposure;
   return 0.4 + exposure;
 }
 
-/** Seen recently and not due: better replaced by a fresh variant if one can be generated */
-export const isStale = (c: Candidate, ctx: Pick<SelectContext, 'srs' | 'now'>) => !c.generated && recentPenalty(ctx.srs[c.id], ctx.now) >= 2.5;
+/**
+ * Seen in the last two weeks and not due: better replaced by a fresh variant if one can be generated. Two weeks,
+ * because with one subject a day a question from the last session or two of that subject is what feels repeated.
+ * Due reviews and mistakes are never stale: bringing them back is the point.
+ */
+export const isStale = (c: Candidate, ctx: Pick<SelectContext, 'srs' | 'now'>) => {
+  const s = ctx.srs[c.id];
+  return !c.generated && !!s && s.seen > 0 && s.due > ctx.now && ctx.now - s.last < 15 * DAY;
+};
 
 export function scoreCandidate(c: Candidate, ctx: SelectContext): number {
   const t = ctx.topics[c.topicId];

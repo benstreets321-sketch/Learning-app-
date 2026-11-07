@@ -90,11 +90,11 @@ Do the **same thing to both sides** to get x alone (use inverse operations).
       prerequisites: ['m-alg-basics'],
       flashcards: cards([['Solve 4x + 3 = 23', 'x = 5'], ['First step for (x − 3)/5 = 2?', 'Multiply both sides by 5.']]),
       questions: [
-        num('Solve 7x + 4 = 3x + 24', 5, '4x = 20 → x = 5.', { d: 2 }),
+        num('Solve 7x + 4 = 3x + 24', 5, 'Subtract 3x from both sides: 4x + 4 = 24. Subtract 4: 4x = 20. Divide by 4: x = 5.', { d: 2 }),
         num('Solve 4(2x − 3) = 20', 4, '8x − 12 = 20 → 8x = 32 → x = 4.', { d: 2 }),
         num('Solve (3x − 2)/4 = 4', 6, '3x − 2 = 16 → x = 6.', { d: 3 }),
         num('The angles of a triangle are x, 3x and 2x + 30. Find x.', 25, '6x + 30 = 180 → x = 25.', { d: 3, h: ['Angles in a triangle add to 180°.'] }),
-        num('Solve 5 − 2x = 11', -3, '−2x = 6 → x = −3.', { d: 2 }),
+        num('Solve 5 − 2x = 11', -3, 'Subtract 5 from both sides: −2x = 6. Divide both sides by −2: x = −3.', { d: 2 }),
       ],
       workedExamples: [{ title: 'Forming and solving', problem: 'A rectangle has length 2x + 3 and width x. Its perimeter is 48 cm. Find x.', steps: ['Perimeter = 2(2x + 3) + 2x', '= 4x + 6 + 2x = 6x + 6', '6x + 6 = 48 → 6x = 42', 'x = 7'], answer: 'x = 7', tryIt: 'The perimeter of a square with side 3x − 1 is 44. Find x.', tryAnswer: '4(3x − 1) = 44 → 12x = 48 → x = 4' }],
     }),
@@ -136,7 +136,7 @@ Draw the boundary lines (solid for ≤/≥, dashed for </>) and shade the region
       generators: ['m-inequality'],
       flashcards: cards([['When does the inequality sign flip?', 'When multiplying or dividing both sides by a negative number.'], ['Integers satisfying −2 < n ≤ 3?', '−1, 0, 1, 2, 3']]),
       questions: [
-        txt('Solve 5x + 2 ≤ 27. (type e.g. x <= 5)', ['x <= 5', 'x≤5', 'x ≤ 5'], '5x ≤ 25 → x ≤ 5.', { d: 2 }),
+        txt('Solve 5x + 2 ≤ 27. (type e.g. x <= 5)', ['x <= 5', 'x≤5', 'x ≤ 5'], 'Subtract 2 from both sides: 5x ≤ 25. Divide by 5: x ≤ 5.', { d: 2 }),
         multi('Which integers satisfy −3 ≤ n < 2?', ['−3', '−2', '−1', '0', '1'], ['2', '−4'], '−3 is included (≤); 2 is not (<).', { d: 2 }),
         txt('Solve 4 − 3x > 13. (type e.g. x < 2)', ['x < -3', 'x<-3', 'x < −3'], '−3x > 9 → divide by −3 and flip: x < −3.', { d: 4 }),
       ],
@@ -190,7 +190,7 @@ Through (1, 5) and (3, 11): m = (11 − 5)/(3 − 1) = 3. 5 = 3(1) + c → c = 2
       generators: ['m-gradient'],
       flashcards: cards([['Gradient and intercept of y = 4 − 2x?', 'Gradient −2, intercept 4.'], ['Perpendicular gradient to 3?', '−1/3'], ['Equation of a horizontal line through (2, 5)?', 'y = 5']]),
       questions: [
-        mc('What is the gradient of 3y = 6x − 9?', ['2', '6', '−9', '−3'], 'y = 2x − 3.', { d: 2, fb: { 1: 'Divide everything by 3 first.' } }),
+        mc('What is the gradient of 3y = 6x − 9?', ['2', '6', '−9', '−3'], 'Divide everything by 3 to get y = 2x − 3. The gradient is the number in front of x: 2.', { d: 2, fb: { 1: 'Divide everything by 3 first.' } }),
         mc('Which line is parallel to y = 5x + 1?', ['y = 5x − 3', 'y = −5x + 1', 'y = x + 5', 'y = −x/5'], 'Same gradient, 5.', { d: 1 }),
         mc('Which line is perpendicular to y = 2x + 7?', ['y = −½x + 3', 'y = 2x − 7', 'y = −2x + 7', 'y = ½x'], 'Negative reciprocal of 2 is −½.', { d: 3, tier: 'H' }),
         txt('Find the midpoint of (2, 7) and (8, −1). Type as (x, y).', ['(5, 3)', '(5,3)', '5,3'], '((2+8)/2, (7−1)/2) = (5, 3).', { d: 2 }),
@@ -286,7 +286,7 @@ Roots of f(x) = 0 are the x-intercepts. To solve x² − 3 = x, find where y = x
       flashcards: cards([['What does y = f(x − 3) do?', 'Translates the graph 3 units right.'], ['Radius of x² + y² = 49?', '7'], ['Shape of y = 1/x?', 'Reciprocal - two branches with asymptotes on the axes.']]),
       questions: [
         mc('y = f(x) is transformed to y = f(x + 2). Describe the transformation.', ['Translation 2 left', 'Translation 2 right', 'Translation 2 up', 'Reflection in the y-axis'], 'Inside the bracket works in the opposite direction.', { d: 3, tier: 'H' }),
-        mc('Which equation is a circle of radius 5 centred at the origin?', ['x² + y² = 25', 'x² + y² = 5', 'x² + y² = 10', '(x − 5)² + (y − 5)² = 25'], 'r² = 25.', { d: 2, tier: 'H' }),
+        mc('Which equation is a circle of radius 5 centred at the origin?', ['x² + y² = 25', 'x² + y² = 5', 'x² + y² = 10', '(x − 5)² + (y − 5)² = 25'], 'A circle centred at the origin is x² + y² = r². With radius 5, r² = 25.', { d: 2, tier: 'H' }),
         mc('Which graph has asymptotes on both axes?', ['y = 1/x', 'y = x²', 'y = x³', 'y = 2ˣ'], 'The reciprocal graph never touches the axes.', { d: 2, tier: 'H' }),
       ],
     }),

@@ -216,7 +216,7 @@ Measure IR emitted from different surfaces of a hot cube with an IR detector at 
           ord('Put these EM waves in order of increasing frequency.', ['Radio', 'Microwaves', 'Infrared', 'Visible light', 'Ultraviolet', 'X-rays'], 'Frequency increases as wavelength decreases.', { d: 2 }),
           mc('Which EM wave is used in thermal imaging cameras?', ['Infrared', 'Ultraviolet', 'X-rays', 'Radio'], 'Warm objects emit more infrared.', { d: 1 }),
           match('Match the wave to a use.', [['X-rays', 'Medical imaging of bones'], ['Gamma', 'Sterilising surgical equipment'], ['Ultraviolet', 'Security marking'], ['Microwaves', 'Satellite communication']], 'Uses depend on properties.', { d: 2 }),
-          tf('All electromagnetic waves travel at the same speed in a vacuum.', true, '3 × 10⁸ m/s.', { d: 1 }),
+          tf('All electromagnetic waves travel at the same speed in a vacuum.', true, 'True: all electromagnetic waves travel at 3 × 10⁸ m/s in a vacuum (the speed of light).', { d: 1 }),
         ],
       }),
       topic({

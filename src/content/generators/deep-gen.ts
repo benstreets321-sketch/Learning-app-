@@ -9,11 +9,12 @@ import { PHYSICS_DEEP } from '../deep/physics';
 import { IMEDIA_DEEP } from '../deep/imedia';
 import { BUSINESS_DEEP } from '../deep/business';
 import { ENGLISH_DEEP } from '../deep/english';
+import { LITERATURE_DEEP } from '../deep/literature';
 import { formOk } from './plausible';
 import { mcq, typed, cap, pick } from './facts-kit';
 import { shuffle } from '../../lib/util';
 
-const BANKS: DeepBank[] = [BIOLOGY_DEEP, CHEMISTRY_DEEP, PHYSICS_DEEP, IMEDIA_DEEP, BUSINESS_DEEP, ENGLISH_DEEP];
+const BANKS: DeepBank[] = [BIOLOGY_DEEP, CHEMISTRY_DEEP, PHYSICS_DEEP, IMEDIA_DEEP, BUSINESS_DEEP, ENGLISH_DEEP, LITERATURE_DEEP];
 
 // terms that must never be offered against each other: either could be argued to be right for the other's example
 const NEAR: string[][] = [
@@ -45,13 +46,19 @@ const fair = (ans: DeepFact, other: DeepFact) => key(ans[0]) !== key(other[0]) &
 const short = (t: string) => t.split(/\s+/).length <= 3 && !/[()'’=+×÷]/.test(t);
 const why = (f: DeepFact) => [`**${cap(f[0])}**: ${f[1]}.${f[2] ? ` For example: ${f[2]}` : ''}`];
 
-function factQ(rand: () => number, lvl: number, facts: readonly DeepFact[], others: readonly DeepFact[]): GeneratedQuestion {
+function factQ(rand: () => number, lvl: number, facts: readonly DeepFact[], others: readonly DeepFact[], noun = 'key term'): GeneratedQuestion {
   const f = pick(rand, facts);
+  // for named things (characters, places, objects): people and places against people and places, objects against
+  // objects ("the windmill" is never offered among the farmers)
+  const thing = (x: DeepFact) => /^(the|a|an)\s/i.test(x[0]);
+  const sameKind = noun === 'name' ? facts.filter((o) => thing(o) === thing(f)) : facts;
+  const kinded = sameKind.filter((o) => fair(f, o)).length >= 3 ? sameKind : facts;
   // same-topic options are the most confusable and come first; a wider sample from the subject follows, so when the
   // topic's own terms differ in kind or form from the answer ("strong acid" against "metal + acid") the shared mcq
   // helper can find ones that match ("carbonate + acid", "alkali + acid")
-  const own = shuffle(facts.filter((o) => fair(f, o)), rand);
-  const wider = shuffle(others.filter((o) => fair(f, o) && !own.includes(o)), rand).slice(0, 24);
+  const own = shuffle(kinded.filter((o) => fair(f, o)), rand);
+  // (never for a set text: a character or object from another book would be ruled out at once)
+  const wider = noun === 'name' ? [] : shuffle(others.filter((o) => fair(f, o) && !own.includes(o)), rand).slice(0, 24);
   /** the topic's own options for one field, topped up from the subject only when too few of them match the answer's form */
   const opts = (field: 0 | 1, answer: string, list = own) => {
     const mine = list.map((o) => (field === 1 ? cap(o[1]) : o[0]));
@@ -61,15 +68,19 @@ function factQ(rand: () => number, lvl: number, facts: readonly DeepFact[], othe
   const form = rand();
   if (lvl >= 4 && short(f[0]) && form < 0.35) {
     const start = f[0].slice(0, Math.min(3, Math.ceil(f[0].length / 3)));
-    return typed(`Write the key term for: **${f[1]}**. *(It starts "${start}…")*`, f[0], [f[0], f[0].replace(/-/g, ' ')], why(f), 4);
+    return typed(`Write the ${noun} for: **${f[1]}**. *(It starts "${start}…")*`, f[0], [f[0], f[0].replace(/-/g, ' '), f[0].replace(/^(the|a|an)\s+/i, '')], why(f), 4);
   }
   if (f[2] && form < 0.55) {
     const exPool = pool.filter((o) => !o[2] || o[2] !== f[2]);
-    return mcq(rand, `Which key term does this example show?\n\n> ${f[2]}`, f[0], opts(0, f[0], exPool), why(f), 3);
+    return mcq(rand, `Which ${noun} does this example show?\n\n> ${f[2]}`, f[0], opts(0, f[0], exPool), why(f), 3);
   }
   // a long definition among short ones would give itself away, so ask the other way round instead
   const longEnough = f[1].length <= 25 || pool.filter((o) => o[1].length * 1.45 >= f[1].length).length >= 2;
-  if (form < 0.78 || !longEnough) return mcq(rand, `Which key term matches this description?\n\n> ${cap(f[1])}`, f[0], opts(0, f[0], pool), why(f), 2);
+  // fewer than three wrong options of the answer's own form (a year among names): type it instead of guessing
+  if (form < 0.78 || !longEnough) {
+    if ([...own, ...wider].filter((o) => formOk(f[0], o[0])).length < 3) return typed(`Write the ${noun} for: **${f[1]}**. *(It starts "${f[0].replace(/^(the|a|an)\s+/i, '').slice(0, 2)}…")*`, f[0], [f[0], f[0].replace(/-/g, ' '), f[0].replace(/^(the|a|an)\s+/i, '')], why(f), 3);
+    return mcq(rand, `Which ${noun} matches this description?\n\n> ${cap(f[1])}`, f[0], opts(0, f[0], pool), why(f), 2);
+  }
   return mcq(rand, `Which description matches **${f[0]}**?`, cap(f[1]), opts(1, cap(f[1]), pool), why(f), 2);
 }
 
@@ -96,8 +107,8 @@ for (const bank of BANKS) {
       id, title: 'Key terms and processes',
       make: (rand, lvl) => {
         // re-pick (a few times) if the right answer would stand out as by far the longest option
-        let q = procs.length && rand() < 0.22 ? stepQ(rand, pick(rand, procs)) : factQ(rand, lvl, t.facts, others);
-        for (let k = 0; k < 6 && lengthCue(q); k++) q = factQ(rand, lvl, t.facts, others);
+        let q = procs.length && rand() < 0.22 ? stepQ(rand, pick(rand, procs)) : factQ(rand, lvl, t.facts, others, t.noun);
+        for (let k = 0; k < 6 && lengthCue(q); k++) q = factQ(rand, lvl, t.facts, others, t.noun);
         return q;
       },
     });

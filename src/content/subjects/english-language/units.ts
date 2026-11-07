@@ -136,7 +136,7 @@ Simple, compound, complex; start sentences in different ways (with a verb, adver
         cloze('{{They\'re|They are}} going to leave {{their}} bags over {{there}}.', 'they\'re = they are; their = belonging; there = place.', { d: 1 }),
         tf('"I should of revised" is correct.', false, 'It should be "should have" (or "should\'ve").', { d: 1 }),
         txt('Correct the spelling: "definately"', ['definitely'], 'Think of "finite" inside it: de-FINITE-ly.', { d: 1 }),
-        multi('Which are reasons to start a new paragraph?', ['A change of time', 'A new speaker', 'A change of place', 'A new topic'], ['A long word', 'Every three sentences'], 'TiPToP.', { d: 1 }),
+        multi('Which are reasons to start a new paragraph?', ['A change of time', 'A new speaker', 'A change of place', 'A new topic'], ['A long word', 'Every three sentences'], 'Start a new paragraph for a change of TIme, PLace, TOpic or Person (TiPToP).', { d: 1 }),
       ],
     }),
   ],

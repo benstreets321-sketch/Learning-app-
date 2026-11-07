@@ -122,7 +122,15 @@ const strip = (s: string) => s.replace(/\*\*|__|`/g, '').replace(/(?<![a-z])\*(?
 const norm = (s: string) => strip(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
 /** sentences (or list items) holding at least one short bold key term */
+const gapCache = new Map<string, Gap[]>();
 function gapsFrom(notes: string): Gap[] {
+  const hit = gapCache.get(notes);
+  if (hit) return hit;
+  const out = gapsFromNotes(notes);
+  gapCache.set(notes, out);
+  return out;
+}
+function gapsFromNotes(notes: string): Gap[] {
   const out: Gap[] = [];
   let inBlock = false;
   for (const raw of notes.split('\n')) {

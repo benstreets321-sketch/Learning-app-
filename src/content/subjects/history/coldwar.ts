@@ -147,7 +147,7 @@ Germans called it a **Diktat**; Clemenceau thought it too lenient; Wilson disapp
       flashcards: cards([['What does LAMB stand for?', 'Land, Army, Money (reparations), Blame (war guilt) - terms of the Treaty of Versailles.'], ['What was Article 231?', 'The war guilt clause - Germany accepted blame for the war.'], ['What was Clemenceau\'s main aim?', 'To weaken Germany so it could never attack France again.'], ['What was self-determination?', 'Nations ruling themselves - one of Wilson\'s Fourteen Points.']]),
       questions: [
         mc('Which leader wanted the harshest treaty?', ['Clemenceau', 'Wilson', 'Lloyd George', 'Orlando'], 'France had suffered most.', { d: 1 }),
-        mc('What was Germany\'s army limited to?', ['100,000 men', '1,000,000 men', '500,000 men', '250,000 men'], 'LAMB - army.', { d: 1 }),
+        mc('What was Germany\'s army limited to?', ['100,000 men', '1,000,000 men', '500,000 men', '250,000 men'], 'The Treaty of Versailles limited Germany\'s army to 100,000 men, with no conscription (the A in LAMB: Land, Army, Money, Blame).', { d: 1 }),
       ],
       examQuestions: [examQ('Write an account of how the Treaty of Versailles caused anger in Germany.', 8, ['Level 4 (7-8): analytical narrative showing how events linked to cause anger', 'Diktat - Germany excluded from negotiations', 'War guilt clause and reparations', 'Loss of land and military restrictions humiliating', 'Links to political instability (e.g. "November Criminals")'], { meta: 'AQA Paper 1B Q3', time: 10 })],
     }),

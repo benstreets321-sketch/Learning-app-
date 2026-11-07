@@ -201,8 +201,10 @@ for (const subject of SUBJECTS) {
     }
     // Literature themes, context and exam-practice topics practise with the whole text's quotations and plot
     if (subject.id === 'english-literature') {
-      const unitGens = [...new Set(unit.topics.flatMap((t) => (t.generators ?? []).filter((g) => /^(qt|tl)-/.test(g))))];
-      if (unitGens.length) for (const t of unit.topics) if (!(t.generators ?? []).length) t.generators = [...unitGens];
+      // (a topic's own notes questions don't count: a themes or exam-practice topic still needs the whole text)
+      const unitGens = [...new Set(unit.topics.flatMap((t) => (t.generators ?? []).filter((g) => /^(qt|tl|dp)-/.test(g))))];
+      const wholeText = (t: Topic) => /-(exam|themes|context|overview)$/.test(t.id) || !(t.generators ?? []).some((g) => /^(qt|tl)-/.test(g));
+      if (unitGens.length) for (const t of unit.topics) if (wholeText(t)) t.generators = [...new Set([...(t.generators ?? []), ...unitGens])];
     }
     for (const topic of unit.topics) {
       topicMap.set(topic.id, { subject, unit, topic });

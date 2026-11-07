@@ -24,7 +24,7 @@ Draw boxes for the parts - it makes "total", "one share" and "difference" questi
       prerequisites: ['m-num-factors'],
       flashcards: cards([['Simplify 45 : 60', '3 : 4'], ['Red : blue = 2 : 5. What fraction is red?', '2/7'], ['Write 4 : 10 in the form 1 : n', '1 : 2.5']]),
       questions: [
-        txt('Simplify 36 : 48 : 60', ['3 : 4 : 5', '3:4:5'], 'Divide by 12.', { d: 2 }),
+        txt('Simplify 36 : 48 : 60', ['3 : 4 : 5', '3:4:5'], 'The highest common factor of 36, 48 and 60 is 12. Divide each part by 12: 3 : 4 : 5.', { d: 2 }),
         num('Share £84 in the ratio 3 : 4. How much is the larger share?', 48, '7 parts → 1 part = £12 → 4 × 12 = £48.', { d: 2, unit: '£' }),
         num('Cats : dogs = 5 : 2 at a shelter. There are 15 more cats than dogs. How many dogs?', 10, 'Difference = 3 parts = 15 → 1 part = 5 → dogs = 10.', { d: 3 }),
         mc('a : b = 3 : 4 and b : c = 2 : 5. Find a : b : c.', ['3 : 4 : 10', '3 : 4 : 5', '6 : 8 : 5', '3 : 2 : 5'], 'Double b : c to 4 : 10 so b matches.', { d: 4 }),

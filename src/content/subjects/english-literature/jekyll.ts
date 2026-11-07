@@ -96,6 +96,12 @@ export const jekyllUnit: Unit[] = [{
         quote('If he be Mr Hyde, I shall be Mr Seek', 'Utterson\'s pun shows his determination to uncover the secret - the detective figure.', { who: 'Utterson', where: 'Ch 2', themes: ['secrecy'] }),
         quote('unscientific balderdash', 'Lanyon dismisses Jekyll\'s experiments - the conflict between traditional science and dangerous experimentation.', { who: 'Lanyon', where: 'Ch 2', themes: ['science'] }),
         quote('I was slowly losing hold of my original and better self', 'Hyde grows stronger; Jekyll\'s control fades - evil, once indulged, takes over.', { who: 'Jekyll', where: 'Ch 10', themes: ['duality'] }),
+        quote('a man of a rugged countenance that was never lighted by a smile', 'Utterson is serious and reserved - a respectable Victorian gentleman.', { who: 'Narrator', where: 'Ch 1', themes: ['reputation'] }),
+        quote('trampled calmly over the child\'s body', 'The adverb \'calmly\' makes Hyde\'s violence shocking and inhuman.', { who: 'Enfield', where: 'Ch 1', themes: ['good vs evil', 'violence'] }),
+        quote('Satan\'s signature upon a face', 'Utterson reads Hyde\'s evil in his appearance - religious language for pure evil.', { who: 'Utterson', where: 'Ch 2', themes: ['good vs evil', 'religion'] }),
+        quote('pale and dwarfish', 'Hyde\'s small, deformed appearance links to fears of degeneration.', { who: 'Narrator', where: 'Ch 2', themes: ['good vs evil', 'science'] }),
+        quote('weeping like a woman or a lost soul', 'Poole hears weeping in the cabinet - Jekyll trapped and despairing as Hyde.', { who: 'Poole', where: 'Ch 8', themes: ['duality', 'good vs evil'] }),
+        quote('the thorough and primitive duality of man', 'Jekyll\'s statement: every person is both good and evil.', { who: 'Jekyll', where: 'Ch 10', themes: ['duality', 'science'] }),
       ],
       flashcards: cards([
         ['How is Hyde physically described?', 'Small, young, deformed in some unexplainable way, ape-like, with a "hissing" voice.'],
@@ -175,6 +181,7 @@ Also examinable: **Utterson**, **Lanyon**, **science**, **violence**, **reputati
         { year: 'Jun 2024', focus: 'How Stevenson creates an **atmosphere of fear and danger**', extract: 'Ch 2 (Search for Mr Hyde)' },
         { year: 'Jun 2025', focus: 'Ideas about **hidden lives and secrets**', extract: 'Ch 6 (Dr Lanyon)' },
       ],
+      flashcards: cards([['How is the Jekyll and Hyde question set?', 'An extract from the novella, then a question about the whole novella.'], ['How many marks is the 19th-century novel question worth?', '30. There are no extra marks for spelling, punctuation and grammar on this question.'], ['How long should you spend on the 19th-century novel question?', 'About 50 minutes, including a few minutes to plan.']]),
       questions: [
         mc('Which character has NOT been the main focus of a recent question, but should be prepared?', ['Utterson', 'Hyde', 'Jekyll', 'None - all have been asked'], 'Utterson and Lanyon are examinable even if not asked recently.', { d: 2 }),
       ],

@@ -2,7 +2,8 @@ name: Test and deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    # main, and the app's working branch (the repository's default branch while it is the only one)
+    branches: [main, claude/gcse-learning-app-vnzz1y]
   pull_request:
   workflow_dispatch:
 

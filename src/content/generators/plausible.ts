@@ -14,13 +14,27 @@
 // The rules are deliberately about form, not meaning: meaning comes from where the candidates are drawn (the same
 // table column, the same topic's key terms, the same kind of fact).
 
-const strip = (s: string) => String(s ?? '').replace(/\*\*|__|`/g, '').replace(/\s+/g, ' ').trim();
-const norm = (s: string) => strip(s).toLowerCase().replace(/[^a-z0-9%£.]+/g, ' ').trim();
-const wordsOf = (s: string) => strip(s).split(' ').filter(Boolean);
+/** remembers a pure text function's answers: the same option text is checked thousands of times at start-up */
+function memo<T>(fn: (s: string) => T): (s: string) => T {
+  const cache = new Map<string, T>();
+  return (s: string) => {
+    let v = cache.get(s);
+    if (v === undefined && !cache.has(s)) {
+      if (cache.size > 40_000) cache.clear();
+      v = fn(s);
+      cache.set(s, v);
+    }
+    return v as T;
+  };
+}
+const strip = memo((s: string) => String(s ?? '').replace(/\*\*|__|`/g, '').replace(/\s+/g, ' ').trim());
+const norm = memo((s: string) => strip(s).toLowerCase().replace(/[^a-z0-9%£.]+/g, ' ').trim());
+const wordsOf = memo((s: string) => strip(s).split(' ').filter(Boolean));
 
 const NUM = /^([−\-+]?[£$€]?\s?\d(?:\d|,(?=\d{3}))*(?:\.\d+)?)\s*(.*)$/;
 /** a number, optionally with a unit: "12", "£3.40", "45%", "9.8 N/kg", "1066" */
-export function numberParts(s: string): { n: number; unit: string } | null {
+export const numberParts = memo(numberPartsOf);
+function numberPartsOf(s: string): { n: number; unit: string } | null {
   // "about 80%", "just under 1%": the qualifier is part of the wording, not the kind of answer
   let t = strip(s).replace(/^(about|around|roughly|approximately|approx\.|nearly|almost|just (?:under|over)|over|under|less than|more than|~|≈)\s*/i, '');
   // fractions, standard form and ranges are numbers too: 5/8, 2.4 × 10⁹, 1-5, 1577-80
@@ -37,30 +51,31 @@ export function numberParts(s: string): { n: number; unit: string } | null {
 }
 /** words that must keep their lowercase: units and maths functions */
 const UNITISH = /^(kg|g|mg|km|m|cm|mm|nm|s|ms|ml|l|j|kj|w|kw|kwh|n|pa|kpa|v|a|hz|mol|dm|sin|cos|tan|log|ln|ph|e\.g\.|i\.e\.)$/i;
-const isYear = (s: string) => /^(1[0-9]{3}|20[0-9]{2})(s|\s?(BC|AD|CE|BCE))?$/.test(strip(s).replace(/[–-]\d{2,4}$/, ''));
+const isYear = memo((s: string) => /^(1[0-9]{3}|20[0-9]{2})(s|\s?(BC|AD|CE|BCE))?$/.test(strip(s).replace(/[–-]\d{2,4}$/, '')));
 const isAcronym = (w: string) => /^[A-Z0-9₀-₉]{2,}(\/[A-Z0-9₀-₉]{2,})*s?$/.test(w) && /[A-Z]/.test(w);
-const isFormula = (s: string) => /[=+→⇌×÷^²³√≠≈<>≤≥]|\b[A-Z][a-z]?\d|\d[A-Z]/.test(strip(s));
+const isFormula = memo((s: string) => /[=+→⇌×÷^²³√≠≈<>≤≥]|\b[A-Z][a-z]?\d|\d[A-Z]/.test(strip(s)));
 
 /** "U" capitalised, "l" lowercase, "x" neither (numbers, symbols, acronyms, internal capitals such as pH or mRNA) */
-export function caseClass(s: string): 'U' | 'l' | 'x' {
+export const caseClass = memo(caseClassOf);
+function caseClassOf(s: string): 'U' | 'l' | 'x' {
   const w = wordsOf(s)[0] ?? '';
   if (!/^[A-Za-z]/.test(w) || isAcronym(w) || /^[A-Z]-/.test(w) || /^[a-z]+[A-Z]/.test(w) || (w.length === 1 && wordsOf(s).length === 1) || UNITISH.test(w) || isFormula(s)) return 'x';
   return /^[A-Z]/.test(w) ? 'U' : 'l';
 }
 /** every word after the first capitalised: "Human Genome Project", "Ghost of Christmas Present" */
-const titleCase = (s: string) => {
+const titleCase = memo((s: string) => {
   const w = wordsOf(s).slice(1).filter((x) => x.length > 3);
   return w.length > 0 && w.every((x) => /^[A-Z]/.test(x));
-};
+});
 /** the words without plural endings (supernovae / supernova, nuclei / nucleus, cells / cell) */
-const stem = (s: string) => wordsOf(norm(s)).map((w) => w.replace(/(ae|a|i|us|es|s)$/, '')).join(' ');
-const head = (s: string) => { const w = wordsOf(norm(s)); const h = w[w.length - 1] ?? ''; return h.replace(/(ies)$/, 'y').replace(/(?<!s)s$/, ''); };
-const plural = (s: string) => { const w = wordsOf(norm(s)); const h = w[w.length - 1] ?? ''; return /[^su]s$/.test(h) && h.length > 3; };
+const stem = memo((s: string) => wordsOf(norm(s)).map((w) => w.replace(/(ae|a|i|us|es|s)$/, '')).join(' '));
+const head = memo((s: string) => { const w = wordsOf(norm(s)); const h = w[w.length - 1] ?? ''; return h.replace(/(ies)$/, 'y').replace(/(?<!s)s$/, ''); });
+const plural = memo((s: string) => { const w = wordsOf(norm(s)); const h = w[w.length - 1] ?? ''; return /[^su]s$/.test(h) && h.length > 3; });
 const SUFFIX: [RegExp, string][] = [
   [/(tion|sion|ment|ness|ity|ance|ence|ism|ship|hood|age)$/, 'noun'], [/(ly)$/, 'adv'], [/(ive|ous|ful|less|able|ible|ic|al|ary)$/, 'adj'],
   [/(ise|ize|ify|ate|ed)$/, 'verb'], [/(ing)$/, 'ing'],
 ];
-const suffixClass = (s: string) => { const w = wordsOf(norm(s)); if (w.length !== 1) return ''; return SUFFIX.find(([r]) => r.test(w[0]))?.[1] ?? ''; };
+const suffixClass = memo((s: string) => { const w = wordsOf(norm(s)); if (w.length !== 1) return ''; return SUFFIX.find(([r]) => r.test(w[0]))?.[1] ?? ''; });
 const endsSentence = (s: string) => /[.!?]["”')]*$/.test(strip(s));
 const startsWithArticle = (s: string) => /^(a|an|the)\s/i.test(strip(s));
 const startsWithTo = (s: string) => /^to\s/i.test(strip(s));

@@ -204,7 +204,7 @@ Always compare **an average AND a measure of spread** in context, e.g. "Group A'
         generators: ['s-spearman', 's-regression'],
         flashcards: cards([['Spearman\'s rank formula?', 'rₛ = 1 − 6Σd² ÷ n(n² − 1)'], ['What point should a line of best fit pass through?', 'The mean point (x̄, ȳ).'], ['What does "b" mean in y = a + bx?', 'The gradient - the change in y for each one-unit increase in x.'], ['Why is extrapolation unreliable?', 'The relationship may not continue outside the range of the data.'], ['What is a lurking variable?', 'A third variable that affects both variables, creating an apparent link.']]),
         questions: [
-          mc('rₛ = −0.92 means...', ['Strong negative correlation between the rankings', 'Weak negative correlation between the rankings', 'Strong positive correlation between the rankings', 'No correlation between the rankings'], 'Close to −1.', { d: 2 }),
+          mc('rₛ = −0.92 means...', ['Strong negative correlation between the rankings', 'Weak negative correlation between the rankings', 'Strong positive correlation between the rankings', 'No correlation between the rankings'], 'A value close to −1 means strong negative correlation: the higher one ranking, the lower the other.', { d: 2 }),
           tf('Ice cream sales and drownings are positively correlated, so ice cream causes drowning.', false, 'Hot weather (a lurking variable) increases both.', { d: 1 }),
           num('Regression line y = 12 + 3.5x. Estimate y when x = 8.', 40, '12 + 3.5 × 8 = 40.', { d: 1 }),
         ],

@@ -82,7 +82,7 @@ npm run build:single # one self-contained HTML file in dist-single/index.html
 ```
 
 ### Deploy to GitHub Pages
-The workflow in `.github/workflows/deploy.yml` tests, builds and deploys on every push to `main`. In the repository settings, set **Pages → Source** to **GitHub Actions**.
+The workflow in `.github/workflows/deploy.yml` tests, builds and deploys on every push to `main` or to the app's working branch (`claude/gcse-learning-app-vnzz1y`), and can be started by hand from the Actions tab (**Run workflow**). One-time setup: in the repository's **Settings → Pages**, set **Source** to **GitHub Actions**. The app is then at `https://<your-user-name>.github.io/<repository-name>/`.
 
 ### Install it as an app
 `npm run build` produces an installable, offline-capable web app (web manifest, icons and a service worker). Once it is deployed (any HTTPS host, e.g. GitHub Pages):

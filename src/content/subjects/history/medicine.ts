@@ -69,7 +69,7 @@ Causes: miasma, God, planets. Responses: plague doctors' beaked masks with herbs
       ],
       flashcards: cards([['What did Vesalius do?', 'Dissected human bodies and published accurate anatomy (1543), proving Galen wrong in places.'], ['What did Harvey discover?', 'That blood circulates around the body, pumped by the heart (1628).'], ['Why did Harvey\'s discovery have little immediate impact on treatment?', 'Doctors still believed in the Four Humours and it didn\'t lead to new treatments.'], ['What was the Royal Society?', 'A society founded in 1660 to share scientific knowledge and experiments.'], ['How did authorities respond to the Great Plague of 1665?', 'Quarantined houses, banned gatherings, killed cats and dogs, searchers recorded deaths.']]),
       questions: [
-        mc('Who proved that blood circulates around the body?', ['William Harvey', 'Andreas Vesalius', 'Thomas Sydenham', 'Edward Jenner'], '1628.', { d: 1 }),
+        mc('Who proved that blood circulates around the body?', ['William Harvey', 'Andreas Vesalius', 'Thomas Sydenham', 'Edward Jenner'], 'William Harvey, in 1628. Using dissection and experiments he showed that the heart is a pump and blood circulates around the body.', { d: 1 }),
         mc('Which factor most helped new ideas spread in the Renaissance?', ['The printing press', 'The Church', 'Better microscopes', 'The Black Death'], 'Accurate copies spread knowledge quickly.', { d: 1 }),
         tf('By 1700 most doctors had abandoned the Four Humours.', false, 'Continuity was strong - humoral ideas and treatments persisted.', { d: 2 }),
       ],

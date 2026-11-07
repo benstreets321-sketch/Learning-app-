@@ -16,7 +16,8 @@ import {
   activeSubjects, getQuestion, makeGenerated, questionPool, randomGenerated, topicQuestions, visibleTopics, getTopic, type GenSnapshot,
 } from '../content/registry';
 import { effectiveTheta, isStale, level, mastery, newTopicState, pCorrect, pickNext } from './engine';
-import { getProfile, getProgress, type Profile, type Progress } from './store';
+import { getProfile, getProgress, noteAsked, type Profile, type Progress } from './store';
+import { hash } from './util';
 import { uncovered } from './coverage';
 import { gapTopics } from './predict';
 import { phaseFor } from './exams';
@@ -167,6 +168,7 @@ export class SessionEngine {
     const explain = choice && item.why.length > 30 && this.turn - this.explained >= 3 && (keen ? Math.random() < 0.6 : Math.random() < 0.2);
     if (explain) this.explained = this.turn;
     const note = source === 'skill' ? SKILL_NAME[skillOf(item)] : undefined;
+    if (item.generated) noteAsked(wordingKey(item));
     return { item, source, explain, lesson, note };
   }
 
@@ -187,14 +189,33 @@ export class SessionEngine {
     const theta = effectiveTheta(ts);
     let lvl = 1, bestDiff = Infinity;
     for (let d = 1; d <= 5; d++) { const diff = Math.abs(pCorrect(theta, d) - 0.72); if (diff < bestDiff) { bestDiff = diff; lvl = d; } }
-    return randomGenerated(topicId, Math.max(1, Math.min(5, lvl + harder)), this.profile);
+    // a few tries for wording the student hasn't seen in the last fortnight (a fact generator can repeat itself)
+    const recent = getProgress().recentQ ?? {};
+    const today = Math.floor(Date.now() / 86_400_000);
+    let q: QItem | undefined;
+    for (let k = 0; k < 6; k++) {
+      q = randomGenerated(topicId, Math.max(1, Math.min(5, lvl + harder)), this.profile);
+      if (!q) return undefined;
+      const seen = recent[wordingKey(q)];
+      if (!this.asked.has(q.id) && (seen === undefined || today - seen > 14)) return q;
+    }
+    return q;
   }
 
   /** A different question testing the same idea: same generator with new numbers, or a sibling in the topic */
   similarTo(item: QItem): QItem | undefined {
     if (item.generated) {
       const [, g] = item.id.split(':');
-      const fresh = makeGenerated({ g, s: Math.floor(Math.random() * 2 ** 31), l: item.d, t: item.topicId });
+      const recent = getProgress().recentQ ?? {};
+      const today = Math.floor(Date.now() / 86_400_000);
+      const was = wordingKey(item);
+      let fresh: QItem | undefined;
+      for (let k = 0; k < 5; k++) {
+        fresh = makeGenerated({ g, s: Math.floor(Math.random() * 2 ** 31), l: item.d, t: item.topicId });
+        if (!fresh) break;
+        const key = wordingKey(fresh);
+        if (key !== was && (recent[key] === undefined || today - recent[key] > 14)) break;
+      }
       if (fresh) return fresh;
     }
     const sib = topicQuestions(item.topicId).filter((q) => q.id !== item.id && !this.asked.has(q.id) && Math.abs(q.d - item.d) <= 1 && this.pool.includes(q));
@@ -298,6 +319,13 @@ export class SessionEngine {
 }
 
 export const SESSION_LENGTHS = [10, 15, 20, 30, 45, 60];
+
+/** A short key for a question's wording and options (two generated questions can be identical with different seeds) */
+export function wordingKey(q: QItem): string {
+  const text = 'q' in q && q.q ? q.q : q.type === 'cloze' ? q.text : q.id;
+  const opts = 'options' in q && Array.isArray(q.options) ? [...q.options].sort().join('|') : '';
+  return hash(`${text}|${opts}`).slice(0, 10);
+}
 
 /** A one-line preview of what a session will focus on */
 export function sessionPreview(subjectIds: string[] | null): { fix: number; due: number; weak: number; fresh: number } {
